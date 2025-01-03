@@ -2,7 +2,8 @@
   "name": "the-town-game-client",
   "version": "1.0.0",
   "scripts": {
-    "start": "set PORT=3706 && react-scripts start"
+    "start": "set PORT=3706 && react-scripts start",
+    "build": "react-scripts build"
   },
   "keywords": [],
   "author": "",
