@@ -5,7 +5,7 @@ const settingsRoutes = require('./routes/settings');
 
 const app = express();
 app.use(cors({
-  origin: 'http://localhost:3706',
+  origin: ['https://town-game-client.onrender.com'],
   methods: ['GET', 'POST'],
   credentials: true,
 }));
