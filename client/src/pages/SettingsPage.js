@@ -79,7 +79,7 @@ const handleSave = async () => {
 
     try {
       localStorage.setItem('settings', JSON.stringify(settings));
-      const response = await fetch('http://localhost:5000/api/settings', {
+      const response = await fetch('https://town-game-server.onrender.com/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settings),
