@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import TopBar from '../components/topBar'; // נתיב לקובץ topBar.js
 
-const socket = io('http://localhost:5000');
+const socket = io('https://town-game-server.onrender.com');
 
 function VotePage() {
   const [players, setPlayers] = useState([]);
