@@ -1,0 +1,193 @@
+/* כללי */
+.settings-page {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.settings-title {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* רכיב הזאבים */
+.wolves-counter {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* ודא שהרכיב עצמו מיושר במרכז */
+  gap: 15px; /* רווח בין האלמנטים */
+  width: 100%; /* ודא רוחב מלא */
+}
+.settings-section-wolves {
+  display: flex;
+  justify-content: center; /* מרכז את כל הרכיב אופקית */
+  align-items: center; /* מרכז אנכית */
+  width: 100%; /* תופס את כל הרוחב */
+}
+.wolves-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.counter-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* רווח בין הפלוס, המספר והמינוס */
+}
+
+/* כפתורי פלוס ומינוס */
+.counter-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ccc;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.counter-button:hover {
+  background-color: #ddd;
+}
+
+.wolves-number {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+/* כותרת */
+.switch-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+/* מתג - סידור אופקי */
+.toggle-switch-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+/* מתג */
+.toggle-switch {
+  width: 60px;
+  height: 30px;
+  border-radius: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+.switch-on {
+  background-color: #4caf50; /* ירוק */
+}
+
+.switch-off {
+  background-color: #f44336; /* אדום */
+}
+
+.switch-circle {
+  width: 26px;
+  height: 26px;
+  background-color: #fff;
+  border-radius: 50%;
+  position: absolute;
+  left: 2px;
+  transition: left 0.3s ease;
+}
+
+.switch-on .switch-circle {
+  left: calc(100% - 28px); /* ימינה במצב ON */
+}
+/* רכיב המתגים */
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* יישור לשמאל */
+  gap: 10px; /* רווח קטן בין הפריטים */
+}
+
+.toggle-switch-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%; /* תופס את כל הרוחב */
+  max-width: 300px; /* מגבלת רוחב */
+  margin: 0 auto; /* ממרכז את כל הרכיב */
+}
+
+.switch-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.toggle-switch {
+  width: 50px; /* קטן יותר */
+  height: 25px;
+  border-radius: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+.switch-circle {
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border-radius: 50%;
+  position: absolute;
+  left: 2px;
+  transition: left 0.3s ease;
+}
+
+.switch-on .switch-circle {
+  left: calc(100% - 22px); /* מעביר ימינה */
+}
+
+/* אזור הכפתורים */
+.settings-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* רווח בין הכפתורים */
+  align-items: center; /* ממרכז את הכפתורים */
+  margin-top: 30px; /* רווח מלמעלה */
+}
+
+/* עיצוב כפתור */
+.save-button,
+.back-button {
+  width: 200px;
+  padding: 10px;
+  font-size: 1.2rem;
+  color: #fff;
+  background-color: #4caf50; /* ירוק לכפתור שמור */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center;
+}
+
+.back-button {
+  background-color: #f44336; /* אדום לכפתור חזור */
+}
+
+.save-button:hover {
+  background-color: #388e3c;
+}
+
+.back-button:hover {
+  background-color: #d32f2f;
+}
