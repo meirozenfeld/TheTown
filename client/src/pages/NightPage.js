@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import Modal from 'react-modal';
 import TopBar from '../components/topBar'; // נתיב לקובץ topBar.js
 
-const socket = io('http://localhost:5000');
+const socket = io('https://town-game-server.onrender.com');
 Modal.setAppElement('#root');
 
 function NightPage() {
