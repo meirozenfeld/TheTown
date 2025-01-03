@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 
-const socket = io(''https://town-game-server.onrender.com');
+const socket = io('https://town-game-server.onrender.com');
 console.log('Socket connected:', socket.connected);
 
 function DeadPage() {
