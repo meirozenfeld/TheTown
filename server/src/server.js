@@ -10,7 +10,7 @@ events.setMaxListeners(20); // קובע את המספר המקסימלי של מ
 // הגדרת CORS עבור Socket.IO
 const io = socketIo(server, {
   cors: {
-    origin: 'http://localhost:3706',
+    origin: ['https://town-game-client.onrender.com'],
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
     credentials: true
