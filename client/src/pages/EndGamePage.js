@@ -51,6 +51,8 @@ function EndGamePage() {
         }
         socket.emit('resetGame'); // איפוס נתוני המשחק הנוכחי
         socket.emit('restartServer'); // אתחול השרת
+        window.dispatchEvent(new Event('gameNavigation'));
+        window.history.pushState(null, '', '/'); // עדכון היסטוריה
         window.location.href = '/';
     };
 
