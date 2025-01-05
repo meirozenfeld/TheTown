@@ -2,28 +2,115 @@
 .settings-page {
   padding: 20px;
   font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* יישור למרכז */
+  justify-content: flex-start; /* למעלה */
+  min-height: 95vh; /* גובה דף מלא */
+  text-align: center; /* טקסט במרכז */
+  height: 100%; /* תופס 100% מהגובה */
+
 }
 
 .settings-title {
+  text-align: center; /* ממרכז את הכותרת */
+  font-size: 2.5rem; /* גודל כותרת */
+  font-weight: bold; /* מודגש */
+  color: #454ea0; /* צבע טקסט */
+  margin-bottom: 20px; /* מרווח תחתון */
+  text-shadow: 
+    -1px -1px 0 white,  
+     1px -1px 0 white, 
+    -1px  1px 0 white, 
+     1px  1px 0 white; /* מסגרת לבנה */
+  padding: 10px; /* ריפוד */
+  display: inline-block; /* יישור כל אות בנפרד */
+  letter-spacing: 1px; /* ריווח בין אותיות */
+}
+.settings-title2 {
+  position: absolute; /* מיקום מוחלט */
+  top: 0; /* מיקום מלמעלה */
+  right: 20px; /* מרחק מהקצה הימני */
+  font-size: 2.5rem; /* גודל כותרת */
+  font-weight: bold; /* מודגש */
+  color: #454ea0; /* צבע טקסט */
+  margin-bottom: 10px; /* רווח קטן לכותרת עצמה */
+  text-shadow: 
+    -1px -1px 0 white,  
+     1px -1px 0 white, 
+    -1px  1px 0 white, 
+     1px  1px 0 white; /* מסגרת לבנה סביב האותיות */
+  padding: 10px; /* ריפוד */
+  display: inline-block; /* כל אות בנפרד */
+  letter-spacing: 1px; /* ריווח בין אותיות */
+}
+
+.settings-paragraph {
+  position: absolute; /* מיקום מוחלט */
+  top: 100px; /* בדיוק מתחת לכותרת עם רווח של 70px */
+  right: 20px; /* מיקום זהה לכותרת */
+  font-size: 1.6rem; /* גודל טקסט קטן יותר */
+  color: #ffffff; /* צבע טקסט */
+  padding: 10px; /* ריפוד קטן */
+  text-align: right; /* יישור לימין */
+  line-height: 1.6; /* ריווח בין השורות */
+  max-width: 500px; /* מגבלת רוחב לטקסט */
+  text-shadow: 
+  -1px -1px 0 #454ea0,  
+   1px -1px 0 #454ea0, 
+  -1px  1px 0 #454ea0, 
+   1px  1px 0 #454ea0; /* מסגרת לבנה סביב כל אות */
+}
+
+.role-title {
+  color: #ffffff; /* צבע הטקסט */
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-bottom: 10px; /* ריווח למטה */
   text-align: center;
-  font-size: 2.5rem;
-  color: #333;
-  margin-bottom: 20px;
+  font-size: 1.5rem; /* גודל טקסט */
+
+}
+
+.feature-title {
+  color: #ffffff; /* צבע טקסט */
+  font-size: 1.5rem;
+  font-weight: bold; /* טקסט מודגש */
+  text-shadow: 
+    -1px -1px 0 #454ea0,  
+     1px -1px 0 #454ea0, 
+    -1px  1px 0 #454ea0, 
+     1px  1px 0 #454ea0; /* מסגרת לבנה סביב כל אות */
+  padding: 5px 10px; /* ריפוד */
+  display: inline-block; /* כל אות בנפרד */
+  letter-spacing: 2px; /* ריווח בין אותיות */
+  text-align: center; /* טקסט במרכז */
 }
 
 /* רכיב הזאבים */
 .wolves-counter {
   display: flex;
-  align-items: center;
-  justify-content: center; /* ודא שהרכיב עצמו מיושר במרכז */
-  gap: 15px; /* רווח בין האלמנטים */
-  width: 100%; /* ודא רוחב מלא */
+  align-items: center; /* יישור אנכי */
+  justify-content: center; /* יישור אופקי */
+  gap: 10px; /* רווח בין הכותרת לכפתורים */
+  margin-bottom: 0px; /* רווח למטה */
+  width: 100%; /* שימוש ברוחב מלא */
 }
+/* הכותרת עם הכפתורים לצד שמאל */
+.counter-header {
+  display: flex;
+  align-items: center; /* יישור אנכי */
+  gap: 20px; /* רווח בין הכותרת לכפתורים */
+}
+
 .settings-section-wolves {
   display: flex;
-  justify-content: center; /* מרכז את כל הרכיב אופקית */
+  justify-content: center; /* מרכז אופקית */
   align-items: center; /* מרכז אנכית */
-  width: 100%; /* תופס את כל הרוחב */
+  width: 100%; /* רוחב מלא */
+  margin-bottom: 5px; /* רווח למטה */
+  
 }
 .wolves-title {
   font-size: 1.5rem;
@@ -32,38 +119,45 @@
 
 .counter-controls {
   display: flex;
-  align-items: center;
-  gap: 10px; /* רווח בין הפלוס, המספר והמינוס */
+  align-items: center; /* יישור אנכי */
+  gap: 10px; /* רווח בין הכפתורים והמספר */
 }
 
 /* כפתורי פלוס ומינוס */
 .counter-button {
+  color: #454ea0; /* צבע טקסט */
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.5rem;
+  font-size: 1.5rem; /* גודל טקסט */
   width: 40px;
   height: 40px;
-  border: 1px solid #ccc;
-  background-color: #f0f0f0;
+  border: 1px solid #454ea0; /* גבול בצבע נדרש */
+  background-color: #f0f0f0; /* רקע אפור בהיר */
   cursor: pointer;
-  border-radius: 50%;
-  transition: background-color 0.3s ease;
+  border-radius: 50%; /* צורה עגולה */
+  transition: all 0.3s ease; /* מעבר חלק */
 }
 
 .counter-button:hover {
-  background-color: #ddd;
+  background-color: #454ea0; /* שינוי רקע */
+  color: white; /* שינוי צבע טקסט */
+}
+
+.counter-button:hover {
+  color: white; /* צבע הטקסט משתנה ללבן */
 }
 
 .wolves-number {
-  font-size: 1.8rem;
-  font-weight: bold;
-}
-/* כותרת */
-.switch-title {
+  color: #454ea0; /* צבע טקסט */
   font-size: 1.5rem;
   font-weight: bold;
-  margin: 0;
+  text-align: center;
+  text-shadow: 
+  -1px -1px 0 white,  
+   1px -1px 0 white, 
+  -1px  1px 0 white, 
+   1px  1px 0 white; /* מסגרת לבנה סביב כל אות */
 }
 
 /* מתג - סידור אופקי */
@@ -88,11 +182,11 @@
 }
 
 .switch-on {
-  background-color: #4caf50; /* ירוק */
+  background-color: #108f14; /* ירוק */
 }
 
 .switch-off {
-  background-color: #f44336; /* אדום */
+  background-color: #7e1109; /* אדום */
 }
 
 .switch-circle {
@@ -126,7 +220,7 @@
 }
 
 .switch-title {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: bold;
   margin: 0;
 }
@@ -170,11 +264,11 @@
 .back-button {
   width: 200px;
   padding: 10px;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: #fff;
-  background-color: #4caf50; /* ירוק לכפתור שמור */
+  background-color: #454ea0; /* ירוק לכפתור שמור */
   border: none;
-  border-radius: 5px;
+  border-radius: 15px;
   cursor: pointer;
   transition: background-color 0.3s ease;
   text-align: center;
@@ -189,5 +283,5 @@
 }
 
 .back-button:hover {
-  background-color: #d32f2f;
+  background-color: #9b0a0a;
 }
