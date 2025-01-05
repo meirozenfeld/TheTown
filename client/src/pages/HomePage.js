@@ -60,6 +60,9 @@ function HomePage() {
 
     // Navigations
     socket.on('navigateToSettings', () => {
+            window.dispatchEvent(new Event('gameNavigation'));
+            window.history.pushState(null, '', '/settings'); // עדכון היסטוריה
+
       navigate('/settings');
     });
 
@@ -114,7 +117,6 @@ function HomePage() {
     <div className="home-page">
       <h1 className="title">העיירה</h1>
       <div className="input-container">
-        <label htmlFor="player-name">שם השחקן:</label>
         <input
           type="text"
           id="player-name"
@@ -133,10 +135,12 @@ function HomePage() {
       </button>
 
       <h2>{players.length} שחקנים נמצאים במשחק:</h2>
+      
       <ul>
         {players.map((player, index) => (
           <li key={index}>{player.name}</li>
         ))}
+        
       </ul>
 
       {isFirstPlayer && isJoined && (
