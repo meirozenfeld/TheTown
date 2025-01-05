@@ -264,11 +264,26 @@ useEffect(() => {
 
       const cupidRole = Object.keys(data).find((role) => role.includes('קופידון'));
       if (cupidRole) {
+        // פונקציה להוספת ירידת שורה אחרי כל 4 מילים
+        const formatMessage = (text) => {
+          const words = text.split(' ');
+          let formattedText = '';
+          for (let i = 0; i < words.length; i++) {
+            formattedText += words[i] + ' ';
+            if ((i + 1) % 6 === 0) {
+              formattedText += '<br />'; // הוספת תגית HTML לשבירת שורה
+            }
+          }
+          return formattedText.trim(); // הסרת רווח מיותר בסוף
+        };
+
         const cupid = data[cupidRole][0];
         console.log('Cupid details:', cupid);
 
         if (cupid.lover === storedName) {
-          setMessage(`הקופידון ${cupid.name}  בחר בך כנאהב עליכם להישאר יחד במשחק,\n וזה אומר שאם אחד ממכם יוצא מהמשחק אז גם השני יצא מהמשחק.`);
+          const rawMessage = `הקופידון ${cupid.name} בחר בך כנאהב. עליכם להישאר יחד במשחק, וזה אומר שאם אחד ממכם יצא מהמשחק אז גם השני יצא מהמשחק.`;
+          const formattedMessage = formatMessage(rawMessage); // עיצוב עם שבירת שורות
+          setMessage(formattedMessage); // שמירת הודעה בפורמט HTML       
           setIsModalOpen(true);
         }
       }
@@ -306,6 +321,8 @@ useEffect(() => {
 
     socket.on('allPlayersReadyNight', () => {
       console.log('Switching to DayPage');
+      window.dispatchEvent(new Event('gameNavigation'));
+      window.history.pushState(null, '', '/day'); // עדכון היסטוריה
       window.location.href = '/day';
     });
 
@@ -353,7 +370,7 @@ const sendChatMessage = () => {
   return (
     <div className="night-page">
       <TopBar role={role} />
-      <h1>לילה טוב {role}</h1>
+      <h1 className="role-title">לילה טוב {role}</h1>
       {noActionRoles.includes(role) && !role.includes('זאב')  && olderInTheGame && !olderAlive &&(
         <div className="no-acts" style={{ marginTop: '20px' }}>
           <p>לא ניתן לבצע פעולות בלילה זה, זקן השבט מת.</p>
@@ -362,21 +379,17 @@ const sendChatMessage = () => {
         {noActionRoles.includes(role) && (
         <div className="fact-container" style={{ marginTop: '20px', padding: '10px' }}>
           <h2>אין לך תפקיד בלילה אנא המתן לסיום הלילה...</h2>
-          <p style={{ fontSize: '18px', fontWeight: 'bold' }} dangerouslySetInnerHTML={{ __html: currentMessage.replace(/n/g, '<br />') }} />
-          <button
-            style={{
-              marginTop: '10px',
-              padding: '10px',
-              backgroundColor: '#4CAF50',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
+          <div className="bubble-container">
+          <p
+            className="bubble-text"
+            dangerouslySetInnerHTML={{
+              __html: currentMessage.replace(/n/g, '<br />'),
             }}
-            onClick={fetchNewMessage}
-          >
+          />
+          <button className="bubble-button" onClick={fetchNewMessage}>
             הבא
           </button>
+        </div>
         </div>
       )}
 
@@ -596,14 +609,17 @@ const sendChatMessage = () => {
         )}
 
 
-    <Modal 
-      isOpen={isModalOpen && isFirstNight} // מציג את המודאל רק אם זה הלילה הראשון
-      onRequestClose={closeModal}
-    >
-      <h2>הודעה חשובה</h2>
-      <p>{message}</p>
-      <button onClick={closeModal}>סגור</button>
-    </Modal>
+        <Modal 
+          isOpen={isModalOpen && isFirstNight} 
+          className="modal-content"
+        >
+          <h2>הודעה חשובה</h2>
+          {/* שימוש ב-dangerouslySetInnerHTML להצגת HTML */}
+          <p dangerouslySetInnerHTML={{ __html: message }}></p>
+          <button onClick={closeModal}>הבנתי</button>
+        </Modal>
+
+
     </div>
   );
 }
