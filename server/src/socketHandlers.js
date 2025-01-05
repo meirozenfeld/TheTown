@@ -120,10 +120,14 @@ const handleSocketEvents = (socket, io) => {
 
   // מעבר לעמוד הגדרות
   socket.on('startGame', () => {
+    io.emit('gameNavigation');
+    io.emit('pushState', '/settings');
     io.emit('navigateToSettings');
   });
 
   socket.on('settingsUpdated', () => {
+    io.emit('gameNavigation');
+    io.emit('pushState', '/role');
     io.emit('navigateToRolePage');
   });
 
@@ -275,7 +279,8 @@ const handleSocketEvents = (socket, io) => {
         io.to(getPlayerSocketId(targetName)).emit('navigateToDead', {
             message: `${hunterName} בתפקיד צייד הרג אותך בתפקיד ${targetRole}!`,
         });
-
+        io.to(getPlayerSocketId(targetName)).emit('gameNavigation');
+        io.to(getPlayerSocketId(targetName)).emit('pushState', '/dead');
             // עדכון יתר השחקנים בעמוד ה-DAY
         const alivePlayers = Object.values(rolesStructure).flat().filter(p => p.isAlive);
         alivePlayers.forEach(player => {
@@ -319,6 +324,8 @@ const handleSocketEvents = (socket, io) => {
 
     if (allReady) {
       resetPlayersReady();
+      io.emit('gameNavigation');
+        io.emit('pushState', '/night');
       io.emit('navigateToNight');
     }
   });
@@ -359,9 +366,13 @@ const handleSocketEvents = (socket, io) => {
 
         if (mayorExists) {
           resetPlayersReadyDay();
+          io.emit('gameNavigation');
+            io.emit('pushState', '/vote');
             io.emit('navigateToVote'); // מעבר לעמוד VotePage
         } else {
           resetPlayersReadyDay();
+          io.emit('gameNavigation');
+          io.emit('pushState', '/mayor');
             io.emit('navigateToMayor'); // מעבר לעמוד MayorPage
         }
     }
@@ -876,7 +887,6 @@ socket.on('requestMayor', () => {
   socket.emit('mayorName', mayor);
 });
 
-
 socket.on('toggleVoteReady', ({ playerName, isReady }) => {
   const rolesStructure = getAssignedRolesStructure();
 
@@ -951,13 +961,16 @@ const checkGameEnd = (io) => {
   const aliveRoles = alivePlayers.map(p => p.role);
   console.log('תפקידים חיים:', aliveRoles);
 
+
   const allWolves = aliveRoles.every(role => role.includes('זאב')); // כל החיים הם זאבים בלבד
   const onlyWolvesAndLeech = aliveRoles.every(role => role.includes('זאב') || role === 'עלוקה'); // רק זאבים ועלוקה
   const hasLeech = aliveRoles.includes('עלוקה');
   const onlyLeech = aliveRoles.length === 1 && hasLeech;
   const noOneAlive = alivePlayers.length === 0;
-  const allCitizens = aliveRoles.every(role => !role.includes('זאב') && role !== 'עלוקה');
-
+  const allCitizens = aliveRoles.every(role => !role.includes('זאב'));
+  console.log('allWolves:', allWolves);
+  console.log('hasLeech:', hasLeech);
+  console.log('aliveRoles length:', aliveRoles.length);
   const cupids = Object.entries(rolesStructure)
     .filter(([role]) => role.includes('קופידון'))
     .flatMap(([_, players]) => players);
@@ -1205,7 +1218,7 @@ const processNightResults = (io) => {
 
   // טיפול בדיסקונקטים מאוחרים
   io.on('connection', (socket) => {
-    console.log(`Client reconnected: ${socket.id}`);
+    // console.log(`Client reconnected: ${socket.id}`);
     socket.emit('hunterWaitingDecision', { hunterName: hunterPlayer.name });
   });
  }
@@ -1296,20 +1309,22 @@ const processVoteResults = (io, results) => {
 // רק אם יש קופידון נבצע את הלוגיקה הבאה
 if (cupid) {
   if (cupid.lover === electedPlayer) {
-    const lover = Object.values(rolesStructure).flat().find(p => p.name === cupid.lover);
-    if (lover) {
-      lover.isAlive = false; // הרג הנאהב
-      io.to(getPlayerSocketId(lover.name)).emit('navigateToDead', { 
-        message: `הנאהב ${lover.name} בתפקיד ${electedRole} יצא מהמשחק בעקבות מותו של הקופידון!` 
+    cupid.isAlive = false; // הרג הנאהב
+      io.to(getPlayerSocketId(cupid.name)).emit('navigateToDead', { 
+        message: `הקופידון ${cupid.name} יצא מהמשחק בעקבות מותו של הנאהב!` 
       });
-    }
+      io.to(getPlayerSocketId(cupid.name)).emit('gameNavigation');
+      io.to(getPlayerSocketId(cupid.name)).emit('pushState', '/dead');
+    
   } else if (electedPlayer === cupid.name) {
     const lover = Object.values(rolesStructure).flat().find(p => p.name === cupid.lover);
     if (lover) {
       lover.isAlive = false; // הרג הנאהב
       io.to(getPlayerSocketId(lover.name)).emit('navigateToDead', { 
-        message: `הנאהב ${lover.name} בתפקיד ${electedRole} יצא מהמשחק בעקבות מותו של הקופידון!` 
+        message: `הנאהב ${lover.name} בתפקיד ${lover.role} יצא מהמשחק בעקבות מותו של הקופידון!` 
       });
+      io.to(getPlayerSocketId(lover.name)).emit('gameNavigation');
+      io.to(getPlayerSocketId(lover.name)).emit('pushState', '/dead');
     }
   }
 }
@@ -1349,7 +1364,7 @@ const mayor = Object.values(rolesStructure)
 
   // טיפול בדיסקונקטים מאוחרים
   io.on('connection', (socket) => {
-    console.log(`Client reconnected: ${socket.id}`);
+    // console.log(`Client reconnected: ${socket.id}`);
     socket.emit('hunterWaitingDecision', { hunterName: hunterPlayer.name });
   });
 }
