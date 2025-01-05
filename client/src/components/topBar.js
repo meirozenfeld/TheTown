@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './TopBar.css'; // עיצוב מותאם אישית
 import io from 'socket.io-client';
 
-const socket = io('https://town-game-client.onrender.com');
+const socket = io('https://town-game-server.onrender.com');
 
 const TopBar = ({ role }) => {
   const [isOpen, setIsOpen] = useState(false); // מציין אם החלון פתוח
