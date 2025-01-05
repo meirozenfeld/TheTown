@@ -52,14 +52,24 @@ useEffect(() => {
 
   // האזנה לנווטים מהשרת
   socket.on('navigateToEndGame', () => {
+    window.dispatchEvent(new Event('gameNavigation'));
+    window.history.pushState(null, '', '/endgame'); // עדכון היסטוריה
+
+
       window.location.href = '/endgame';
   });
 
   socket.on('navigateToVote', () => {
+    window.dispatchEvent(new Event('gameNavigation'));
+    window.history.pushState(null, '', '/vote'); // עדכון היסטוריה
+
       window.location.href = '/vote';
   });
 
   socket.on('navigateToMayor', () => {
+    window.dispatchEvent(new Event('gameNavigation'));
+    window.history.pushState(null, '', '/mayor'); // עדכון היסטוריה
+
       window.location.href = '/mayor';
   });
 
@@ -151,6 +161,9 @@ useEffect(() => {
   // מעבר אוטומטי לעמוד DeadPage אם השחקן מת
   useEffect(() => {
     if (!isAlive) {
+      window.dispatchEvent(new Event('gameNavigation'));
+      window.history.pushState(null, '', '/dead'); // עדכון היסטוריה
+
         window.location.href = '/dead';
     }
  }, [isAlive]);
@@ -161,6 +174,9 @@ useEffect(() => {
   socket.on('navigateToDead', ({ message }) => {
       console.log('NavigateToDead message received:', message); // DEBUG
       sessionStorage.setItem('nightResults', JSON.stringify([message])); // שמירת הודעה
+      window.dispatchEvent(new Event('gameNavigation'));
+      window.history.pushState(null, '', '/dead'); // עדכון היסטוריה
+
       window.location.href = '/dead'; // מעבר לעמוד המתים
   });
 
@@ -204,6 +220,8 @@ useEffect(() => {
           sessionStorage.setItem('nightResults', JSON.stringify([
               `${hunterName} בתפקיד צייד החליט לצוד אותך!`,
           ]));
+          window.dispatchEvent(new Event('gameNavigation'));
+          window.history.pushState(null, '', '/dead'); // עדכון היסטוריה
 
           // העברה לעמוד DEAD
           window.location.href = '/dead';
