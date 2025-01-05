@@ -113,6 +113,8 @@ function DeadPage() {
         socket.on('gameEnd', (result) => {
             console.log('Game Ended:', result);
             sessionStorage.setItem('gameResult', result); // שמירת התוצאה בזיכרון
+            window.dispatchEvent(new Event('gameNavigation'));
+            window.history.pushState(null, '', '/endgame'); // עדכון היסטוריה
             window.location.href = '/endgame'; // מעבר לעמוד הסיום
         });
         
@@ -125,6 +127,8 @@ function DeadPage() {
     useEffect(() => {
         socket.on('navigateToDead', ({ message }) => {
             sessionStorage.setItem('nightResults', JSON.stringify([message])); // שמירת הודעה
+            window.dispatchEvent(new Event('gameNavigation'));
+            window.history.pushState(null, '', '/dead'); // עדכון היסטוריה
             window.location.href = '/dead'; // מעבר מיידי לדף DEAD
         });
     
@@ -161,6 +165,8 @@ function DeadPage() {
         socket.on('navigateToEndGame', () => {
             const resultMessage = sessionStorage.getItem('gameResult') || 'המשחק נגמר!';
             sessionStorage.setItem('gameResult', resultMessage);
+            window.dispatchEvent(new Event('gameNavigation'));
+            window.history.pushState(null, '', '/endgame'); // עדכון היסטוריה
             window.location.href = '/endgame';
         });
     
