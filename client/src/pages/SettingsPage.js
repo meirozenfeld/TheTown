@@ -27,7 +27,7 @@ const SettingsPage = () => {
 
   useEffect(() => {
     const newSocket = io('https://town-game-server.onrender.com');
-    setSocket(newSocket);
+   setSocket(newSocket);
   
     const storedCurrentPlayerName = sessionStorage.getItem('playerName');
     setCurrentPlayerName(storedCurrentPlayerName);
@@ -50,6 +50,9 @@ const SettingsPage = () => {
     });
   
     newSocket.on('navigateToRolePage', () => {
+      window.dispatchEvent(new Event('gameNavigation'));
+      window.history.pushState(null, '', '/role'); // עדכון היסטוריה
+
       navigate('/role');
     });
   
@@ -79,7 +82,7 @@ const handleSave = async () => {
 
     try {
       localStorage.setItem('settings', JSON.stringify(settings));
-      const response = await fetch('https://town-game-server.onrender.com/api/settings', {
+      const response = await fetch('http://town-game-server.onrender.com/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settings),
@@ -101,14 +104,14 @@ const handleSave = async () => {
   // If not the manager, show waiting message
   if (isWaitingForSettings || !isManager) {
     return (
-      <div className="settings-page">
-        <h1 className="settings-title">המתן</h1>
-        <p>
-          {!isManager 
-            ? `רק המנהל (${firstPlayerName}) יכול לערוך את הגדרות המשחק` 
-            : 'אנא המתן בזמן שהמנהל עורך את הגדרות המשחק...'}
-        </p>
-      </div>
+    <div className="settings-page">
+      <h1 className="settings-title2">המתן</h1>
+      <p className="settings-paragraph">
+        {!isManager 
+          ? `רק המנהל (${firstPlayerName}) יכול לערוך את הגדרות המשחק` 
+          : 'אנא המתן בזמן שהמנהל עורך את הגדרות המשחק...'}
+      </p>
+    </div>
     );
   }
 
@@ -117,7 +120,7 @@ const handleSave = async () => {
     <div className="settings-page">
       <h1 className="settings-title">הגדרות</h1>
 
-          <div className="settings-section-wolves">
+          <div className="feature-title">
           <WolvesCounter
           wolvesCount={settings.wolvesCount}
           onChange={(value) => {
@@ -127,7 +130,7 @@ const handleSave = async () => {
           }}
         />
           </div>
-          <div className="settings-section">
+          <div className="feature-title">
             <ToggleSwitch
               title="זקן השבט"
               onChange={(value) => setSettings({ ...settings, elder: value })}
