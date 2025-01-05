@@ -158,9 +158,16 @@ button:hover {
   align-items: center; /* ממרכז אנכית */
   overflow: hidden; /* מונע גלישה מהמסגרת */
   
-  
 }
-
+/* עיצוב נוסף למובייל בלבד */
+@media (max-width: 768px) {
+  .scroll-container {
+    width: 90%; /* התאמה למסך קטן */
+    height: auto; /* גובה משתנה */
+    padding: 15px; /* רווחים קטנים יותר */
+    background-size: contain; /* התאמה לגודל התמונה */
+  }
+}
 .scroll-text {
   font-family: 'Assistant', sans-serif;
   font-size: 14px; /* גודל טקסט */
@@ -366,4 +373,93 @@ button:hover {
      1px  1px 0 #8d6e63; /* מסגרת לבנה סביב האותיות */
   color: #000000;
   
+}
+
+/* התאמה למסכים קטנים (מובייל) */
+@media (max-width: 768px) {
+  body {
+    background-size: cover;
+    padding: 0 10px; /* מרווח צדדי קטן יותר */
+  }
+
+  .home-page {
+    padding-top: 20px; /* פחות רווח למעלה */
+  }
+
+  .title {
+    font-size: 40px; /* הקטנת גודל הכותרת */
+    margin: 30px 0;
+  }
+
+  .input-container input {
+    width: 100%; /* התאמת הרוחב לכל המסך */
+  }
+
+  button {
+    width: 100%; /* התאמת הכפתורים למכשירי מובייל */
+    height: 40px;
+    font-size: 16px;
+  }
+
+  /* כפתורים ברשת */
+  .player-buttons {
+    justify-content: center; /* ממרכז את הכפתורים */
+  }
+
+  .player-buttons button {
+    padding: 10px;
+    font-size: 14px;
+    flex: 0 1 calc(50% - 10px); /* 2 כפתורים בשורה */
+  }
+
+  /* מגילה ב-Modal */
+  .modal-content-role {
+    width: 90%; /* התאמה לרוחב המסך */
+    height: auto; /* גובה משתנה */
+    padding: 30px 15px; /* רווחים קטנים יותר */
+    font-size: 16px; /* טקסט קטן יותר */
+  }
+
+  .modal-content-role h2 {
+    font-size: 20px; /* כותרת קטנה יותר */
+  }
+
+  .modal-content-role p {
+    font-size: 14px;
+  }
+
+  /* תוכן הבועה */
+  .bubble-container {
+    max-width: 90%; /* התאמה למסך קטן */
+  }
+
+  .bubble-text {
+    font-size: 18px;
+  }
+
+  .bubble-button {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    width: 90%; /* התאמה לרוחב המסך */
+    height: auto; /* גובה אוטומטי */
+    padding: 20px; /* רווחים קטנים יותר */
+  }
+
+  .modal-content h2 {
+    font-size: 24px; /* כותרת קטנה יותר */
+  }
+
+  .modal-content p {
+    font-size: 18px;
+    line-height: 1.5;
+  }
+
+  .modal-content button {
+    font-size: 16px;
+    padding: 10px 15px;
+  }
 }
