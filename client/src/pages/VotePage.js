@@ -109,6 +109,8 @@ function VotePage() {
     socket.on('navigateToDead', ({ message }) => {
         console.log('NavigateToDead message received:', message); // DEBUG
         sessionStorage.setItem('nightResults', JSON.stringify([message])); // שמירת הודעה
+        window.dispatchEvent(new Event('gameNavigation')); // סימון מעבר יזום
+        window.history.pushState(null, '', '/dead'); // עדכון היסטוריה
         window.location.href = '/dead'; // מעבר לעמוד המתים
     });
   
@@ -158,7 +160,8 @@ function VotePage() {
             sessionStorage.setItem('nightResults', JSON.stringify([
                 `${hunterName} בתפקיד צייד החליט לצוד אותך!`,
             ]));
-  
+            window.dispatchEvent(new Event('gameNavigation'));
+            window.history.pushState(null, '', '/dead'); // עדכון היסטוריה
             // העברה לעמוד DEAD
             window.location.href = '/dead';
         }
@@ -219,10 +222,14 @@ function VotePage() {
     });
 
     socket.on('navigateToNight', () => {
+      window.dispatchEvent(new Event('gameNavigation'));
+      window.history.pushState(null, '', '/night'); // עדכון היסטוריה
       window.location.href = '/night';
     });
   
     socket.on('navigateToEndGame', () => {
+      window.dispatchEvent(new Event('gameNavigation'));
+      window.history.pushState(null, '', '/endgame'); // עדכון היסטוריה
       window.location.href = '/endgame';
     });
   };
@@ -232,7 +239,8 @@ function VotePage() {
       const myName = sessionStorage.getItem('playerName');
       if (playerName === myName) { // אם אני זה שהודח
         sessionStorage.setItem('nightResults', JSON.stringify([ `העיירה בחרה להדיח אותך בתפקיד ${role}`])); // שמירת הודעה
-
+        window.dispatchEvent(new Event('gameNavigation'));
+        window.history.pushState(null, '', '/dead'); // עדכון היסטוריה
         // sessionStorage.setItem('nightResults', `העיירה בחרה להדיח אותך בתפקיד ${role}`);
         window.location.href = '/dead'; // מעבר לעמוד המתים
       }
