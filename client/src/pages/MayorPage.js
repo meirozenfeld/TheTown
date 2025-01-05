@@ -61,6 +61,8 @@ function MayorPage() {
   useEffect(() => {
     socket.on('navigateToVote', () => {
       console.log('קיבלנו אירוע מעבר ל-VotePage'); // לוודא שהאירוע מתקבל
+      window.dispatchEvent(new Event('gameNavigation'));
+      window.history.pushState(null, '', '/vote'); // עדכון היסטוריה
       window.location.href = '/vote'; // מעבר לעמוד ההצבעות
     });
   
