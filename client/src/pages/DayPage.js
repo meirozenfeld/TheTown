@@ -19,6 +19,7 @@ function DayPage() {
   const [isReady, setIsReady] = useState(false); // מצב מוכנות
   const [elderDead, setElderDead] = useState(false); // מצב זקן השבט
   const hunterChoseTarget = sessionStorage.getItem('hunterChoseTarget');
+  const [isLoading, setIsLoading] = useState(true);
 
   const toggleReady = () => {
     const newReadyState = !isReady;
@@ -61,12 +62,14 @@ useEffect(() => {
 
   socket.on('navigateToVote', () => {
     window.dispatchEvent(new Event('gameNavigation'));
+    socket.emit('checkGameStatus'); // בקשת בדיקת סיום המשחק
     window.history.pushState(null, '', '/vote'); // עדכון היסטוריה
 
       window.location.href = '/vote';
   });
 
   socket.on('navigateToMayor', () => {
+    socket.emit('checkGameStatus'); // בקשת בדיקת סיום המשחק
     window.dispatchEvent(new Event('gameNavigation'));
     window.history.pushState(null, '', '/mayor'); // עדכון היסטוריה
 
@@ -130,7 +133,16 @@ useEffect(() => {
     socket.off('gameEnd');
   };
 }, []); // פועל פעם אחת בלבד
+useEffect(() => {
+  socket.on('hunterMessage', (message) => {
+    console.log('Hunter message received:', message); // בדיקה בהדפסה
+    setMessage(prevMessages => [...prevMessages, message]); // הוספת ההודעה למערך הקיים
+  });
 
+  return () => {
+    socket.off('hunterMessage'); // ניתוק המאזין בעת עזיבת העמוד
+  };
+}, []);
   // האזנה להודעת תוצאות הלילה
   useEffect(() => {
     console.log("waitingForHunter2 ", waitingForHunter);
@@ -148,6 +160,7 @@ useEffect(() => {
 
     });
     socket.emit('checkGameStatus'); // בקשת בדיקת סיום המשחק
+    setIsLoading(false);
 
   
     return () => {
@@ -210,6 +223,7 @@ useEffect(() => {
 
 useEffect(() => {
   socket.on('hunterFinished', ({ hunterName, targetName, targetRole }) => {
+    socket.emit('requestRolesStructure');
     sessionStorage.setItem('hunterChoseTarget', 'true'); // סימון שהצייד בחר
     setWaitingForHunter(false);
     setHunterMessage([`הצייד ${hunterName} החליט לצוד את ${targetName} בתפקיד ${targetRole}!`]); // הודעת הצייד
@@ -228,7 +242,16 @@ useEffect(() => {
       }
       else {
         sessionStorage.setItem('hunterResult', JSON.stringify([`הצייד ${hunterName} החליט לצוד את ${targetName} בתפקיד ${targetRole}!`])); // שמירה
+      }
+      if (!isAlive) {
+                  // השחקן שנבחר - עדכון isAlive והעברה לעמוד DEAD
+                  sessionStorage.setItem('nightResults', JSON.stringify([
+                    `${hunterName} בתפקיד צייד החליט לצוד את ${targetName} ובגלל שאתם נאהבים, גם אתה יצאת מהמשחק!`,
+                ]));
+        window.dispatchEvent(new Event('gameNavigation'));
+        window.history.pushState(null, '', '/dead'); // עדכון היסטוריה
 
+          window.location.href = '/dead';
       }
   });
 
@@ -237,38 +260,58 @@ useEffect(() => {
   };
 }, []);
 
+useEffect(() => {
+  socket.on('hunterFinishedNoElder', () => {
+      sessionStorage.setItem('hunterChoseTarget', 'true'); // סימון שהצייד בחר
+      setWaitingForHunter(false);
 
+  });
+
+  return () => {
+    socket.off('hunterFinishedNoElder');
+  };
+}, []);
+
+
+if (isLoading) {
+  return <h1>טוען נתונים...</h1>;
+}
 return (
+  <div>
+  <TopBar role={role} />
   <div className="day-page">
-          <TopBar role={role} />
 
-    <h1>בוקר טוב {role}!</h1>
-    
+    <h1 className="role-title">בוקר טוב {role}!</h1>
+    <br></br>
     {/* הצגת תוצאות הלילה */}
     {message.length > 0 && (
-      message.map((msg, index) => <p key={index}>{msg}</p>)
+      message.map((msg, index) => <c key={index}>{msg}</c>)
     )}
+    <br></br>
 
     {/* הצגת הודעת הצייד */}
     {hunterMessage.length > 0 && !hunterChoseTarget && (
       hunterMessage.map((msg, index) => <p key={index}>{msg}</p>)
     )}
+    <br></br>
 
     {!elderDead && waitingForHunter && (
-      <p>המתן בזמן ש- {hunterName} הצייד יחליט את מי לצוד...</p>
+      <c>המתן בזמן ש- {hunterName} הצייד יחליט את מי לצוד...</c>
     )}
+    <br></br>
 
     {/* הצגת כפתור מוכן רק אם לא מחכים לצייד */}
     {!waitingForHunter && (
       <button
-        style={{ backgroundColor: isReady ? 'green' : 'red' }}
+        style={{backgroundColor: isReady ?  '#108f14' : '#7e1109',}}
         onClick={toggleReady}
       >
-        {isReady ? 'מצב - מוכן' : 'מצב - לא מוכן'}
+        {isReady ? 'במצב - מוכן' : 'במצב - לא מוכן'}
       </button>
     )}
 
 
+  </div>
   </div>
 );
 
