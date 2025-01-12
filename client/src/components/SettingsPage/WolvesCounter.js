@@ -3,7 +3,7 @@ import './SettingsPage.css';
 
 const WolvesCounter = ({ wolvesCount, onChange }) => {
   const increment = () => onChange(Math.min(wolvesCount + 1, 10));  // עדכון הערך לפי הלחיצה
-  const decrement = () => onChange(Math.max(wolvesCount - 1, 2));  // עדכון הערך לפי הלחיצה
+  const decrement = () => onChange(Math.max(wolvesCount - 1, 1));  // עדכון הערך לפי הלחיצה
 
   return (
 <div className="wolves-counter">
