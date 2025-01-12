@@ -10,6 +10,7 @@ import DeadPage from './pages/DeadPage';
 import EndGamePage from './pages/EndGamePage';
 import VotePage from './pages/VotePage';
 import MayorPage from './pages/MayorPage';
+import CreateRoomPage from './pages/CreateRoomPage';
 
 import './styles/styles.css';
 
@@ -60,17 +61,18 @@ function App() {
   }, []);
 
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/settings" element={<SettingsPage />} />
-      <Route path="/role" element={<RolePage />} />
-      <Route path="/night" element={<NightPage />} />
-      <Route path="/day" element={<DayPage />} />
-      <Route path="/dead" element={<DeadPage />} />
-      <Route path="/endgame" element={<EndGamePage />} />
-      <Route path="/vote" element={<VotePage />} />
-      <Route path="/mayor" element={<MayorPage />} />
-    </Routes>
+<Routes>
+  {/* <Route path="/" element={<CreateRoomPage />} /> */}
+  <Route path="/" element={<HomePage />} />
+  <Route path="/settings" element={<SettingsPage />} />
+  <Route path="/role" element={<RolePage />} />
+  <Route path="/night" element={<NightPage />} />
+  <Route path="/day" element={<DayPage />} />
+  <Route path="/dead" element={<DeadPage />} />
+  <Route path="/endgame" element={<EndGamePage />} />
+  <Route path="/vote" element={<VotePage />} />
+  <Route path="/mayor" element={<MayorPage />} />
+</Routes>
   );
 }
 
