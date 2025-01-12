@@ -40,7 +40,7 @@ io.on('connection', (socket) => {
   // console.log(`Client connected: ${socket.id}`);
 
   socket.onAny((event, ...args) => {
-      console.log(`Event received: ${event}`, args);
+      // console.log(`Event received: ${event}`, args);
   });
 
   socket.on('disconnect', () => {
@@ -59,6 +59,6 @@ io.on('joinGame', (playerName) => {
 });
 
 
-server.listen(5000, () => {
-  console.log('Server is running on http://localhost:5000');
+server.listen(5001, () => {
+  console.log('Server is running on http://localhost:5001');
 });
