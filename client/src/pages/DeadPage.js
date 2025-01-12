@@ -13,6 +13,10 @@ function DeadPage() {
     const [role, setRole] = useState('');
     const storedName = sessionStorage.getItem('playerName');
     const hunterChoseTarget = sessionStorage.getItem('hunterChoseTarget');
+    const hunterResult = sessionStorage.getItem('hunterResult');
+    const [isLoading, setIsLoading] = useState(true);
+    const [hunterPersonalMessage, setHunterPersonalMessage] = useState('');
+    const [personalVotes, setPersonalVotes] = useState([]);
 
     // useEffect(() => {
     //     // קריאת הודעות ששמורות ב-sessionStorage
@@ -21,6 +25,8 @@ function DeadPage() {
     //       setMessages(JSON.parse(savedMessages));
     //     }
     //   }, []);
+
+
     useEffect(() => {
         socket.on('elderStatus', ({ elderDead }) => {
           setElderDead(elderDead); // עדכון המצב
@@ -70,24 +76,31 @@ function DeadPage() {
     
         // קבלת הודעת בחירה עבור הצייד
         socket.on('hunterChooseTarget', ({ hunterName, players }) => {
+            console.log(`Hunter target received for: ${hunterName}, I am: ${sessionStorage.getItem('playerName')}`);
+
             console.log(`Hunter target received for: ${hunterName}, I am: ${playerName}`);
             console.log('Players received:', players);
     
-            if (hunterName === playerName) { // אם אני הצייד
-                console.log('Setting isHunter to true');
+            if (hunterName === sessionStorage.getItem('playerName')) {
                 setIsHunter(true);
-                setTargets(players); // הגדרת מטרות
+                setTargets(players);
+                console.log('Hunter mode activated. Targets:', players);
             }else {
-                console.log(`${playerName} אינו צייד או עדיין חי`);
+                console.log(`${sessionStorage.getItem('playerName')} אינו צייד או עדיין חי`);
                 setIsHunter(false); 
             }
         });
-    
         return () => {
             socket.off('hunterChooseTarget');
+
         };
     }, []);
-    
+
+    useEffect(() => {
+        console.log('isHunter:', isHunter, 'targets:', targets);
+
+    }, [isHunter, targets]);
+
     useEffect(() => {
         const savedMessages = sessionStorage.getItem('nightResults');
         if (savedMessages) {
@@ -102,14 +115,45 @@ function DeadPage() {
                 sessionStorage.setItem('nightResults', JSON.stringify(newMessages)); // שמירה בזיכרון
             });
         }
-    
+        setIsLoading(false);
+
         return () => {
             socket.off('nightResult');
         };
     }, []);
-    
+
     useEffect(() => {
-        socket.emit('requestRolesStructure');
+        if (role === 'צייד') {
+          socket.emit('requestHunterVotes', storedName);
+      
+          socket.on('receiveHunterVotes', ({ personalVotes }) => {
+            setPersonalVotes(personalVotes);
+            console.log('Received personalVotes for hunter:', personalVotes);
+          });
+      
+          return () => {
+            socket.off('receiveHunterVotes');
+          };
+        }
+      }, [role]);
+      
+    useEffect(() => {
+        
+        socket.emit('requestRolesStructure');    
+        socket.on('rolesStructure', (rolesStructure) => {
+        // בדיקה אם השחקן הנוכחי הוא ה-mayor
+        let isMayor = false;
+        for (const [role, players] of Object.entries(rolesStructure)) {
+            players.forEach(player => {
+                if (player.name === storedName && player.mayor) {
+                    isMayor = true;
+                }
+            });
+        }
+        socket.emit('mayorDead', {mayorDeadFlag: isMayor});
+        
+        });
+
         socket.on('gameEnd', (result) => {
             console.log('Game Ended:', result);
             sessionStorage.setItem('gameResult', result); // שמירת התוצאה בזיכרון
@@ -120,6 +164,7 @@ function DeadPage() {
         
         return () => {
           socket.off('rolesStructure');
+          socket.off('mayorDead');
           socket.off('gameEnd');
         };
       }, []);
@@ -149,6 +194,7 @@ function DeadPage() {
                 hunterName: sessionStorage.getItem('playerName'),
                 targetName: selectedTarget,
             });
+                    // עדכון ההודעה האישית לצייד
             setIsHunter(false); // להבטיח סיום הבחירה
             socket.off('hunterChooseTarget'); // להסיר מאזין כפול
         } else {
@@ -156,7 +202,31 @@ function DeadPage() {
         }
     };
     
+    useEffect(() => {
+        socket.on('hunterTargetSelected', ({ targetName, targetRole }) => {
+            setHunterPersonalMessage(`בחרת לצוד את ${targetName} בתפקיד ${targetRole}`);
+        });
     
+        return () => {
+            socket.off('hunterTargetSelected');
+        };
+    }, []);
+    useEffect(() => {
+        socket.on('hunterFinished', ({ hunterName, targetName, targetRole }) => {
+    
+          if (targetRole === "זקן השבט"){
+            setHunterPersonalMessage([`הצייד ${hunterName} החליט לצוד את ${targetName} בתפקיד ${targetRole}! \n מעכשיו ועד סוף המשחק לא יהיו לאזרחים כוחות בלילה`]); // הודעת הצייד
+    
+          } else {
+            setHunterPersonalMessage([`הצייד ${hunterName} החליט לצוד את ${targetName} בתפקיד ${targetRole}!`]); // הודעת הצייד
+    
+          }
+        });
+      
+        return () => {
+          socket.off('hunterFinished');
+        };
+      }, []);
     useEffect(() => {
         const interval = setInterval(() => {
             socket.emit('checkGameEndForDead'); // שולח בקשה לבדיקה אם המשחק נגמר
@@ -176,7 +246,9 @@ function DeadPage() {
         };
     }, []);
     
-
+    if (isLoading) {
+        return <h1>טוען נתונים...</h1>;
+      }
   return (
     <div className="dead-page">
       <h1>יצאת מהמשחק! בתפקיד {role} </h1>
@@ -187,9 +259,28 @@ function DeadPage() {
       ) : (
         <p>אין תוצאות זמינות.</p>
       )}
-
+            {hunterResult && (
+        <div>
+          <p>{hunterResult}</p>
+        </div>
+          )}
+            {hunterPersonalMessage &&  role === 'צייד'  &&(
+                    <p>{hunterPersonalMessage}</p>
+            )}
     {!elderDead && isHunter && targets.length > 0 &&  role === 'צייד' &&(
             <div>
+                {personalVotes.length > 0 && (
+                    <div>
+                    <h2>הצבעות אחרונות:</h2>
+                    <ul>
+                        {personalVotes.map(({ voter, target }, index) => (
+                        <li key={index}>
+                            {voter} הצביע ל-{target}
+                        </li>
+                        ))}
+                    </ul>
+                    </div>
+                )}
                 <h2>בחר את מי לצוד ולהוציא מהמשחק:</h2>
                 <div className="hunter-targets">
                     {targets.map((player) => {
@@ -206,6 +297,7 @@ function DeadPage() {
                             </button>
                         );
                     })}
+
                 </div>
                 <button onClick={handleConfirmTarget}>אשר בחירה</button>
             </div>
