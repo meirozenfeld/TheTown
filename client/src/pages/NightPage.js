@@ -41,8 +41,33 @@ function NightPage() {
   const [olderInTheGame, setOlderInTheGame] = useState(false); // האם יש זקן במשחק
   const [olderAlive, setOlderAlive] = useState(true);         // האם הוא חי
   const [isFirstNight, setIsFirstNight] = useState(null);         // האם הוא חי
+  const [wolves, setWolves] = useState([]);         // האם הוא חי
+  sessionStorage.setItem('hunterResult', ''); // סימון שהצייד בחר
 
-  
+  const getRoleClass = (role) => {
+    if (role.includes('זאב')) return 'wolf';
+
+    switch (role) {
+      case 'מגן':
+        return 'shield';
+      case 'מכשפה':
+        return 'witch';
+      case 'מגדת עתידות':
+        return 'seer';
+      case 'צייד':
+        return 'hunter';
+      case 'זקן השבט':
+        return 'elder';
+      case 'קופידון':
+        return 'cupid';
+      case 'עלוקה':
+        return 'leech';
+      case 'אזרח':
+        return 'villager';
+      default:
+        return '';
+    }
+  };
 
   useEffect(() => {
     // קריאת ערך isFirstNight מה-sessionStorage
@@ -101,13 +126,12 @@ function NightPage() {
     }
 
         // שליחת הבחירה לשרת
-        if (role.includes('מגן')) {
-            socket.emit('shieldPlayer', {
-                shieldName: storedName,
-                targetName: shieldTarget,
-            });
+        if (role.includes('מגן') && newReadyState) {
+          socket.emit('shieldPlayer', {
+            shieldName: storedName,
+            targetName: shieldTarget,
+          });
         }
-
     console.log(`Player ${storedName} is setting readyNight to:`, newReadyState);
     socket.emit('toggleReadyNight', { playerName: storedName, isReady: newReadyState });
   };
@@ -121,7 +145,7 @@ function NightPage() {
   };
   
   const handleShieldSelect = (target) => {
-    if (shieldTarget === target) return; // לחיצה חוזרת לא עושה כלום
+    if (isReady) return; // אם המגן מוכן, אין אפשרות לבחור מטרה חדשה
     setShieldTarget(target);
 };
 
@@ -135,19 +159,9 @@ const handleLifeChoice = (choice) => {
     setLifeChoice(lifeChoice === choice ? null : choice); // שינוי בחירה
 };
 
-useEffect(() => {
-  console.log("olderInTheGame ", olderInTheGame);
-  console.log("olderAlive ", olderAlive);
+// useEffect(() => {
 
-
-  if (olderInTheGame && !olderAlive) {
-      const updatedNoActionRoles = ['אזרח', 'קופידון', 'עלוקה', 'זקן השבט', 'צייד', 'מכשפה', 'מגדת עתידות', 'מגן'];
-      setNoActionRoles(updatedNoActionRoles);
-  } else {
-      const defaultNoActionRoles = ['אזרח', 'קופידון', 'עלוקה', 'זקן השבט', 'צייד'];
-      setNoActionRoles(defaultNoActionRoles);
-  }
-}, [olderAlive, olderInTheGame]); // עוקב אחרי השינויים בזקן השבט
+// }, [usedLifePotion, usedDeathPotion, olderAlive, olderInTheGame]); // עוקב אחרי השינויים בזקן השבט
 
   // טעינת הבדיחות/עובדות מהקובץ
   useEffect(() => {
@@ -213,9 +227,10 @@ useEffect(() => {
         }
       }
 
+
       setRole(playerRole);
       console.log('Assigned role:', playerRole);
-
+     
     // אם התפקיד הוא זאב - הצטרפות לחדר הזאבים
     if (playerRole.includes('זאב')) {
         if (!hasJoinedWolvesRoom) {
@@ -240,13 +255,10 @@ useEffect(() => {
       setOlderInTheGame(elderInGame);
       setOlderAlive(elderAlive);
 
-      if (noActionRoles.includes(playerRole)) {
-        setIsReady(true);
-        socket.emit('toggleReadyNight', { playerName: storedName, isReady: true });
-      }
 
       const alivePlayers = [];
       const alivePlayersSelf = [];
+      const aliveWolves = [];
 
       for (const roleName in data) {
         data[roleName].forEach((player) => {
@@ -255,11 +267,21 @@ useEffect(() => {
           }
           if (player.isAlive) {
             alivePlayersSelf.push(player);
+            if (roleName.includes('זאב') && player.name !== storedName){
+              aliveWolves.push(player);
+            }
           }
         });
       }
       setPlayers(alivePlayers);
       setPlayersSelf(alivePlayersSelf);
+      if(aliveWolves.length > 0){
+        setWolves(aliveWolves);
+      } else{
+        aliveWolves.push({ name: 'אין איתך זאבים חיים' })
+        setWolves(aliveWolves);
+      }
+    
 
 
       const cupidRole = Object.keys(data).find((role) => role.includes('קופידון'));
@@ -293,6 +315,7 @@ useEffect(() => {
     };
 
     requestRoles();
+
     socket.off('wolfChatMessage'); // ניתוק מאזין קודם אם קיים
 
     socket.on('rolesStructure', handleRolesUpdate);
@@ -341,6 +364,61 @@ useEffect(() => {
     };
   }, []);
 
+  useEffect(() => {
+    console.log("olderInTheGame ", olderInTheGame);
+    console.log("olderAlive ", olderAlive);
+  
+    let updatedNoActionRoles = [...noActionRoles];
+    
+    // תנאי לעדכון `noActionRoles`
+    if (olderInTheGame && !olderAlive) {
+      updatedNoActionRoles = [
+        'אזרח',
+        'קופידון',
+        'עלוקה',
+        'זקן השבט',
+        'צייד',
+        'מכשפה',
+        'מגדת עתידות',
+        'מגן',
+      ];
+    } else {
+      updatedNoActionRoles = [
+        'אזרח',
+        'קופידון',
+        'עלוקה',
+        'זקן השבט',
+        'צייד',
+      ];
+    }
+  
+    if (usedLifePotion && usedDeathPotion) {
+      updatedNoActionRoles.push('מכשפה');
+    }
+  
+    // השוואת המצב החדש עם המצב הקיים
+    const rolesHaveChanged =
+      updatedNoActionRoles.length !== noActionRoles.length ||
+      updatedNoActionRoles.some((role, index) => role !== noActionRoles[index]);
+
+    console.log("updatedNoActionRoles: ", updatedNoActionRoles)
+
+    if (rolesHaveChanged) {
+      setNoActionRoles(updatedNoActionRoles);
+    }
+    console.log("NoActionRoles: ", noActionRoles)
+    // בדיקת סטייט `role`
+    if (noActionRoles.includes(role) && !isReady) {
+      console.log(`${role} is in noActionRoles and should be ready.`);
+      setIsReady(true);
+      socket.emit('toggleReadyNight', { playerName: storedName, isReady: true });
+    }
+  
+    return () => {
+      socket.off('toggleReadyNight');
+    };
+  }, [usedLifePotion, usedDeathPotion, olderAlive, olderInTheGame, role, isReady, noActionRoles]);
+  
   const handleTargetSelect = (target) => {
     if (isReady) return;
     setSelectedTarget(target);
@@ -365,20 +443,36 @@ const sendChatMessage = () => {
 
   if (isLoading) {
     return <h1>טוען נתונים...</h1>;
-  }
+  } 
 
   return (
-    <div className="night-page">
-      <TopBar role={role} />
+    <div>
+      <Modal 
+        isOpen={isModalOpen && isFirstNight} 
+        className="modal-content"
+        overlayClassName="modal-overlay2"
+      >
+        <h2>הודעה חשובה</h2>
+        <p dangerouslySetInnerHTML={{ __html: message }}></p>
+        <button onClick={closeModal}>הבנתי</button>
+      </Modal>
+    <div>
+  <TopBar role={role} />
+    <div className={`night-page ${getRoleClass(role)}`}>
       <h1 className="role-title">לילה טוב {role}</h1>
       {noActionRoles.includes(role) && !role.includes('זאב')  && olderInTheGame && !olderAlive &&(
         <div className="no-acts" style={{ marginTop: '20px' }}>
-          <p>לא ניתן לבצע פעולות בלילה זה, זקן השבט מת.</p>
+          <h2>לא ניתן לבצע פעולות בלילה זה, זקן השבט מת.</h2>
         </div>
         )}
         {noActionRoles.includes(role) && (
         <div className="fact-container" style={{ marginTop: '20px', padding: '10px' }}>
-          <h2>אין לך תפקיד בלילה אנא המתן לסיום הלילה...</h2>
+          {noActionRoles.includes(role) && role == 'מכשפה' && (!olderInTheGame || olderAlive ) && (
+          <h2>השתמשת בכל השיקויים</h2>
+
+          )}
+
+          <h2>אין לך תפקיד בלילה אנא המתינו לסיום הלילה...</h2>
           <div className="bubble-container">
           <p
             className="bubble-text"
@@ -403,7 +497,7 @@ const sendChatMessage = () => {
                 style={{
                     padding: '10px',
                     borderRadius: '5px',
-                    backgroundColor: deathTarget === player.name ? 'black' : 'green',
+                    backgroundColor: deathTarget === player.name ? '#7e1109' : '#424442',
                     color: 'white',
                     cursor: 'pointer',
                 }}
@@ -424,7 +518,7 @@ const sendChatMessage = () => {
                         style={{
                             padding: '10px',
                             borderRadius: '5px',
-                            backgroundColor: lifeChoice === 'yes' ? 'green' : 'red',
+                            backgroundColor: lifeChoice === 'yes' ? '#7e1109' : '#424442',
                             color: 'white',
                         }}
                         onClick={() => handleLifeChoice('yes')}
@@ -435,7 +529,7 @@ const sendChatMessage = () => {
                         style={{
                             padding: '10px',
                             borderRadius: '5px',
-                            backgroundColor: lifeChoice === 'no' ? 'green' : 'red',
+                            backgroundColor: lifeChoice === 'no' ? '#7e1109' : '#424442',
                             color: 'white',
                         }}
                         onClick={() => handleLifeChoice('no')}
@@ -451,29 +545,30 @@ const sendChatMessage = () => {
         )}
 
 
-      {role.includes('מגן') && !noActionRoles.includes(role) && (
-    <div className="shield-container" style={{ marginTop: '20px' }}>
-        <h2>על מי תרצה להגן הלילה? (לא יכול על עצמך פעמיים ברצף)</h2>
-        <div className="shield-options" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-            {playersSelf.map((player) => (
-                <button
+          {role.includes('מגן') && !noActionRoles.includes(role) && (
+            <div className="shield-container" style={{ marginTop: '20px' }}>
+              <h2>על מי תרצה להגן הלילה? (לא יכול על עצמך פעמיים ברצף)</h2>
+              <div className="shield-options" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                {playersSelf.map((player) => (
+                  <button
                     key={player.name}
                     style={{
-                        padding: '10px',
-                        borderRadius: '5px',
-                        backgroundColor: shieldTarget === player.name ? 'blue' : 'red',
-                        color: 'white',
-                        cursor: 'pointer',
+                      padding: '10px',
+                      borderRadius: '5px',
+                      backgroundColor: shieldTarget === player.name ? 'darkblue' : '#424442',
+                      color: 'white',
+                      cursor: player.name === storedName && player.shildSelf ? 'not-allowed' : 'pointer',
                     }}
-                    disabled={player.name === storedName && player.shildSelf} // מונע הגנה על עצמו פעמיים
+                    disabled={isReady || (player.name === storedName && player.shildSelf)} // מניעת לחיצה אם השחקן הוא המגן והגן על עצמו
                     onClick={() => handleShieldSelect(player.name)}
-                >
+                  >
                     {player.name}
-                </button>
-            ))}
-        </div>
-    </div>
-)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
       {role.includes('מגדת עתידות') && !noActionRoles.includes(role) && (
         <div className="seer-container" style={{ marginTop: '20px' }}>
             <h2>את מי תרצי לחשוף הלילה?</h2>
@@ -484,7 +579,7 @@ const sendChatMessage = () => {
                     style={{
                     padding: '10px',
                     borderRadius: '5px',
-                    backgroundColor: selectedPlayer === player.name ? 'red' : 'green',
+                    backgroundColor: selectedPlayer === player.name ? '#7e1109' : '#424442',
                     color: 'white',
                     cursor: seerReady ? 'not-allowed' : 'pointer',
                     }}
@@ -496,7 +591,7 @@ const sendChatMessage = () => {
                 ))}
             </div>
             {revealedRole && (
-            <p style={{ marginTop: '20px', fontSize: '18px', fontWeight: 'bold' }}>
+            <p style={{ marginTop: '20px', fontSize: '25px', fontWeight: 'bold' }}>
                 {revealedRole}
             </p>
 )}  
@@ -506,21 +601,32 @@ const sendChatMessage = () => {
       {/* הודעות לזאבים */}
       {role.includes('זאב') && (
         <div className="wolf-messages">
+        <h2 style={{ color: 'black' }}>הזאבים שחיים איתך הם:</h2>
+            {wolves.map((player, index) => (
+      <h2 key={index} style={{ color: 'black', fontSize: "23px" }}>{player.name}</h2>
+        ))}
+        </div>
+      )}
+      {role.includes('זאב') && (
+        <div className="wolf-messages">
+          <h2 style={{ color: 'black' }}>פעולות הזאבים האחרים:</h2>
           {wolfMessages.map((msg, index) => (
-            <p key={index} style={{ color: 'red' }}>{msg}</p>
+            <p key={index} style={{ color: 'black', fontSize: "23px" }}>{msg}</p>
           ))}
         </div>
       )}
 
       {/* אפשרות בחירת מטרה עבור זאבים */}
       {role.includes('זאב') && (
-        <div>
+        <div >
           <h2>בחר מטרה:</h2>
+          <div className="player-buttons-wolf">
+
           {players.map((player) => (
             <button
               key={player.name}
               style={{
-                backgroundColor: selectedTarget === player.name ? 'red' : 'green',
+                backgroundColor: selectedTarget === player.name ? '#7e1109' : '#424442',
                 margin: '5px',
                 padding: '10px',
               }}
@@ -530,13 +636,14 @@ const sendChatMessage = () => {
               {player.name}
             </button>
           ))}
+          </div>
         </div>
       )}
 
       {!noActionRoles.includes(role) && (
         <button
           style={{
-            backgroundColor: isReady ? 'green' : 'red',
+            backgroundColor: isReady ?  '#108f14' : '#7e1109',
             color: 'white',
             padding: '10px',
             borderRadius: '5px',
@@ -544,7 +651,7 @@ const sendChatMessage = () => {
           }}
           onClick={handleReadyClick}
         >
-          מצב - {isReady ? 'מוכן' : 'לא מוכן'}
+          במצב - {isReady ? 'מוכן' : 'לא מוכן'}
         </button>
       )}
       
@@ -559,11 +666,16 @@ const sendChatMessage = () => {
                 padding: '5px',
                 marginBottom: '10px',
                 width: '80%',
+                backgroundColor: 'white', // שינוי צבע רקע ללבן
             }}
             >
+            <div className="chat-box">
+
             {chatMessages.map((msg, index) => (
                 <p key={index}>{msg}</p>
             ))}
+            </div>
+
             <div ref={messagesEndRef}></div> {/* גלילה לחלק התחתון */}
             </div>
 
@@ -580,7 +692,7 @@ const sendChatMessage = () => {
             <textarea
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
-                placeholder="כתוב הודעה..."
+                placeholder="כתוב הודעה לשאר הזאבים..."
                 rows="3"
                 style={{
                 flex: '1',
@@ -609,17 +721,11 @@ const sendChatMessage = () => {
         )}
 
 
-        <Modal 
-          isOpen={isModalOpen && isFirstNight} 
-          className="modal-content"
-        >
-          <h2>הודעה חשובה</h2>
-          {/* שימוש ב-dangerouslySetInnerHTML להצגת HTML */}
-          <p dangerouslySetInnerHTML={{ __html: message }}></p>
-          <button onClick={closeModal}>הבנתי</button>
-        </Modal>
 
 
+
+    </div>
+    </div>
     </div>
   );
 }
