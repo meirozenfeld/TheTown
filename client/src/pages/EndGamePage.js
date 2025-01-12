@@ -1,104 +1,177 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import io from 'socket.io-client';
 
 const socket = io('https://town-game-server.onrender.com');
 
-function EndGamePage() {
-    const [resultMessage, setResultMessage] = useState('');
-    const [playersRoles, setPlayersRoles] = useState([]);
-    const [alivePlayers, setAlivePlayers] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+function HomePage() {
+  const [playerName, setPlayerName] = useState(sessionStorage.getItem('playerName') || '');
+  const [players, setPlayers] = useState([]);
+  const [isFirstPlayer, setIsFirstPlayer] = useState(false);
+  const [isJoined, setIsJoined] = useState(!!sessionStorage.getItem('playerName'));
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [roomId, setRoomId] = useState('');
+  window.dispatchEvent(new Event('gameNavigation'));
+  window.history.pushState(null, '', '/'); // עדכון היסטוריה
 
-    useEffect(() => {
-        socket.emit('requestRolesStructure'); // בקשת מבנה התפקידים
-        socket.on('rolesStructure', (rolesStructure) => {
-            const rolesList = [];
-            const aliveList = [];
-            Object.entries(rolesStructure).forEach(([role, players]) => {
-                players.forEach(player => {
-                    rolesList.push({ name: player.name, role }); // בניית רשימה של שמות ותפקידים
-                    if (player.isAlive) { // בדיקת חיים
-                        aliveList.push({ name: player.name, role });
-                    }
-                });
-            });
-            setPlayersRoles(rolesList); // עדכון המצב
-            setAlivePlayers(aliveList); // עדכון רשימת השחקנים החיים
-            setIsLoading(false);
-        });
+  // useEffect(() => {
+  //   // קבלת roomId מה-URL
+  //   const queryParams = new URLSearchParams(location.search);
+  //   const room = queryParams.get('room'); // שליפת roomId
+  //   setRoomId(room);
 
-        socket.on('gameEnd', (result) => {
-            console.log('Game Ended:', result);
-            sessionStorage.setItem('gameResult', result); // שמירת התוצאה בזיכרון
-        });
+  //   // הצטרפות לחדר
+  //   if (room) {
+  //     socket.emit('joinRoom', { roomId: room });
+  //   }
+  // }, [location.search]);
 
-        return () => {
-            socket.off('rolesStructure');
-            socket.off('gameEnd');
-        };
-    }, []);
-    
 
-    useEffect(() => {
-        const result = sessionStorage.getItem('gameResult'); // שליפת תוצאה
-        if (result) {
-            setResultMessage(result); // הצגה על המסך
-        }
-    }, []);
+  useEffect(() => {
+    // איפוס המידע אם המשחק הסתיים וחזרנו לדף הבית
+    const isRestart = sessionStorage.getItem('restartGame');
+    if (isRestart) {
+        sessionStorage.clear();
+        sessionStorage.setItem('settings', settings); // שמירת ההגדרות בלבד
+        sessionStorage.removeItem('restartGame'); // מחיקה של הדגל
+    }
 
-    const handleResetGame = () => {
-        // בדיקה אם כבר בוצע אתחול על ידי שחקן אחר
-        const firstPlayer = sessionStorage.getItem('firstPlayer');
-        const currentPlayer = sessionStorage.getItem('playerName'); // שם השחקן הנוכחי
-        socket.emit('resetGame');
-        if (firstPlayer === currentPlayer) {
-            socket.emit('restartServer');
-        }
-        // בכל מקרה מעבר לדף הבית
-        window.dispatchEvent(new Event('gameNavigation'));
-        window.history.pushState(null, '', '/');
-        window.location.href = '/';
+    socket.emit('requestPlayers');
+
+    return () => {
+        socket.off('clearLocalStorage');
     };
+}, []);
+
+
+  useEffect(() => {
+    // Clear sessionStorage and reset state
+    socket.on('clearLocalStorage', () => {
+      sessionStorage.clear();
+      setPlayerName('');
+      setIsJoined(false);
+    });
+
+  // Handle name existence error
+  const handleNameTaken = (message) => {
+    setPlayerName(''); // ניקוי השם בתיבת הטקסט
+    setIsJoined(false); // אפשר להקליד שם חדש
+    alert(message); // הצגת הודעה
+  };
+
+  socket.off('nameTaken'); // הסר מאזינים קודמים
+  socket.on('nameTaken', handleNameTaken); // הוסף מאזין חדש
+
+    // Update players list
+    socket.on('updatePlayers', (playersList) => {
+      setPlayers(playersList);
+      sessionStorage.setItem('playersNumber', playersList.length);
+
+    });
+
+    // Handle 'setFirstPlayer' event
+    socket.on('setFirstPlayer', (firstPlayer) => {
+      console.log('First Player:', firstPlayer); // בדיקה אם האירוע מתקבל
+      sessionStorage.setItem('firstPlayer', firstPlayer);
+      setIsFirstPlayer(firstPlayer === playerName); // בדיקה אם המשתמש הוא המנהל
+    });
+
+    // Navigations
+    socket.on('navigateToSettings', () => {
+            window.dispatchEvent(new Event('gameNavigation'));
+            window.history.pushState(null, '', '/settings'); // עדכון היסטוריה
+
+      navigate('/settings');
+    });
+
+    // Request current players on location change
+    socket.emit('requestPlayers');
+
+    // Cleanup
+    return () => {
+      socket.off('clearLocalStorage');
+      socket.off('nameExists');
+      socket.off('updatePlayers');
+      socket.off('setFirstPlayer');
+      socket.off('navigateToSettings');
+    };
+  }, [playerName]);
+
+  const handleNameChange = (e) => {
+    if (!isJoined) {
+      setPlayerName(e.target.value);
+    }
+  };
+
+  const handleJoinGame = () => {
+    if (!playerName.trim()) {
+      alert('אנא הכנס שם תקין.');
+      return;
+    }
     
-    if (isLoading) {
-        return <h1>טוען נתונים...</h1>;
-      }
-    return (
-        <div className="end-game-page">
-            <h1>המשחק נגמר!</h1>
-            <br></br>
-            <h2>{resultMessage}</h2>
-            <br></br>
-            <h3>רשימת השחקנים החיים:</h3>
-            <br></br>
+    if (!isJoined) {
+      // שמירה ב-Session Storage
+      sessionStorage.setItem('playerName', playerName);
+      
+      // שליחת שם לשרת
+      socket.emit('joinGame', playerName);
+  
+      setIsJoined(true);
+    }
+  };
 
-            <ul>
-                {alivePlayers.map((player, index) => (
-                    <li key={index}>
-                        השחקן {player.name} היה בתפקיד {player.role}
-                    </li>
-                ))}
-            </ul>
-            <br></br>
+  const handleSettingsClick = () => {
+    //TODO Cange to 4
+    if (players.length < 3) {
+      alert('על מנת להתחיל את המשחק יש צורך בלפחות 4 שחקנים.');
+      return;
+    }
+    if (isFirstPlayer) {
+      socket.emit('startGame');
+    }
+  };
 
-            <h3>רשימת כל השחקנים והתפקידים:</h3>
-            <br></br>
+  return (
+    <div className="home-page">
+      <h1 className="title">העיירה</h1>
+      
+      <div className="input-container">
+        <input
+          type="text"
+          id="player-name"
+          value={playerName}
+          onChange={handleNameChange}
+          placeholder="הכנס שם"
+          disabled={isJoined}
+        />
+      </div>
 
-            <ul>
-                {playersRoles.map((player, index) => (
-                    <li key={index}>
-                        השחקן {player.name} היה בתפקיד {player.role}.
-                    </li>
-                ))}
-            </ul>
-            <br></br>
+      <button 
+        onClick={handleJoinGame} 
+        disabled={isJoined || !playerName.trim()}
+      >
+        {isJoined ? 'הצטרפת למשחק' : 'הצטרף למשחק'}
+      </button>
+      {/* <h2>חדר: {roomId}</h2> */}
+      <h2>השחקן הראשון שיצטרף, יהיה מנהל המשחק.</h2>
 
-                {/* כפתור לאיפוס המשחק */}
-                  <button onClick={handleResetGame} style={{ marginTop: '20px' }}>
-                חזרה לדף הבית והתחלת משחק חדש
-            </button>
-        </div>
-    );
+      <h2>{players.length} שחקנים נמצאים במשחק:</h2>
+      
+      <ul>
+        {players.map((player, index) => (
+          <li key={index}>{player.name}</li>
+        ))}
+        
+      </ul>
+
+      {isFirstPlayer && isJoined && (
+        <button onClick={handleSettingsClick}>
+          הגדרות המשחק
+        </button>
+      )}
+    </div>
+  );
 }
 
-export default EndGamePage;
+export default HomePage;
