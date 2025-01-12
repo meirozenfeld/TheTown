@@ -59,6 +59,6 @@ io.on('joinGame', (playerName) => {
 });
 
 
-server.listen(5001, () => {
-  console.log('Server is running on http://localhost:5001');
+server.listen(5000, () => {
+  console.log('Server is running on http://localhost:5000');
 });
