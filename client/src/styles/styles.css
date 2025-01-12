@@ -1,7 +1,6 @@
 /* הכל יהיה ב-RTL */
 body {
   font-family: Arial, sans-serif;
-  background-image: url('./back_town.jpg'); /* נתיב לתמונה */
   background-size: cover; /* גורם לתמונה לכסות את כל האזור */
   background-position: center; /* ממרכז את התמונה */
   background-repeat: no-repeat; /* מונע חזרה של התמונה */
@@ -11,6 +10,8 @@ body {
   min-height: 95vh; /* מינימום גובה של כל המסך */
   height: 100%; /* תופס 100% מהגובה */
   background-attachment: fixed; /* מבטיח שהתמונה תישאר קבועה בזמן גלילה */
+  overflow: hidden; /* מניעת גלילה על רקע בעייתי */
+
 }
 html, body {
   overflow-x: hidden; /* מונע גלילה אופקית */
@@ -29,8 +30,9 @@ p, span, div {
   font-family: 'Assistant', sans-serif; /* אותו פונט */
   font-size: 20px; /* גודל גדול יותר */
   font-weight: 600; /* מודגש */
-  line-height: 1.6; /* ריווח בין שורות */
+  line-height: 1.4; /* ריווח בין שורות */
   color: #ffffff; /* צבע טקסט */
+  
 }
 /* התאמת כל הטקסטים */
 h1, h2, h3, h4, h5, h6 {
@@ -40,17 +42,37 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .home-page {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(rgba(185, 174, 161, 0.5), rgba(100, 90, 90, 0.5)), 
+              url('./back_town.jpg'); /* שילוב שכבת שקיפות עם התמונה */
+  background-size: cover; 
+  background-position: center; 
+  background-repeat: no-repeat;
+  background-attachment: fixed; 
+  min-height: 96.761vh;
+  height: 100%;
+  direction: rtl; 
+  overflow-x: hidden; 
+  overflow-y: hidden; 
+  padding-bottom: 10px; 
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  height: 95vh;
-  padding-top: 100px; /* הורדת התוכן ב-80 פיקסלים */
-  height: auto; /* יתאים עצמו לגובה התוכן */
-  padding-bottom: 40px; /* מרווח קטן מלמעלה */
-
+  height: auto;
+  padding-bottom: 40px;
 }
 
+.home-page::before {
+  content: "";
+  position: fixed; /* קבוע למסך גם בזמן גלילה */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(102, 90, 90, 0.5); /* שכבה כהה חצי-שקופה */
+  z-index: -1; /* השכבה תהיה מאחורי כל התוכן */
+}
 .title {
   font-family: 'Rubik Wet Paint', cursive; /* שינוי לפונט החדש */
   font-size: 75px; /* גודל הכותרת */
@@ -120,17 +142,197 @@ button:hover {
   font-size: 20px;
 }
 
+.settings-page {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(rgba(100, 90, 90, 0.5), rgba(100, 90, 90, 0.5)), 
+              url('./back_town.jpg'); /* שילוב שכבת שקיפות עם התמונה */
+  background-size: cover; 
+  background-position: center; 
+  background-repeat: no-repeat;
+  background-attachment: fixed; 
+  min-height: 95vh;
+  height: 100%;
+  direction: rtl; 
+  overflow-x: hidden; 
+  overflow-y: hidden; 
+  padding-bottom: 10px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: auto;
+  padding-bottom: 40px;
+}
+
+.settings::before {
+  content: "";
+  position: fixed; /* קבוע למסך גם בזמן גלילה */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(102, 90, 90, 0.5); /* שכבה כהה חצי-שקופה */
+  z-index: -1; /* השכבה תהיה מאחורי כל התוכן */
+}
+
 .role-page {
+  text-align: right; /* יישור לימין */
+  padding-right: 40px; /* רווח מהקצה הימני */
+  padding-bottom: 10px; /* רווח מלמטה */
+  min-height: 100vh; /* גובה מינימלי של כל המסך */
+  height: 100vh; /* גובה מלא */
+  width: 100%; /* רוחב מלא */
+  direction: rtl; /* כתיבה מימין לשמאל */
+  display: flex;
+  flex-direction: column;
+  align-items: right;
+  justify-content: flex-start;
+  overflow: hidden; /* מניעת גלילה */
+  position: relative; /* הכנה לשכבות נוספות */
+}
+
+/* רקעים עבור תפקיד */
+.role-page.wolf {
+  background-image: url('./wolf.png'); /* תמונת הרקע */
+  background-size: 100% 100%; /* פריסה מלאה גם אם מעוותת */
+  background-position: center; /* מרכז התמונה */
+  background-repeat: no-repeat; /* מניעת חזרה */
+  background-attachment: fixed; /* רקע קבוע בעת גלילה */
+  min-height: 100vh; /* התאמה מלאה לגובה */
+  height: 100vh; /* גובה מלא */
+  width: 100%; /* רוחב מלא */
+  position: relative; /* עבור שכבות נוספות */
+}
+
+/* שכבת שקיפות אופציונלית */
+.role-page.wolf::before {
+  content: "";
+  position: absolute; /* שכבה שמכסה את כל המסך */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0; /* נמצא מאחורי התוכן */
+}
+
+/* מבטיח שהתוכן יוצג מעל השכבה */
+.role-page.wolf > * {
+  position: relative;
+  z-index: 1;
+}
+
+.role-page.shield {
+  background-image: url('./shield.png');
+  background-size: cover;
+  background-position: center;
   text-align: right; /* יישור כל התוכן לימין */
   padding-right: 40px; /* רווח מהקצה הימני */
-  padding-top: 10px; /* צמצום מרווח למעלה */
   padding-bottom: 10px; /* צמצום מרווח למטה */
+  background-repeat: no-repeat; /* מניעת חזרה */
+  min-height: 100vh; /* התאמה מלאה לגובה */
+  height: 100vh; /* גובה מלא */
+  width: 100%; /* רוחב מלא */
+  position: relative; /* עבור שכבות נוספות */
+}
+
+.role-page.witch {
+  background-image: url('./witch.png');
+  background-size: cover;
+  background-position: center;
+  text-align: right; /* יישור כל התוכן לימין */
+  padding-right: 40px; /* רווח מהקצה הימני */
+  padding-bottom: 10px; /* צמצום מרווח למטה */
+  background-repeat: no-repeat; /* מניעת חזרה */
+  min-height: 100vh; /* התאמה מלאה לגובה */
+  height: 100vh; /* גובה מלא */
+  width: 100%; /* רוחב מלא */
+  position: relative; /* עבור שכבות נוספות */
+}
+
+.role-page.villager {
+  background-image: url('./villager.png');
+  background-size: cover;
+  background-position: center;
+  text-align: right; /* יישור כל התוכן לימין */
+  padding-right: 40px; /* רווח מהקצה הימני */
+  padding-bottom: 10px; /* צמצום מרווח למטה */
+  background-repeat: no-repeat; /* מניעת חזרה */
+  min-height: 100vh; /* התאמה מלאה לגובה */
+  height: 100vh; /* גובה מלא */
+  width: 100%; /* רוחב מלא */
+  position: relative; /* עבור שכבות נוספות */
+}
+.role-page.hunter {
+  background-image: url('./hunter.png');
+  background-size: cover;
+  background-position: center;
+  text-align: right; /* יישור כל התוכן לימין */
+  padding-right: 40px; /* רווח מהקצה הימני */
+  padding-bottom: 10px; /* צמצום מרווח למטה */
+  background-repeat: no-repeat; /* מניעת חזרה */
+  min-height: 100vh; /* התאמה מלאה לגובה */
+  height: 100vh; /* גובה מלא */
+  width: 100%; /* רוחב מלא */
+  position: relative; /* עבור שכבות נוספות */
   
 }
+.role-page.seer {
+  background-image: url('./seer.png');
+  background-size: cover;
+  background-position: center;
+  text-align: right; /* יישור כל התוכן לימין */
+  padding-right: 40px; /* רווח מהקצה הימני */
+  padding-bottom: 10px; /* צמצום מרווח למטה */
+  background-repeat: no-repeat; /* מניעת חזרה */
+  min-height: 100vh; /* התאמה מלאה לגובה */
+  height: 100vh; /* גובה מלא */
+  width: 100%; /* רוחב מלא */
+  position: relative; /* עבור שכבות נוספות */
+}
+.role-page.elder {
+  background-image: url('./elder.png');
+  background-size: cover;
+  background-position: center;
+  text-align: right; /* יישור כל התוכן לימין */
+  padding-right: 40px; /* רווח מהקצה הימני */
+  padding-bottom: 10px; /* צמצום מרווח למטה */
+  background-repeat: no-repeat; /* מניעת חזרה */
+  min-height: 100vh; /* התאמה מלאה לגובה */
+  height: 100vh; /* גובה מלא */
+  width: 100%; /* רוחב מלא */
+  position: relative; /* עבור שכבות נוספות */
+}
+.role-page.cupid {
+  background-image: url('./cupid.png');
+  background-size: cover;
+  background-position: center;
+  text-align: right; /* יישור כל התוכן לימין */
+  padding-right: 40px; /* רווח מהקצה הימני */
+  padding-bottom: 10px; /* צמצום מרווח למטה */
+  background-repeat: no-repeat; /* מניעת חזרה */
+  min-height: 100vh; /* התאמה מלאה לגובה */
+  height: 100vh; /* גובה מלא */
+  width: 100%; /* רוחב מלא */
+  position: relative; /* עבור שכבות נוספות */
+}
+.role-page.leech {
+  background-image: url('./leech.png');
+  background-size: cover;
+  background-position: center;
+  text-align: right; /* יישור כל התוכן לימין */
+  padding-right: 40px; /* רווח מהקצה הימני */
+  padding-bottom: 10px; /* צמצום מרווח למטה */
+  background-repeat: no-repeat; /* מניעת חזרה */
+  min-height: 100vh; /* התאמה מלאה לגובה */
+  height: 100vh; /* גובה מלא */
+  width: 100%; /* רוחב מלא */
+  position: relative; /* עבור שכבות נוספות */
+}
 .role-title {
+  text-align: right; /* יישור כל התוכן לימין */
   font-size: 2.5rem; /* גודל טקסט */
   font-weight: bold; /* טקסט מודגש */
-  color: #454ea0; /* צבע טקסט */
+  color: #454ea0 !important; /* צבע טקסט */
   text-shadow: 
     -1px -1px 0 white,  
      1px -1px 0 white, 
@@ -140,7 +342,6 @@ button:hover {
   display: inline-block; /* יישור כל אות בנפרד */
   letter-spacing: 1px; /* ריווח בין אותיות */
   margin-bottom: 10px; /* צמצום הרווח מתחת לכותרת */
-  padding-right: 60px; /* רווח מהקצה הימני */
 
 }
 
@@ -157,17 +358,17 @@ button:hover {
   justify-content: center; /* ממרכז את התוכן */
   align-items: center; /* ממרכז אנכית */
   overflow: hidden; /* מונע גלישה מהמסגרת */
-  
+  visibility: hidden; /* הסתרה עד הטעינה */
+  opacity: 0; /* שקיפות עד הטעינה */
+  transition: opacity 0.5s ease; /* אנימציית הופעה */
 }
-/* עיצוב נוסף למובייל בלבד */
-@media (max-width: 768px) {
-  .scroll-container {
-    width: 90%; /* התאמה למסך קטן */
-    height: auto; /* גובה משתנה */
-    padding: 15px; /* רווחים קטנים יותר */
-    background-size: contain; /* התאמה לגודל התמונה */
-  }
+
+/* מצב לאחר טעינה */
+.scroll-container.loaded {
+  visibility: visible; /* הצגה לאחר הטעינה */
+  opacity: 1; /* הפיכת האלמנט לגלוי */
 }
+
 .scroll-text {
   font-family: 'Assistant', sans-serif;
   font-size: 14px; /* גודל טקסט */
@@ -228,6 +429,8 @@ button:hover {
     width: 100%;
   }
 }
+
+
 .player-buttons {
   display: flex;
   flex-wrap: wrap; /* מעבר לשורה הבאה */
@@ -248,7 +451,15 @@ button:hover {
 }
 
 
-
+.modal-overlay2 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* רקע כהה */
+  z-index: 1000; /* מבטיח שה-Modal יהיה מעל התוכן */
+}
 .modal-content {
   position: relative;
   width: 900px; /* הגדלת הרוחב */
@@ -265,6 +476,8 @@ button:hover {
   text-align: center;
   color: black; /* צבע טקסט */
   font-family: 'Bona Nova', serif; /* פונט אלגנטי */
+  z-index: 1001; /* מבטיח שהתוכן יהיה מעל הרקע */
+
 }
 
 .modal-content h2 {
@@ -315,12 +528,100 @@ button:hover {
 
 
 
+
+
 .night-page {
   text-align: right; /* יישור כל התוכן לימין */
-  padding-right: 60px;
-  padding-top: 10px; /* צמצום מרווח למעלה */
-  padding-bottom: 10px; /* צמצום מרווח למטה */
+  background-position: center; /* מרכז התמונה */
+  background-repeat: no-repeat; /* מניעת חזרה */
+  background-attachment: fixed; /* רקע קבוע בעת גלילה */
+  min-height: 100vh; /* מינימום גובה של המסך המלא */
+  width: 100%; /* רוחב מלא */
+  position: relative; /* שכבות נוספות */
+  font-family: Arial, sans-serif;
+  background-size: 100% 100%; /* התאמה מלאה למסך */
+  margin: 0;
+  padding: 0;
+  direction: rtl;
+  overflow-y: auto; /* גלילה אנכית במידת הצורך */
+  overflow-x: hidden; /* מניעת גלילה אופקית */
+}
+
+/* שכבת שקיפות מעל הרקע */
+.night-page::before {
+  content: "";
+  position: fixed; /* שכבה קבועה בזמן גלילה */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(139, 143, 133, 0.5); /* שכבה כהה חצי-שקופה */
+  z-index: 0; /* מתחת לתוכן, אבל מעל הרקע */
   
+}
+
+/* רקעים לכל התפקידים */
+.night-page.wolf {
+  background-image: url('./wolf.png');
+}
+
+.night-page.shield {
+  background-image: url('./shield.png');
+}
+
+.night-page.witch {
+  background-image: url('./witch.png');
+}
+
+.night-page.villager {
+  background-image: url('./villager.png');
+}
+
+.night-page.hunter {
+  background-image: url('./hunter.png');
+}
+
+.night-page.seer {
+  background-image: url('./seer.png');
+}
+
+.night-page.elder {
+  background-image: url('./elder.png');
+}
+
+.night-page.cupid {
+  background-image: url('./cupid.png');
+}
+
+.night-page.leech {
+  background-image: url('./leech.png');
+}
+
+/* כל ההגדרות המשותפות נשארות זהות */
+.night-page.wolf,
+.night-page.shield,
+.night-page.witch,
+.night-page.villager,
+.night-page.hunter,
+.night-page.seer,
+.night-page.elder,
+.night-page.cupid,
+.night-page.leech {
+  background-size: 100% 100%; /* התאמת התמונה לכל המסך */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  text-align: right;
+  padding-right: 40px;
+  padding-left: 40px; /* רווח מהקצה הימני */
+  padding-bottom: 10px;
+  overflow-y: auto; /* מאפשר גלילה במקרה של תוכן רב */
+}
+
+/* התוכן עליון מעל הכל */
+.night-page > * {
+  position: relative;
+  z-index: 1; /* מבטיח שהתוכן יוצג מעל השכבה הכהה */
 }
 
 
@@ -375,16 +676,529 @@ button:hover {
   
 }
 
+.chat-box p{
+  font-size: 16px;
+  color: #000000;
+  
+}
+
+
+
+.day-page {
+  background-image: url('./day_back.png'); /* תמונת הרקע */
+  background-size: cover; /* התאמה למילוי המסך תוך שמירה על פרופורציות */
+  background-position: center; /* מיקום במרכז */
+  background-repeat: no-repeat; /* מניעת חזרה */
+  background-attachment: fixed; /* רקע קבוע בזמן גלילה */
+  min-height: 100vh; /* מינימום גובה לגובה המסך המלא */
+  width: 100%; /* רוחב מלא */
+  margin: 0;
+  padding: 0;
+  direction: rtl; /* יישור לימין */
+  flex-direction: column; /* סידור אנכי */
+  align-items: flex-start; /* יישור תוכן לשמאל */
+  justify-content: flex-start; /* יישור התוכן למעלה */
+  overflow-y: auto; /* גלילה אנכית במקרה של תוכן רב */
+  overflow-x: hidden; /* מניעת גלילה אופקית */
+  position: relative; /* עבור שכבות נוספות */
+  padding-right: 40px;
+  padding-left: 40px; /* רווח מהקצה הימני */
+}
+
+/* שכבת שקיפות (אם יש צורך כמו בעמודי לילה) */
+.day-page::before {
+  content: "";
+  position: fixed; /* שכבה קבועה בזמן גלילה */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0; /* מתחת לתוכן, מעל הרקע */
+}
+
+/* כל התוכן בעמוד מעל שכבת השקיפות */
+.day-page > * {
+  position: relative; /* תוכן מעל השכבה */
+  z-index: 1; /* מבטיח שהתוכן יופיע מעל שכבת הרקע */
+}
+
+.day-page c{
+  font-size: 25px; /* גודל טקסט */
+  font-weight: bold; /* טקסט מודגש */
+  color: #ffffff; /* צבע טקסט */
+  text-shadow: 
+    -1px -1px 0 rgb(0, 0, 0),  
+     1px -1px 0 rgb(0, 0, 0), 
+    -1px  1px 0 rgb(0, 0, 0), 
+     1px  1px 0 rgb(0, 0, 0); /* מסגרת לבנה סביב האותיות */
+  padding: 5px; /* ריפוד קטן */
+  display: block; /* יישור כל אות בנפרד */
+  letter-spacing: 1px; /* ריווח בין אותיות */
+
+}
+
+.mayor-page {
+  background-image: url('./mayor_back.png'); /* תמונת רקע */
+  background-size: cover; /* התאמה למילוי המסך תוך שמירה על פרופורציות */
+  background-position: center; /* מיקום במרכז */
+  background-repeat: no-repeat; /* מניעת חזרה */
+  background-attachment: fixed; /* רקע קבוע בעת גלילה */
+  min-height: 100vh; /* מינימום גובה למסך מלא */
+  width: 100%; /* רוחב מלא */
+  margin: 0;
+  padding: 0;
+  direction: rtl; /* יישור לימין */
+  display: flex; /* תצוגת flex עבור פריסה */
+  flex-direction: column; /* סידור אנכי */
+  align-items: flex-start; /* יישור לתחילת הדף */
+  justify-content: flex-start; /* יישור למעלה */
+  overflow-y: auto; /* מאפשר גלילה אנכית אם יש צורך */
+  overflow-x: hidden; /* מניעת גלילה אופקית */
+  position: relative; /* מאפשר שכבות נוספות */
+  text-align: right; /* יישור כל התוכן לימין */
+  padding-bottom: 10px; /* צמצום מרווח למטה */
+
+}
+
+.mayor-page.mayor-selected {
+  background-image: url('./mayor_back2.png'); /* תמונת רקע */
+  background-size: cover; /* התאמה למילוי המסך תוך שמירה על פרופורציות */
+  background-position: center; /* מיקום במרכז */
+  background-repeat: no-repeat; /* מניעת חזרה */
+  background-attachment: fixed; /* רקע קבוע בעת גלילה */
+  min-height: 100vh; /* מינימום גובה למסך מלא */
+  width: 100%; /* רוחב מלא */
+  margin: 0;
+  padding: 0;
+  direction: rtl; /* יישור לימין */
+  display: flex; /* תצוגת flex עבור פריסה */
+  flex-direction: column; /* סידור אנכי */
+  align-items: flex-start; /* יישור לתחילת הדף */
+  justify-content: flex-start; /* יישור למעלה */
+  overflow-y: auto; /* מאפשר גלילה אנכית אם יש צורך */
+  overflow-x: hidden; /* מניעת גלילה אופקית */
+  position: relative; /* מאפשר שכבות נוספות */
+  text-align: right; /* יישור כל התוכן לימין */
+  padding-right: 40px; /* רווח מהקצה הימני */
+  padding-bottom: 10px; /* צמצום מרווח למטה */
+}
+
+/* שכבת שקיפות עבור שני המצבים */
+.mayor-page::before,
+.mayor-page.mayor-selected::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+/* תוכן תמיד מעל שכבת השקיפות */
+.mayor-page > *,
+.mayor-page.mayor-selected > * {
+  position: relative;
+  z-index: 1;
+}
+
+.mayor-page h1{
+  font-size: 2.4rem; /* גודל טקסט */
+  font-weight: bold; /* טקסט מודגש */
+  color: #454ea0; /* צבע טקסט */
+  text-shadow: 
+    -1px -1px 0 white,  
+     1px -1px 0 white, 
+    -1px  1px 0 white, 
+     1px  1px 0 white; /* מסגרת לבנה סביב האותיות */
+  padding: 5px; /* ריפוד קטן */
+  display: inline-block; /* יישור כל אות בנפרד */
+  letter-spacing: 1px; /* ריווח בין אותיות */
+}
+.mayor-page h2{
+  font-size: 25px; /* גודל טקסט */
+  font-weight: bold; /* טקסט מודגש */
+  color: #3206d3; /* צבע טקסט */
+  text-shadow: 
+    -1px -1px 0 rgb(255, 255, 255),  
+     1px -1px 0 rgb(255, 255, 255), 
+    -1px  1px 0 rgb(255, 255, 255), 
+     1px  1px 0 rgb(255, 255, 255); /* מסגרת לבנה סביב האותיות */
+  padding: 5px; /* ריפוד קטן */
+  display: inline-block; /* יישור כל אות בנפרד */
+  letter-spacing: 1px; /* ריווח בין אותיות */
+  margin-bottom: 0px; /* צמצום הרווח מתחת לכותרת */
+  margin-top: 0px; /* צמצום הרווח מתחת לכותרת */
+
+}
+
+@keyframes flash-mayor {
+  0% { 
+    font-size: 25px; /* גודל טקסט */
+    color: rgb(158, 17, 17); 
+    font-weight: bold; /* טקסט מודגש */
+    padding: 5px; /* ריפוד קטן */
+    display: inline-block; /* יישור כל אות בנפרד */
+    letter-spacing: 1px; /* ריווח בין אותיות */
+    margin-bottom: 10px; /* רווח קטן בין השורות */
+
+  }
+  50% { 
+    font-size: 25px; /* גודל טקסט */
+    font-weight: bold; /* טקסט מודגש */
+    color: #3206d3; /* צבע טקסט */
+    text-shadow: 
+      -1px -1px 0 rgb(255, 255, 255),  
+       1px -1px 0 rgb(255, 255, 255), 
+      -1px  1px 0 rgb(255, 255, 255), 
+       1px  1px 0 rgb(255, 255, 255); /* מסגרת לבנה סביב האותיות */
+    padding: 5px; /* ריפוד קטן */
+    display: inline-block; /* יישור כל אות בנפרד */
+    letter-spacing: 1px; /* ריווח בין אותיות */
+
+  }
+  100% { 
+    font-size: 25px; /* גודל טקסט */
+    color: rgb(158, 17, 17); 
+    font-weight: bold; /* טקסט מודגש */
+    padding: 5px; /* ריפוד קטן */
+    display: inline-block; /* יישור כל אות בנפרד */
+    letter-spacing: 1px; /* ריווח בין אותיות */
+    margin-bottom: 10px; /* רווח קטן בין השורות */
+
+  }
+}
+
+.flashing-timer-mayor {
+  animation: flash-mayor 1s infinite;
+}
+
+
+.flashing-timer-mayor {
+  animation: flash-mayor 1s infinite;
+}
+
+.vote-page {
+  background-image: url('./vote_back.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat; /* מונע חזרה של התמונה */
+  text-align: right; /* יישור כל התוכן לימין */
+  padding-right: 40px; /* רווח מהקצה הימני */
+  background-size: cover; /* התאמת גודל התמונה */
+  background-position: center; /* מיקום מרכזי */
+  background-repeat: no-repeat; /* מניעת חזרה */
+  background-attachment: fixed; /* רקע קבוע בעת גלילה */
+  min-height: 100vh; /* גובה מינימלי */
+  direction: rtl; /* יישור לימין */
+  overflow-x: hidden; /* מניעת גלילה אופקית */
+  overflow-y: hidden; /* מניעת גלילה אנכית */
+  position: relative; /* דרוש עבור שכבת הצללה */
+  padding-bottom: 20px; /* צמצום מרווח למטה */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  height: auto;
+}
+.vote-page::before {
+  content: "";
+  position: fixed; /* קבוע למסך גם בזמן גלילה */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(179, 174, 174, 0.5); /* שכבה כהה חצי-שקופה */
+  z-index: -1; /* השכבה תהיה מאחורי כל התוכן */
+}
+.vote-page h3{
+  font-size: 2rem; /* גודל טקסט */
+  font-weight: bold; /* טקסט מודגש */
+  color: #ffffff; /* צבע טקסט */
+  text-shadow: 
+    -2px -2px 0 black,  
+     2px -2px 0 black, 
+    -2px  2px 0 black, 
+     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+  padding: 5px; /* ריפוד קטן */
+  display: inline-block; /* יישור כל אות בנפרד */
+  letter-spacing: 1px; /* ריווח בין אותיות */
+  margin-bottom: 10px; /* רווח קטן בין השורות */
+}
+.vote-page h4{
+  font-size: 1.8rem; /* גודל טקסט */
+  font-weight: bold; /* טקסט מודגש */
+  color: #ffffff; /* צבע טקסט */
+  text-shadow: 
+    -2px -2px 0 black,  
+     2px -2px 0 black, 
+    -2px  2px 0 black, 
+     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+  letter-spacing: 1px; /* ריווח בין אותיות */
+}
+
+.vote-page h4{
+  font-size: 1.8rem; /* גודל טקסט */
+  font-weight: bold; /* טקסט מודגש */
+  color: #ffffff; /* צבע טקסט */
+  text-shadow: 
+    -2px -2px 0 black,  
+     2px -2px 0 black, 
+    -2px  2px 0 black, 
+     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+  letter-spacing: 1px; /* ריווח בין אותיות */
+}
+.votes-list {
+  color: rgb(0, 0, 0)!important;  /* צבע הטקסט ברשימה הראשונה */
+  font-size: 20px; /* גודל הגופן */
+  list-style-type: none; /* הסרת התבליטים */
+  padding: 0; /* ביטול רווח פנימי */
+}
+
+.votes-list li {
+  display: block; /* כל פריט מופיע בשורה חדשה */
+
+}
+.votes-list span {
+  color: rgb(255, 255, 255) !important; /* כפייה שהטקסט יהיה שחור */
+}
+.votes-list li span {
+  display: inline-block; /* מתאים את הרוחב לתוכן בלבד */
+  padding: 5px 0; /* רווח בין פריטים */
+  border-bottom: 1px solid rgb(218, 214, 214); /* קו תחתון בין פריטים */
+  width: fit-content; /* רוחב מותאם לתוכן בלבד */
+}
+
+.vote-page span{
+  font-size: 1.5rem; /* גודל טקסט */
+  font-weight: bold; /* טקסט מודגש */
+  color: #ffffff; /* צבע טקסט */
+  text-shadow: 
+    -2px -2px 0 black,  
+     2px -2px 0 black, 
+    -2px  2px 0 black, 
+     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+  letter-spacing: 1px; /* ריווח בין אותיות */
+}
+
+@keyframes flash {
+  0% { 
+    font-size: 2rem;
+    color: rgb(158, 17, 17); 
+    font-weight: bold; /* טקסט מודגש */
+    padding: 5px; /* ריפוד קטן */
+    display: inline-block; /* יישור כל אות בנפרד */
+    letter-spacing: 1px; /* ריווח בין אותיות */
+    margin-bottom: 10px; /* רווח קטן בין השורות */
+
+  }
+  50% { 
+    font-size: 2rem; /* גודל טקסט */
+    font-weight: bold; /* טקסט מודגש */
+    color: #ffffff; /* צבע טקסט */
+    text-shadow: 
+      -2px -2px 0 black,  
+       2px -2px 0 black, 
+      -2px  2px 0 black, 
+       2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+    padding: 5px; /* ריפוד קטן */
+    display: inline-block; /* יישור כל אות בנפרד */
+    letter-spacing: 1px; /* ריווח בין אותיות */
+    margin-bottom: 10px; /* רווח קטן בין השורות */
+
+  }
+  100% { 
+    font-size: 2rem;
+    color: rgb(158, 17, 17); 
+    font-weight: bold; /* טקסט מודגש */
+    padding: 5px; /* ריפוד קטן */
+    display: inline-block; /* יישור כל אות בנפרד */
+    letter-spacing: 1px; /* ריווח בין אותיות */
+    margin-bottom: 10px; /* רווח קטן בין השורות */
+
+  }
+}
+
+.flashing-timer {
+  animation: flash 1s infinite;
+}
+
+
+.flashing-timer {
+  animation: flash 1s infinite;
+}
+
+.dead-page {
+  background-image: url('./dead_back.png');
+  background-size: cover;
+  background-position: center;
+  text-align: right; /* יישור כל התוכן לימין */
+  padding-right: 40px; /* רווח מהקצה הימני */
+  padding-bottom: 10px; /* צמצום מרווח למטה */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat; /* מונע חזרה של התמונה */
+  text-align: right; /* יישור כל התוכן לימין */
+  padding-right: 40px; /* רווח מהקצה הימני */
+  background-size: cover; /* התאמת גודל התמונה */
+  background-position: center; /* מיקום מרכזי */
+  background-repeat: no-repeat; /* מניעת חזרה */
+  background-attachment: fixed; /* רקע קבוע בעת גלילה */
+  min-height: 100vh; /* גובה מינימלי */
+  direction: rtl; /* יישור לימין */
+  overflow-x: hidden; /* מניעת גלילה אופקית */
+  overflow-y: hidden; /* מניעת גלילה אנכית */
+  position: relative; /* דרוש עבור שכבת הצללה */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  height: auto;
+}
+.dead-page h1{
+  font-size: 2.5rem; /* גודל טקסט */
+  font-weight: bold; /* טקסט מודגש */
+  color: #ffffff; /* צבע טקסט */
+  text-shadow: 
+    -2px -2px 0 black,  
+     2px -2px 0 black, 
+    -2px  2px 0 black, 
+     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+  padding: 5px; /* ריפוד קטן */
+  display: inline-block; /* יישור כל אות בנפרד */
+  letter-spacing: 1px; /* ריווח בין אותיות */
+}
+
+.dead-page h2{
+  font-size: 2rem; /* גודל טקסט */
+  font-weight: bold; /* טקסט מודגש */
+  color: #ffffff; /* צבע טקסט */
+  text-shadow: 
+    -2px -2px 0 black,  
+     2px -2px 0 black, 
+    -2px  2px 0 black, 
+     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+  padding: 5px; /* ריפוד קטן */
+  display: inline-block; /* יישור כל אות בנפרד */
+  letter-spacing: 1px; /* ריווח בין אותיות */
+}
+.dead-page p{
+  font-size: 1.5rem; /* גודל טקסט */
+  font-weight: bold; /* טקסט מודגש */
+  color: #ffffff; /* צבע טקסט */
+  text-shadow: 
+    -2px -2px 0 black,  
+     2px -2px 0 black, 
+    -2px  2px 0 black, 
+     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+  padding: 5px; /* ריפוד קטן */
+  display: inline-block; /* יישור כל אות בנפרד */
+  letter-spacing: 1px; /* ריווח בין אותיות */
+}
+
+
+.end-game-page {
+  background-image: url('./end_game.png'); /* תמונת הרקע */
+  background-size: cover; /* התאמה למילוי המסך תוך שמירה על פרופורציות */
+  background-position: center; /* מיקום במרכז */
+  background-repeat: no-repeat; /* מניעת חזרה */
+  background-attachment: fixed; /* רקע קבוע בזמן גלילה */
+  min-height: 100vh; /* מינימום גובה לגובה המסך המלא */
+  width: 100%; /* רוחב מלא */
+  margin: 0;
+  padding: 0;
+  direction: rtl; /* יישור לימין */
+  flex-direction: column; /* סידור אנכי */
+  align-items: flex-start; /* יישור תוכן לשמאל */
+  justify-content: flex-start; /* יישור התוכן למעלה */
+  overflow-y: auto; /* גלילה אנכית במקרה של תוכן רב */
+  overflow-x: hidden; /* מניעת גלילה אופקית */
+  position: relative; /* עבור שכבות נוספות */
+  padding-right: 40px;
+  padding-left: 40px; /* רווח מהקצה הימני */
+  padding: 40px;
+}
+
+.end-game-page h1{
+  font-size: 2.5rem; /* גודל טקסט */
+  font-weight: bold; /* טקסט מודגש */
+  color: #ffffff; /* צבע טקסט */
+  text-shadow: 
+    -2px -2px 0 black,  
+     2px -2px 0 black, 
+    -2px  2px 0 black, 
+     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+  padding: 5px; /* ריפוד קטן */
+  display: inline-block; /* יישור כל אות בנפרד */
+  letter-spacing: 1px; /* ריווח בין אותיות */
+}
+
+.end-game-page h2{
+  font-size: 2.2rem; /* גודל טקסט */
+  font-weight: bold; /* טקסט מודגש */
+  color: #ffffff; /* צבע טקסט */
+  text-shadow: 
+    -2px -2px 0 black,  
+     2px -2px 0 black, 
+    -2px  2px 0 black, 
+     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+  padding: 5px; /* ריפוד קטן */
+  display: inline-block; /* יישור כל אות בנפרד */
+  letter-spacing: 1px; /* ריווח בין אותיות */
+}
+
+.end-game-page h3{
+  font-size: 1.8rem; /* גודל טקסט */
+  font-weight: bold; /* טקסט מודגש */
+  color: #ffffff; /* צבע טקסט */
+  text-shadow: 
+    -2px -2px 0 black,  
+     2px -2px 0 black, 
+    -2px  2px 0 black, 
+     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+  padding: 5px; /* ריפוד קטן */
+  display: inline-block; /* יישור כל אות בנפרד */
+  letter-spacing: 1px; /* ריווח בין אותיות */
+}
+
+.end-game-page ul{
+  font-size: 1.2rem; /* גודל טקסט */
+  font-weight: bold; /* טקסט מודגש */
+  color: #ffffff; /* צבע טקסט */
+  text-shadow: 
+    -2px -2px 0 black,  
+     2px -2px 0 black, 
+    -2px  2px 0 black, 
+     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+  padding: 5px; /* ריפוד קטן */
+  display: inline-block; /* יישור כל אות בנפרד */
+  letter-spacing: 1px; /* ריווח בין אותיות */
+}
+.end-game-page button{
+  font-size: 15px; /* גודל טקסט */
+  font-weight: bold; /* טקסט מודגש */
+  color: #ffffff; /* צבע טקסט */
+  text-shadow: 
+    -2px -2px 0 black,  
+     2px -2px 0 black, 
+    -2px  2px 0 black, 
+     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+  padding: 5px; /* ריפוד קטן */
+  letter-spacing: 1px; /* ריווח בין אותיות */
+  width: auto;
+}
+
 /* התאמה למסכים קטנים (מובייל) */
 @media (max-width: 768px) {
   body {
     background-size: cover;
     padding: 0 10px; /* מרווח צדדי קטן יותר */
+    padding-top: 80px; /* יצירת רווח בין הכפתורים לתוכן */
+    background-attachment: scroll; /* תיקון למובייל */
+    height: auto; /* פתיחת גובה דינמי */
+    overflow-y: auto; /* אפשרות לגלילה רגילה רק לתוכן */
   }
 
-  .home-page {
-    padding-top: 20px; /* פחות רווח למעלה */
-  }
 
   .title {
     font-size: 40px; /* הקטנת גודל הכותרת */
@@ -442,24 +1256,172 @@ button:hover {
   }
 }
 
+
+
+/* התאמה לכלל העמודים במובייל */
 @media (max-width: 768px) {
+  body {
+    padding: 0 10px;
+    height: auto;
+    overflow-y: auto; /* גלילה אנכית לפי הצורך */
+  }
+
+  /* טקסט כללי */
+  p, span, div {
+    font-size: 16px; /* גודל קטן יותר */
+    line-height: 1.5; /* ריווח נוסף */
+  }
+
+  /* כותרות */
+  h1, h2, h3 {
+    font-size: 18px; /* כותרות קטנות יותר */
+    text-align: center; /* ממרכז טקסט */
+  }
+
+  /* כפתורים */
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    width: 100%; /* התאמת כפתורים לרוחב המסך */
+    margin: 10px 0; /* ריווח בין כפתורים */
+  }
+
+  /* טפסים */
+  input, textarea {
+    font-size: 16px;
+    padding: 10px;
+    width: 100%; /* התאמה מלאה למסך */
+  }
+
+  /* עיצוב תיבות טקסט */
+  .input-container input {
+    width: 100%;
+    height: 40px;
+  }
+
+  /* התאמת הבועה */
+  .bubble-container {
+    padding: 10px;
+    max-width: 100%; /* התאמה למסכים קטנים */
+  }
+
+  .bubble-text {
+    font-size: 16px;
+  }
+
+  /* כפתורי בועה */
+  .bubble-button {
+    font-size: 14px;
+    padding: 10px 15px;
+  }
+
+  /* כפתורי שחקנים */
+  .player-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .player-buttons button {
+    font-size: 14px;
+    padding: 10px;
+    flex: 1 1 calc(50% - 10px); /* שני כפתורים בשורה */
+  }
+
+  /* תוכן מגילה */
+  .scroll-container {
+    width: 100%;
+    height: auto;
+    padding: 10px;
+  }
+
+  .scroll-text {
+    font-size: 14px;
+    height: auto; /* גובה דינמי */
+    line-height: 1.4;
+  }
+
+  /* דפי משחק */
+  .home-page, .settings-page, .role-page, .day-page, .night-page, .mayor-page, .vote-page, .dead-page, .end-game-page {
+    background-size: cover; /* התאמת רקע לכל המסך */
+    padding: 10px; /* ריווח פנימי */
+    overflow-y: auto; /* גלילה אנכית */
+    height: auto;
+  }
+
+  /* תוכן עמודים */
+  .home-page h1, .settings-page h1, .role-page h1, .day-page h1, .night-page h1, .mayor-page h1, .vote-page h1, .dead-page h1, .end-game-page h1 {
+    font-size: 22px;
+    text-align: center;
+  }
+
+  /* עמוד ראש העיר */
+  .mayor-page {
+    padding: 10px; /* רווחים קטנים יותר */
+  }
+
+  .mayor-page h2 {
+    font-size: 18px;
+  }
+
+  .mayor-page.mayor-selected {
+    padding: 10px;
+  }
+
+  /* טקסט בעמוד בחירות */
+  .vote-page h3, .vote-page h4 {
+    font-size: 16px;
+  }
+
+  /* עמוד ההצבעות */
+  .votes-list span {
+    font-size: 14px;
+  }
+
+  /* כפתורים בעמוד ההצבעות */
+  .vote-page button {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  /* עמוד הסיום */
+  .end-game-page h1, .end-game-page h2, .end-game-page h3 {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .end-game-page ul {
+    font-size: 14px;
+  }
+
+  .end-game-page button {
+    font-size: 14px;
+    width: 100%; /* התאמה למובייל */
+  }
+
+  /* עמוד המתים */
+  .dead-page h1, .dead-page h2, .dead-page p {
+    font-size: 18px;
+  }
+
+  /* מודאלים */
   .modal-content {
-    width: 90%; /* התאמה לרוחב המסך */
-    height: auto; /* גובה אוטומטי */
-    padding: 20px; /* רווחים קטנים יותר */
+    width: 95%;
+    height: auto;
+    padding: 20px;
+    font-size: 14px;
   }
 
   .modal-content h2 {
-    font-size: 24px; /* כותרת קטנה יותר */
+    font-size: 20px;
   }
 
   .modal-content p {
-    font-size: 18px;
-    line-height: 1.5;
+    font-size: 14px;
   }
 
   .modal-content button {
-    font-size: 16px;
-    padding: 10px 15px;
+    font-size: 14px;
   }
 }
