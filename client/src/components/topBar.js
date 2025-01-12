@@ -78,9 +78,10 @@ const TopBar = ({ role }) => {
         </button>
       )}
             {isMayorModalOpen && (
-        <div className="modal-overlay-mayor" onClick={toggleMayorModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-overlay-role" onClick={toggleMayorModal}>
+          <div className="modal-content-role" onClick={(e) => e.stopPropagation()}>
             <h2>ראש העיר הוא  {mayorName}</h2>
+            <p className="top-bar__text">כוחו של ראש העיר הוא בכך שהצבעתו בעיירה שווה שני קולות. במקרה של שוויון - הצבעת רוב השחקנים עדיפה על הצבעת המיעוט וראש העיר. באם ראש העיר יוצא מהמשחק יבחר ראש עיר חדש בבוקר לאחר מכן.</p>
             <button onClick={toggleMayorModal}>סגור</button>
           </div>
         </div>
@@ -94,7 +95,9 @@ const TopBar = ({ role }) => {
         <div className="modal-overlay-role" onClick={toggleModal}>
           <div className="modal-content-role" onClick={(e) => e.stopPropagation()}>
             <h2>התפקיד שלך - {role}</h2>
-            <div>{getRoleDescription(role)}</div>
+            <div>
+            <p className="top-bar__text">{getRoleDescription(role)}</p> 
+              </div>
             <button onClick={toggleModal}>סגור</button>
           </div>
         </div>
