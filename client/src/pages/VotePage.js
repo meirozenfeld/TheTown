@@ -28,7 +28,52 @@ function VotePage() {
   const [elderDead, setElderDead] = useState(false); // מצב זקן השבט
   const currentPlayer = sessionStorage.getItem('playerName'); // השחקן הנוכחי
   const hunterChoseTarget = sessionStorage.getItem('hunterChoseTarget');
+  const [isLoading, setIsLoading] = useState(true);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [isFlashing, setIsFlashing] = useState(false);
 
+
+  useEffect(() => {
+    // בקשה ל-towntime מהשרת
+    socket.emit('requestSettings');
+    socket.on('settingsReceived', (settings) => {
+      console.log('Settings received Vote:', settings);
+      const townTimeInSeconds = settings.townTime * 60; // המרה לשניות
+      setTimeLeft(townTimeInSeconds);
+    });
+
+    return () => {
+      socket.off('settingsReceived');
+    };
+  }, []);
+
+  useEffect(() => {
+    // ספירה לאחור
+    if (timeLeft > 0) {
+      if (timeLeft <= 10) {
+        setIsFlashing(true);
+      } else {
+        setIsFlashing(false);
+      }
+      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      return () => clearTimeout(timer);
+    } else if (!confirmed && !selectedVote && players.length > 0) {
+      // בחירה רנדומלית אם הזמן נגמר
+      const filteredPlayersTime = players.filter(player => player.name !== currentPlayer);
+
+      const randomPlayer = filteredPlayersTime[Math.floor(Math.random() * players.length)];
+      setSelectedVote(randomPlayer.name);
+      setConfirmed(true);
+      socket.emit('submitVote', {
+        playerName: currentPlayer,
+        voteTarget: randomPlayer.name,
+      });
+      socket.emit('confirmVote', {
+        playerName: currentPlayer,
+        confirm: true,
+      });
+    }
+  }, [timeLeft, confirmed, selectedVote, players]);
 
   useEffect(() => {
     socket.emit('requestRolesStructure');
@@ -38,6 +83,7 @@ function VotePage() {
         .flat()
         .filter(p => p.isAlive);
       setPlayers(alivePlayers);
+
     });
     // האזנה למבנה התפקידים
     socket.on('rolesStructure', (rolesStructure) => {
@@ -50,6 +96,8 @@ function VotePage() {
             players.includes(player)
           )[0];
           setRole(roleName);
+          setIsLoading(false);
+
         }
       });
     socket.on('voteResults', ({ results, personalVotes, mayorName, electedPlayer, electedRole }) => {
@@ -65,6 +113,10 @@ function VotePage() {
         setMayorName(mayorName);
         setSelectedVote(electedPlayer);
         setSelectedRole(electedRole);
+        // console.log("selectedRole: ", selectedRole)
+        // if (selectedRole === 'צייד') {
+        //   sessionStorage.setItem('personalVotes', JSON.stringify(personalVotes)); // שמירת personalVotes
+        // }
       });
 
       socket.on('gameEnd', (result) => {
@@ -77,8 +129,54 @@ function VotePage() {
       socket.off('gameEnd');
 
     };
+  }, [selectedRole]);
+
+  useEffect(() => {
+    // מאזין להודעות על מוות נוסף בעקבות קשרי קופידון
+    socket.on('cupidDeathMessage', ({ message }) => {
+      console.log('הודעת קופידון:', message);
+      setMessage(prev => [...prev, message]); // עדכון הודעות על המסך
+      // if (role === 'קופידון' ){
+      //   sessionStorage.setItem('nightResults', JSON.stringify([message])); // שמירת הודעה
+      //   window.dispatchEvent(new Event('gameNavigation')); // סימון מעבר יזום
+      //   window.history.pushState(null, '', '/dead'); // עדכון היסטוריה
+      //   window.location.href = '/dead'; // מעבר לעמוד המתים
+      // }
+    });
+    //     // האזנה להעברה לעמוד DEAD בעקבות בחירת הצייד
+    // socket.on('navigateToDead', ({ message }) => {
+    //     console.log('NavigateToDead message received:', message); // DEBUG
+    //     sessionStorage.setItem('nightResults', JSON.stringify([message])); // שמירת הודעה
+    //     window.dispatchEvent(new Event('gameNavigation')); // סימון מעבר יזום
+    //     window.history.pushState(null, '', '/dead'); // עדכון היסטוריה
+    //     window.location.href = '/dead'; // מעבר לעמוד המתים
+    // });
+  
+    return () => {
+      socket.off('cupidDeathMessage'); // ניקוי מאזין
+    };
   }, []);
 
+  useEffect(() => {
+    socket.on('navigateToDead', ({ message }) => {
+      const currentPlayer = sessionStorage.getItem('playerName');
+      console.log('NavigateToDead message received:', message);
+  
+      // בדיקה האם ההודעה מיועדת לשחקן הנוכחי
+      const isForCurrentPlayer = message.includes(currentPlayer);
+      if (isForCurrentPlayer) {
+        sessionStorage.setItem('nightResults', JSON.stringify([message])); // שמירת הודעה
+        window.dispatchEvent(new Event('gameNavigation')); // סימון מעבר יזום
+        window.history.pushState(null, '', '/dead'); // עדכון היסטוריה
+        window.location.href = '/dead'; // מעבר לעמוד המתים
+      }
+    });
+  
+    return () => {
+      socket.off('navigateToDead'); // ניקוי מאזין
+    };
+  }, []);
+  
   useEffect(() => {
     socket.on('elderStatus', ({ elderDead }) => {
       setElderDead(elderDead); // עדכון המצב
@@ -143,11 +241,10 @@ function VotePage() {
 
   useEffect(() => {
     socket.on('hunterFinished', ({ hunterName, targetName, targetRole }) => {
-        sessionStorage.setItem('hunterChoseTarget', 'true'); // סימון שהצייד בחר
 
       setWaitingForHunter(false);
       if (targetRole === "זקן השבט"){
-        setHunterMessage([`הצייד ${hunterName} החליט לצוד את ${targetName} בתפקיד ${targetRole}! \n מעכשיו ועד סוף המשחק לא יהיו לאזרחים תפקידים בלילה`]); // הודעת הצייד
+        setHunterMessage([`הצייד ${hunterName} החליט לצוד את ${targetName} בתפקיד ${targetRole}! \n מעכשיו ועד סוף המשחק לא יהיו לאזרחים כוחות בלילה`]); // הודעת הצייד
 
       } else {
         setHunterMessage([`הצייד ${hunterName} החליט לצוד את ${targetName} בתפקיד ${targetRole}!`]); // הודעת הצייד
@@ -167,16 +264,30 @@ function VotePage() {
         }
         else {
             if (targetRole === "זקן השבט"){
-                sessionStorage.setItem('hunterResult', JSON.stringify([`הצייד ${hunterName} החליט לצוד את ${targetName} בתפקיד ${targetRole}! \nמעכשיו ועד סוף המשחק לא יהיו לאזרחים תפקידים בלילה`])); // שמירה
+                sessionStorage.setItem('hunterResult', JSON.stringify([`הצייד ${hunterName} החליט לצוד את ${targetName} בתפקיד ${targetRole}! \nמעכשיו ועד סוף המשחק לא יהיו לאזרחים כוחות בלילה`])); // שמירה
               } else {
                 sessionStorage.setItem('hunterResult', JSON.stringify([`הצייד ${hunterName} החליט לצוד את ${targetName} בתפקיד ${targetRole}!`])); // שמירה
               }
   
         }
+        sessionStorage.setItem('hunterChoseTarget', 'true'); // סימון שהצייד בחר
     });
   
     return () => {
       socket.off('hunterFinished');
+    };
+  }, []);
+
+
+  useEffect(() => {
+    socket.on('hunterFinishedNoElder', () => {
+        sessionStorage.setItem('hunterChoseTarget', 'true'); // סימון שהצייד בחר
+        setWaitingForHunter(false);
+
+    });
+  
+    return () => {
+      socket.off('hunterFinishedNoElder');
     };
   }, []);
 
@@ -212,25 +323,33 @@ function VotePage() {
       });
     }
   };
-
+  // useEffect(() => {
+  //   socket.on('hunterMessage', (message) => {
+  //     setHunterMessage(prevMessages => [...prevMessages, message]); // הוספת ההודעה
+  //   });
+  
+  //   return () => {
+  //     socket.off('hunterMessage'); // ניקוי מאזין בעת יציאה מהעמוד
+  //   };
+  // }, []);
   // מוכנות להמשך
   const handleReady = () => {
+    socket.emit('checkGameStatus'); // בקשת בדיקת סיום המשחק
     setIsReady(!isReady);
     socket.emit('toggleVoteReady', { 
       playerName: currentPlayer, 
       isReady: !isReady 
+    });
+    socket.on('navigateToEndGame', () => {
+      window.dispatchEvent(new Event('gameNavigation'));
+      window.history.pushState(null, '', '/endgame'); // עדכון היסטוריה
+      window.location.href = '/endgame';
     });
 
     socket.on('navigateToNight', () => {
       window.dispatchEvent(new Event('gameNavigation'));
       window.history.pushState(null, '', '/night'); // עדכון היסטוריה
       window.location.href = '/night';
-    });
-  
-    socket.on('navigateToEndGame', () => {
-      window.dispatchEvent(new Event('gameNavigation'));
-      window.history.pushState(null, '', '/endgame'); // עדכון היסטוריה
-      window.location.href = '/endgame';
     });
   };
 
@@ -250,47 +369,96 @@ function VotePage() {
       socket.off('playerDead');
     };
   }, []);
+
+  useEffect(() => {
+    socket.on('playerDeadCupid', ({ playerName, role, loverRole, loverName }) => {
+      const myName = sessionStorage.getItem('playerName');
+      if (playerName === myName) { // אם אני זה שהודח
+        sessionStorage.setItem('nightResults', JSON.stringify([` העיירה החליטה להוציא את ${loverName} בתפקיד ${loverRole}`,
+          `  יצאת מהמשחק בעקבות מותו של הנאהב ${loverName}!`])); // שמירת הודעה
+        window.dispatchEvent(new Event('gameNavigation'));
+        window.history.pushState(null, '', '/dead'); // עדכון היסטוריה
+        // sessionStorage.setItem('nightResults', `העיירה בחרה להדיח אותך בתפקיד ${role}`);
+        window.location.href = '/dead'; // מעבר לעמוד המתים
+      }
+    });
   
+    return () => {
+      socket.off('playerDeadCupid');
+    };
+  }, []);
+
+  useEffect(() => {
+    socket.on('playerDeadLover', ({ playerName, role, cupidName }) => {
+      const myName = sessionStorage.getItem('playerName');
+      if (playerName === myName) { // אם אני זה שהודח
+        sessionStorage.setItem('nightResults', JSON.stringify([` העיירה החליטה להוציא את ${cupidName} בתפקיד קופידון`,
+          ` יצאת מהמשחק בעקבות מותו של הקופידון ${cupidName}!`])); // שמירת הודעה
+        window.dispatchEvent(new Event('gameNavigation'));
+        window.history.pushState(null, '', '/dead'); // עדכון היסטוריה
+        // sessionStorage.setItem('nightResults', `העיירה בחרה להדיח אותך בתפקיד ${role}`);
+        window.location.href = '/dead'; // מעבר לעמוד המתים
+      }
+    });
+  
+    return () => {
+      socket.off('playerDeadLover');
+    };
+  }, []);
+
   // סינון השחקן הנוכחי מהרשימה
   const filteredPlayers = players.filter(player => player.name !== currentPlayer);
 
+  if (isLoading) {
+    return <h1>טוען נתונים...</h1>;
+  }
+  
   return (
     <div>
-     <TopBar role={role} />
+    <TopBar role={role} />
+    <div className="vote-page">
 
-    <h1>שלום {role}!</h1>
-
+    <h1 className='role-title'>שלום {role}!</h1>
       {Object.keys(voteResults).length > 0 ? (
         <div>
       {selectedVote && selectedRole && (
         <>
-          <h2>העיירה החליטה להוציא את {selectedVote} בתפקיד {selectedRole}</h2>
+          <h4>העיירה החליטה להוציא את {selectedVote} בתפקיד {selectedRole}</h4>
+          {message.length > 0 && (
+            message.map((msg, index) => (
+              <h4 key={index}>{msg}</h4>
+            ))
+          )}
           {selectedRole === 'זקן השבט' && (
-            <p>מעכשיו ועד סוף המשחק לא יהיו לאזרחים תפקידים בלילה.</p>
+            <h4>מעכשיו ועד סוף המשחק לא יהיו לאזרחים כוחות בלילה.</h4>
           )}
         </>
       )}
-        <h2>תוצאות ההצבעות:</h2>
-          {Object.entries(voteResults).map(([player, count]) => (
-            <p key={player}>{player} קיבל {count} קולות</p>
-          ))}
-
-          <h3>בחירות אישיות:</h3>
-          {personalVotes.map(({ voter, target }, index) => (
-            <p key={index}>{voter} הצביע ל-{target}</p>
-          ))}
-            {/* הצגת הודעת הצייד */}
-            {hunterMessage.length > 0 && !hunterChoseTarget && (
-            hunterMessage.map((msg, index) => <p key={index}>{msg}</p>)
+            {hunterMessage.length > 0 && hunterChoseTarget && (
+            hunterMessage.map((msg, index) => <h4 key={index}>{msg}</h4>)
             )}
+            
 
             {!elderDead && waitingForHunter && (
-            <p>המתן בזמן ש- {hunterName} הצייד יחליט את מי לצוד...</p>
+            <h4>המתן בזמן ש- {hunterName} הצייד יחליט את מי לצוד...</h4>
             )}
+        <h4>תוצאות ההצבעות:</h4>
+          {Object.entries(voteResults).map(([player, count]) => (
+                  <li key={player}>
+                  <span>{player} קיבל {count} קולות</span>
+                </li>          ))}
+
+          <h4>בחירות אישיות:</h4>
+          {personalVotes.map(({ voter, target }, index) => (
+                    <li key={voter}>
+                    <span>{voter} הצביע ל-{target}</span>
+                  </li>
+          ))}
+
 
           {!waitingForHunter && (
           <button
-            style={{ backgroundColor: isReady ? 'green' : 'red' }}
+            style={{ backgroundColor: isReady ? '#108f14' : '#7e1109'}}
             onClick={handleReady}
           >
             {isReady ? 'מצב - מוכן' : 'מצב - לא מוכן'}
@@ -300,7 +468,16 @@ function VotePage() {
         </div>
       ) : (
         <>
-        <h1>בחר את מי אתה רוצה להוציא מהמשחק:</h1>
+        <h4>
+        כעת העיירה יכולה לדון - 
+        אם שחקן לא נבחר בסוף הזמן, הבחירה תהיה רנדומלית 
+        </h4>
+        <h3 className={isFlashing ? 'flashing-timer' : ''}>
+          הזמן שנותר: {Math.floor(timeLeft / 60)}:{timeLeft % 60}
+        </h3>
+        <h3>
+          בחר את מי אתה רוצה להוציא מהמשחק:
+        </h3>
 
             {filteredPlayers.map((player) => (
             <button
@@ -308,20 +485,21 @@ function VotePage() {
                 onClick={() => handleVote(player.name)}
                 disabled={confirmed} // השבתה לאחר נעילה
                 style={{
-                backgroundColor: selectedVote === player.name ? 'red' : 'green',
+                backgroundColor: selectedVote === player.name ? 'darkred' : '#424442',
                 }}
             >
                 {player.name}
             </button>
             ))}
         <button
-        style={{ backgroundColor: confirmed ? 'green' : 'red' }}
+        style={{ backgroundColor: confirmed ? 'darkgreen' : 'darkred' }}
         onClick={handleConfirm}
         >
         {confirmed ? 'בטל נעילה' : 'אשר בחירה'}
         </button>
         </>
       )}
+    </div>
     </div>
   );
 }
