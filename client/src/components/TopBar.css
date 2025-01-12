@@ -2,12 +2,17 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 95%;
     padding: 10px;
     text-align: left;
     z-index: 1000;
+    
   }
-  
+  @media (max-width: 768px) {
+    .top-bar {
+      padding-top: 60px; /* הורדת תוכן העמוד למטה */
+    }
+  }
   .role-button {
     padding: 8px 15px;
     font-size: 16px;
@@ -15,9 +20,10 @@
     color: white;
     background-color: #4CAF50;
     border: none;
-    border-radius: 30px; /* פינות מעוגלות */
+    border-radius: 40px; /* פינות מעוגלות */
     cursor: pointer;
     margin-left: 15px;
+    
   }
   
   .role-button:hover {
@@ -31,7 +37,7 @@
     color: white;
     background-color: #007BFF;
     border: none;
-    border-radius: 30px; /* פינות מעוגלות */
+    border-radius: 15px; /* פינות מעוגלות */
     cursor: pointer;
     margin-left: 15px;
   }
@@ -74,8 +80,14 @@
     justify-content: flex-start; /* תחילת התוכן מלמעלה */
     padding-top: 140px; /* הזזת התוכן יותר למטה */
   }
-  
-  .modal-content-role h2 {
+  @media (max-width: 768px) {
+    .modal-content-role {
+      padding: 15px; /* התאמת רווחים */
+      font-size: 14px; /* טקסט קטן יותר */
+      max-height: 300px; /* התאמה לחלון קטן יותר */
+    }
+  }
+  .top-bar h2 {
     font-family: 'Bona Nova', serif; /* שימוש בפונט Bona Nova */
     font-weight: 600; /* משקל רגיל */
     font-size: 28px; /* גודל כותרת */
@@ -85,20 +97,26 @@
     max-width: 400px; /* רוחב מקסימלי לטקסט */
   }
   
-  .modal-content-role p {
+  .top-bar p {
     font-family: 'Bona Nova', serif; /* שימוש בפונט Bona Nova */
-    font-weight: 600; /* משקל רגיל */
+    font-weight: 200; /* משקל רגיל */
     font-size: 21px; /* גודל טקסט */
     color: black; /* צבע כהה */
     line-height: 1.9; /* ריווח שורות */
     margin-bottom: 15px; /* רווח בין הפסקאות */
-    margin-top: 20px; /* הורדת התוכן טיפה למטה */
+    margin-top: 0px; /* הורדת התוכן טיפה למטה */
     max-width: 400px; /* הגבלת רוחב הטקסט */
     word-wrap: break-word; /* מעביר מילים לשורה חדשה במידת הצורך */
     text-align: justify; /* יישור טקסט לשני הצדדים */
   }
   
-  
+  @media (max-width: 768px) {
+    .top-bar p {
+      white-space: normal; /* שבירת שורות טבעית */
+      word-wrap: break-word; /* שבירת מילים */
+      font-size: 14px; /* גודל טקסט קטן יותר */
+    }
+  }
   
   .modal-content-role button {
     padding: 10px 20px; /* כפתור עם רווח פנימי */
@@ -111,6 +129,7 @@
     margin-top: 20px; /* מרווח מהתוכן */
     transition: 0.3s ease;
   }
+  
   
   .modal-content-role button:hover {
     background-color: #6d4c41; /* צבע כהה יותר במעבר עכבר */
