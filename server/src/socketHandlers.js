@@ -37,25 +37,25 @@ const calculateWolfTarget = (io) => {
 
   // חישוב הצבעות והצבעת המנהיג
   wolves.forEach(wolf => {
-    console.log(`${wolf.name}, role: ${wolf.role}, choose: ${wolf.wolfChoose}`);
     if (wolf.isAlive && wolf.wolfChoose) {
       votes[wolf.wolfChoose] = (votes[wolf.wolfChoose] || 0) + 1;
 
-      // שמירת הצבעת המנהיג
-      if (!leaderVote && wolf.role.includes('מנהיג')) {
-        leaderVote = wolf.wolfChoose; // הצבעת מנהיג
+      // שמירת הצבעת המנהיג אם הוא חי
+      if (wolf.isAlive && wolf.role.includes('מנהיג')) {
+        leaderVote = wolf.wolfChoose;
       }
     }
   });
 
   // בדיקת המצביעים הפופולריים ביותר
-  const maxVotes = Math.max(...Object.values(votes));
+  const maxVotes = Math.max(...Object.values(votes), 0);
   const tiedTargets = Object.keys(votes).filter(t => votes[t] === maxVotes);
 
-  let finalTarget = leaderVote; // ברירת מחדל היא המנהיג
+  let finalTarget = null;
 
-  // אם יש תיקו, נשתמש בהיררכיה
   if (tiedTargets.length > 1) {
+    console.log('יש תיקו בין המטרות:', tiedTargets);
+
     // היררכיה של הזאבים לפי תפקיד
     const wolfHierarchy = [
       'זאב מנהיג הלהקה',
@@ -72,24 +72,36 @@ const calculateWolfTarget = (io) => {
 
     for (const role of wolfHierarchy) {
       const prioritizedWolf = wolves.find(wolf =>
-        wolf.role.includes(role) && tiedTargets.includes(wolf.wolfChoose)
+        wolf.role.includes(role) && wolf.isAlive && tiedTargets.includes(wolf.wolfChoose)
       );
       if (prioritizedWolf) {
         finalTarget = prioritizedWolf.wolfChoose;
         break;
       }
     }
+  } else if (tiedTargets.length === 1) {
+    // אם יש רק מטרה אחת, היא המטרה הסופית
+    finalTarget = tiedTargets[0];
+  } else {
+    // במקרה שאין הצבעות, ברירת מחדל היא הצבעת המנהיג
+    finalTarget = leaderVote || null;
   }
 
   console.log('המטרה הסופית של הזאבים:', finalTarget);
 
-  // שמירת המטרה אצל כולם
-  Object.values(rolesStructure).flat().forEach(player => {
-    player.wolfFinalTarget = finalTarget;
-  });
+  if (finalTarget) {
+    // שמירת המטרה אצל כולם
+    Object.values(rolesStructure).flat().forEach(player => {
+      player.wolfFinalTarget = finalTarget;
+    });
 
-  io.emit('wolfFinalTarget', finalTarget); // שולח לכל השחקנים
+    io.emit('wolfFinalTarget', finalTarget); // שולח לכל השחקנים
+  } else {
+    console.log('לא נבחרה מטרה סופית לזאבים.');
+    io.emit('wolfFinalTarget', null);
+  }
 };
+
 
 
 let currentPlayer = null;
@@ -101,6 +113,15 @@ const handleSocketEvents = (socket, io) => {
   socket.on('currentPlayer', (playerName) => {
     currentPlayer = playerName;
   });
+
+  socket.on('requestSettings', () => {
+    const settings = getSettings(); // שליפת ההגדרות באמצעות הפונקציה הקיימת
+    if (settings) {
+        socket.emit('settingsReceived', settings); // שליחת ההגדרות ללקוח
+    } else {
+        socket.emit('error', 'Settings not found'); // הודעת שגיאה אם אין הגדרות
+    }
+});
 
   // הצטרפות למשחק
   socket.on('joinGame', (playerName) => {
@@ -218,6 +239,8 @@ const handleSocketEvents = (socket, io) => {
       .flatMap(([_, players]) => players)[0]; // מציאת זקן השבט
       if (isElderDead()) { // בדיקה אם זקן השבט מת
         console.log('זקן השבט מת - הצייד אינו יכול לבחור מטרה.');
+        hunterChoosing =false;
+        io.emit('hunterFinishedNoElder'); // שליחה לכל השחקנים
         return; // חסימת הפעולה
       }
           // בדיקה אם הצייד כבר בחר מטרה
@@ -246,7 +269,7 @@ const handleSocketEvents = (socket, io) => {
     
       if (target) {
         target.isAlive = false; // הורגים את המטרה
-        console.log(`${hunterName} הרג את ${targetName} בתפקיד ${targetRole}`);
+        console.log(`${hunterName} צד את ${targetName} בתפקיד ${targetRole}`);
 
       //   // שליחת הודעה לכל השחקנים עם פרטי המטרה שנבחרה
       //   io.emit('hunterTargetSelected', {
@@ -258,22 +281,78 @@ const handleSocketEvents = (socket, io) => {
         // io.emit('nightResult', `${hunterName} בתפקיד צייד הרג את ${target.name} בתפקיד ${targetRole}!`);
     
         // עדכון מוות עבור קופידון והנאהב
-        const cupids = Object.entries(rolesStructure)
+          // 1. בדיקת קופידון ונאהב
+          const cupids = Object.entries(rolesStructure)
           .filter(([role]) => role.includes('קופידון'))
           .flatMap(([_, players]) => players);
     
-        cupids.forEach(cupid => {
-          if (cupid.lover === targetName && cupid.isAlive) {
-            cupid.isAlive = false;
-            io.emit('nightResult', `${cupid.name} בתפקיד קופידון יצא מהמשחק מאחר שבחר לנאהב את ${targetName}!`);
+
+
+
+
+
+
+    //*********************** */
+    cupids.forEach(cupid => {
+      if (!cupid.isAlive && cupid.lover) {
+        // קופידון מת - הורגים את הנאהב שלו
+        let lover = null;
+        let loverRole = null;
+        for (const [roleName, players] of Object.entries(rolesStructure)) {
+          const foundLover = players.find(player => player.name === cupid.lover);
+          if (foundLover) {
+            lover = foundLover;
+            loverRole = roleName;
+            break;
           }
-    
-          const lover = Object.values(rolesStructure).flat().find(p => p.name === cupid.lover);
-          if (lover && lover.name === targetName && lover.isAlive) {
-            lover.isAlive = false;
-            io.emit('nightResult', `${lover.name} בתפקיד ${targetRole} יצא מהמשחק כנאהב של הקופידון!`);
+        }
+     
+        if (lover && lover.isAlive && cupid.name === targetName ) {
+         console.log(`Cupid ${cupid.name} died. Checking lover: ${cupid.lover}`);
+          lover.isAlive = false;
+          if (loverRole === "זקן השבט"){
+           io.emit('hunterMessage',` ${lover.name} בתפקיד ${loverRole} יצא מהמשחק כנאהב של הקופידון!\n מעכשיו ועד סוף המשחק לא יהיו לאזרחים כוחות בלילה.`);
+          } else{
+            io.emit('hunterMessage',`${lover.name} בתפקיד ${loverRole} יצא מהמשחק כנאהב של הקופידון!`);
           }
-        });
+        }
+      }
+      });
+     
+       // 2. בדיקה אם נאהב של קופידון מת
+       cupids.forEach(cupid => {
+       let lover = null;
+       for (const [roleName, players] of Object.entries(rolesStructure)) {
+         lover = players.find(player => player.name === cupid.lover && !player.isAlive);
+         if (lover) break;
+       } 
+     
+       if (cupid.lover === targetName && cupid.isAlive) {
+        cupid.isAlive = false;
+        io.emit('hunterMessage',`${cupid.name} בתפקיד הקופידון יצא מהמשחק מאחר שבחר לנאהב את ${lover.name}`);
+      }
+      });
+    //********************** */
+        // cupids.forEach(cupid => {
+        //   if (cupid.lover === targetName && cupid.isAlive) {
+        //     cupid.isAlive = false;
+        //     io.emit('nightResult', `${cupid.name} בתפקיד קופידון יצא מהמשחק מאחר שבחר לנאהב את ${targetName}!`);
+        //   }
+        //   const lover = Object.values(rolesStructure).flat().find(p => p.name === cupid.lover);
+        //   if (lover && lover.name === targetName && lover.isAlive) {
+        //     lover.isAlive = false;
+        //     io.emit('nightResult', `${lover.name} בתפקיד ${targetRole} יצא מהמשחק כנאהב של הקופידון!`);
+        //     if (lover.role === "זקן השבט"){
+        //       io.emit('nightResult', `מעכשיו ועד סוף המשחק לא יהיו לאזרחים תפקידים בלילה.`);
+        //      }
+        //   }
+        // });
+                // שליחת המידע כולל לצייד
+                io.to(getPlayerSocketId(hunterName)).emit('hunterTargetSelected', {
+                  targetName: target.name,
+                  targetRole: targetRole,
+              });
+
         io.emit('hunterFinished', { hunterName, targetName, targetRole }); // שליחה לכל השחקנים
 
         io.to(getPlayerSocketId(targetName)).emit('navigateToDead', {
@@ -285,10 +364,17 @@ const handleSocketEvents = (socket, io) => {
         const alivePlayers = Object.values(rolesStructure).flat().filter(p => p.isAlive);
         alivePlayers.forEach(player => {
           io.to(getPlayerSocketId(player.name)).emit('nightResult', 
-          `${hunterName} בתפקיד צייד הרג את ${target.name} בתפקיד ${targetRole}!`);
+          `${hunterName} בתפקיד צייד צד את ${target.name} בתפקיד ${targetRole}!`);
         });
         // סיום בחירת הצייד
-        io.emit('hunterMessage', `${hunterName} בתפקיד צייד הרג את ${target.name} בתפקיד ${targetRole}!`);
+        if (targetRole === "זקן השבט"){
+          io.emit('hunterMessage', `${hunterName} בתפקיד צייד צד את ${target.name} בתפקיד ${targetRole}! \nמעכשיו ועד סוף המשחק לא יהיו לאזרחים כוחות בלילה.`);
+
+        } else {
+          io.emit('hunterMessage', `${hunterName} בתפקיד צייד צד את ${target.name} בתפקיד ${targetRole}!`);
+
+        }
+        
         setAssignedRolesStructure(rolesStructure); // שמירת המבנה המעודכן
         // קריאה לבדיקה אם המשחק נגמר
         const gameEnded = checkGameEnd(io);
@@ -314,6 +400,18 @@ const handleSocketEvents = (socket, io) => {
     socket.emit('elderStatus', { elderDead }); // הוספת מצב זקן השבט
   });
 
+  // בדיקת מוכנות ל-NightPage
+  socket.on('mayorDead', ({ mayorDeadFlag }) => {
+    const rolesStructure = getAssignedRolesStructure();
+    if (mayorDeadFlag){
+      for (const [role, players] of Object.entries(rolesStructure)) {
+        players.forEach(player => {
+          player.mayorName = null;
+          player.mayor = false;
+        });
+      }
+    }
+  });
 
   // בדיקת מוכנות ל-NightPage
   socket.on('toggleReadyRole', ({ playerName, isReady }) => {
@@ -915,20 +1013,25 @@ socket.on('toggleVoteReady', ({ playerName, isReady }) => {
   }
 });
 
-socket.on('resetGame', () => {
-  console.log('Resetting game...');
-  resetGamePlayers(); // קריאה לפונקציית האיפוס
-  io.emit('clearLocalStorage');
-  console.log('Game reset complete.');
-});
-
 const fs = require('fs');
 
-socket.on('restartServer', () => {
-  console.log('Restarting server...');
-  fs.utimesSync(__filename, new Date(), new Date()); // מעדכן את תאריך הקובץ
+socket.on('resetGame', () => {
+        console.log('Resetting game...');
+        resetGamePlayers();
+        io.emit('clearLocalStorage'); // ניקוי מקומי
+        console.log('Game reset complete.');
 });
 
+socket.on('restartServer', () => {
+        console.log('Restarting server...');
+        fs.utimesSync(__filename, new Date(), new Date()); // עדכון קובץ
+
+});
+
+socket.on('requestHunterVotes', (hunterName) => {
+  const votes = hunterVotesMap.get(hunterName) || [];
+  socket.emit('receiveHunterVotes', { personalVotes: votes });
+});
 };
 
 module.exports = handleSocketEvents;
@@ -987,17 +1090,18 @@ const checkGameEnd = (io) => {
     resultMessage = 'העלוקה ניצחה';
   } else if (onlyLeech) {
     resultMessage = 'העלוקה ניצחה';
-  } else if (allCitizens && !hasLeech) {
-    resultMessage = 'האזרחים ניצחו';
-  } else if (allCitizens && hasLeech) {
-    resultMessage = 'העלוקה ניצחה';
   } else if (onlyCupidAndLover  && hasLeech) {
     resultMessage = 'העלוקה ניצחה';
   } else if (onlyCupidAndLover  && !hasLeech) {
     resultMessage = 'הנאהבים ניצחו';
+  } else if (allCitizens && !hasLeech) {
+    resultMessage = 'האזרחים ניצחו';
+  } else if (allCitizens && hasLeech) {
+    resultMessage = 'העלוקה ניצחה';
   } else {
     resultMessage = ''; // המשחק ממשיך
   }
+  console.log("!hunterChoosing " , hunterChoosing);
 
   // עדכון המצב הגלובלי אם המשחק נגמר
   if (resultMessage && !hunterChoosing) {
@@ -1015,7 +1119,7 @@ const checkGameEnd = (io) => {
 
 
 
-
+let hunterIndex = 0;
 const processNightResults = (io) => {
   console.log("currentPlayer ", currentPlayer);
   let foundCurrName = null;
@@ -1130,7 +1234,7 @@ const processNightResults = (io) => {
             victim.liveCount = 0;
             victim.olderAlive = false;
             victim.isAlive = false; // מוות מוחלט
-            results.push(`הזאבים טרפו את ${victim.name} בתפקיד זקן השבט! \nמעכשיו ועד סוף המשחק לא יהיו לאזרחים תפקידים בלילה.`);
+            results.push(`הזאבים טרפו את ${victim.name} בתפקיד זקן השבט! \nמעכשיו ועד סוף המשחק לא יהיו לאזרחים כוחות בלילה.`);
             console.log(`זקן השבט ${victim.name} מת סופית.`);
           }
         
@@ -1165,8 +1269,12 @@ const processNightResults = (io) => {
    }
 
    if (lover && lover.isAlive) {
+    console.log(`Cupid ${cupid.name} died. Checking lover: ${cupid.lover}`);
      lover.isAlive = false;
      results.push(`${lover.name} בתפקיד ${loverRole} יצא מהמשחק כנאהב של הקופידון!`);
+     if (loverRole === "זקן השבט"){
+      results.push(`מעכשיו ועד סוף המשחק לא יהיו לאזרחים כוחות בלילה.`);
+     }
      console.log(results[results.length - 1]);
    }
  }
@@ -1199,22 +1307,29 @@ const processNightResults = (io) => {
     if (!hunter.isAlive) {
       hunterDied = true;
       hunterPlayer = hunter;
+      hunterIndex++;
     }
   });
 
   if (hunterDied && hunterPlayer) {
-    hunterChoosing = true; // הצייד במצב בחירה
+    if (hunterIndex == 1){
+      hunterChoosing = true; // הצייד במצב בחירה
+    }
 
   // לוג מפורט עם השחקנים החיים
   const alivePlayers = Object.values(rolesStructure).flat().filter(p => p.isAlive);
   console.log('Alive players for hunter:', alivePlayers.map(p => p.name));
+  console.log(`Hunter ${hunterPlayer.name} is triggered. Alive players:`, alivePlayers.map(p => p.name));
 
   // שידור האירוע - כולל שמירה של משתנה חיצוני לזיהוי החזרת האירוע במקרים של דיס-קונקט
   io.emit('hunterWaitingDecision', { hunterName: hunterPlayer.name });
-  io.emit('hunterChooseTarget', {
-      hunterName: hunterPlayer.name,
-      players: alivePlayers,
-  });
+  if (hunterDied && hunterPlayer) {
+    console.log(`Hunter ${hunterPlayer.name} died. Emitting hunterChooseTarget.`);
+    io.emit('hunterChooseTarget', {
+        hunterName: hunterPlayer.name,
+        players: alivePlayers,
+    });
+}
 
   // טיפול בדיסקונקטים מאוחרים
   io.on('connection', (socket) => {
@@ -1241,6 +1356,7 @@ const processNightResults = (io) => {
     nightProcessingLock = false;
   }, 500);
 };
+const hunterVotesMap = new Map(); // Map זמני לשמירת הצבעות הצייד
 
 const processVoteResults = (io, results) => {
   const rolesStructure = getAssignedRolesStructure();
@@ -1298,36 +1414,70 @@ const processVoteResults = (io, results) => {
       io.emit('playerDead', { 
         playerName: found.name, 
         role: role 
-      });    }
+      });   
+     }
   }
 
-  // בדיקת קשרים עם קופידון
-  const cupid = Object.entries(rolesStructure)
-  .flatMap(([role, players]) => players)
-  .find(p => p.role && p.role.includes('קופידון') && p.isAlive);
+  console.log(`נבחר שחקן להריגה: ${electedPlayer}, תפקיד: ${electedRole}`);
+  console.log(`בדיקת קשר קופידון עם נאהבים...`);
+  
+  const cupidPlayers = Object.entries(rolesStructure)
+  .filter(([role]) => role.includes('קופידון'))
+  .flatMap(([_, players]) => players);
 
-// רק אם יש קופידון נבצע את הלוגיקה הבאה
-if (cupid) {
-  if (cupid.lover === electedPlayer) {
-    cupid.isAlive = false; // הרג הנאהב
-      io.to(getPlayerSocketId(cupid.name)).emit('navigateToDead', { 
-        message: `הקופידון ${cupid.name} יצא מהמשחק בעקבות מותו של הנאהב!` 
-      });
-      io.to(getPlayerSocketId(cupid.name)).emit('gameNavigation');
-      io.to(getPlayerSocketId(cupid.name)).emit('pushState', '/dead');
-    
-  } else if (electedPlayer === cupid.name) {
-    const lover = Object.values(rolesStructure).flat().find(p => p.name === cupid.lover);
-    if (lover) {
-      lover.isAlive = false; // הרג הנאהב
-      io.to(getPlayerSocketId(lover.name)).emit('navigateToDead', { 
-        message: `הנאהב ${lover.name} בתפקיד ${lover.role} יצא מהמשחק בעקבות מותו של הקופידון!` 
-      });
-      io.to(getPlayerSocketId(lover.name)).emit('gameNavigation');
-      io.to(getPlayerSocketId(lover.name)).emit('pushState', '/dead');
-    }
+cupidPlayers.forEach(cupid => {
+  const lover = Object.values(rolesStructure)
+    .flat()
+    .find(p => p.name === cupid.lover);
+
+  console.log(`בדיקת קשרי קופידון: ${cupid.name} -> ${cupid.lover}`);
+
+  // אם הנאהב מת
+  if (lover && lover.name === electedPlayer) {
+    console.log(`${lover.name} נהרג - הקופידון ${cupid.name} אמור למות.`);
+    cupid.isAlive = false;
+    console.log(`Socket ID של הקופידון ${cupid.name}:`, getPlayerSocketId(cupid.name));
+    console.log(`שליחת הודעת נווט לקופידון ${cupid.name}`);
+    // שליחת הודעות והעברה לדף המתים
+    io.to(getPlayerSocketId(cupid.name)).emit('navigateToDead', {
+      message: `הקופידון ${cupid.name} יצא מהמשחק בעקבות מותו של הנאהב ${lover.name}!`,
+    });
+    io.emit('playerDeadCupid', { 
+      playerName: cupid.name, 
+      role: 'קופידון',
+      loverRole: electedRole,
+      loverName: lover.name
+
+    });   
+    io.emit('cupidDeathMessage', {
+      message: `הקופידון ${cupid.name} יצא מהמשחק בעקבות מותו של הנאהב ${lover.name}!`,
+    });
+    io.to(getPlayerSocketId(cupid.name)).emit('pushState', '/dead');
   }
-}
+
+  // אם הקופידון מת
+  if (cupid.name === electedPlayer && lover) {
+    console.log(`${cupid.name} נהרג - הנאהב ${lover.name} אמור למות.`);
+    lover.isAlive = false;
+
+    io.to(getPlayerSocketId(lover.name)).emit('navigateToDead', {
+      message: `הנאהב ${lover.name} בתפקיד ${lover.role} יצא מהמשחק בעקבות מותו של הקופידון ${cupid.name}!`,
+    });
+
+    io.emit('playerDeadLover', { 
+      playerName: lover.name, 
+      role: lover.role,
+      cupidName: cupid.name
+    });   
+
+    io.emit('cupidDeathMessage', {
+      message: `הנאהב ${lover.name} יצא מהמשחק בעקבות מותו של הקופידון ${cupid.name}!`,
+    });
+    io.to(getPlayerSocketId(lover.name)).emit('pushState', '/dead');
+  }
+});
+
+
 
 // שליפת שם ראש העיר
 const mayor = Object.values(rolesStructure)
@@ -1345,12 +1495,20 @@ const mayor = Object.values(rolesStructure)
     if (!hunter.isAlive) {
       hunterDied = true;
       hunterPlayer = hunter;
+      hunterIndex++;
+      
     }
   });
 
   if (hunterDied && hunterPlayer) {
-    hunterChoosing = true; // הצייד במצב בחירה
+    if (hunterIndex == 1){
+      hunterChoosing = true; // הצייד במצב בחירה
+    }
+    hunterVotesMap.set(hunterPlayer.name, personalVotes);
 
+    io.emit('voteResultsHunter', {
+      personalVotes,
+    });
   // לוג מפורט עם השחקנים החיים
   const alivePlayers = Object.values(rolesStructure).flat().filter(p => p.isAlive);
   console.log('Alive players for hunter:', alivePlayers.map(p => p.name));
