@@ -24,6 +24,7 @@ const addPlayer = (playerName, socketId) => {
       readyDay: false, // מוכנות עבור עמוד הלילה
       locked: false,
       hunterChoseTarget: false,
+      lover: '',
     });
     if (!firstPlayer) {
       firstPlayer = playerName; // הגדרת המנהל הראשון
