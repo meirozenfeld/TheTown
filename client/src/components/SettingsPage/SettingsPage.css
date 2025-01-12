@@ -278,9 +278,7 @@
   background-color: #f44336; /* אדום לכפתור חזור */
 }
 
-.save-button:hover {
-  background-color: #388e3c;
-}
+
 
 .back-button:hover {
   background-color: #9b0a0a;
