@@ -11,6 +11,22 @@ function HomePage() {
   const [isJoined, setIsJoined] = useState(!!sessionStorage.getItem('playerName'));
   const navigate = useNavigate();
   const location = useLocation();
+  const [roomId, setRoomId] = useState('');
+  window.dispatchEvent(new Event('gameNavigation'));
+  window.history.pushState(null, '', '/'); // עדכון היסטוריה
+
+  // useEffect(() => {
+  //   // קבלת roomId מה-URL
+  //   const queryParams = new URLSearchParams(location.search);
+  //   const room = queryParams.get('room'); // שליפת roomId
+  //   setRoomId(room);
+
+  //   // הצטרפות לחדר
+  //   if (room) {
+  //     socket.emit('joinRoom', { roomId: room });
+  //   }
+  // }, [location.search]);
+
 
   useEffect(() => {
     // איפוס המידע אם המשחק הסתיים וחזרנו לדף הבית
@@ -50,11 +66,14 @@ function HomePage() {
     // Update players list
     socket.on('updatePlayers', (playersList) => {
       setPlayers(playersList);
+      sessionStorage.setItem('playersNumber', playersList.length);
+
     });
 
     // Handle 'setFirstPlayer' event
     socket.on('setFirstPlayer', (firstPlayer) => {
       console.log('First Player:', firstPlayer); // בדיקה אם האירוע מתקבל
+      sessionStorage.setItem('firstPlayer', firstPlayer);
       setIsFirstPlayer(firstPlayer === playerName); // בדיקה אם המשתמש הוא המנהל
     });
 
@@ -116,6 +135,7 @@ function HomePage() {
   return (
     <div className="home-page">
       <h1 className="title">העיירה</h1>
+      
       <div className="input-container">
         <input
           type="text"
@@ -133,6 +153,8 @@ function HomePage() {
       >
         {isJoined ? 'הצטרפת למשחק' : 'הצטרף למשחק'}
       </button>
+      {/* <h2>חדר: {roomId}</h2> */}
+      <h2>השחקן הראשון שיצטרף, יהיה מנהל המשחק.</h2>
 
       <h2>{players.length} שחקנים נמצאים במשחק:</h2>
       
