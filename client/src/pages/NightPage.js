@@ -681,14 +681,9 @@ const sendChatMessage = () => {
 
             {/* שורת קלט וכפתור שליחה */}
             <div
-            style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                marginBottom: '10px',
-                width: '80%',
-            }}
+
             >
+              
             <textarea
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
