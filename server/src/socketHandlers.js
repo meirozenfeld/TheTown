@@ -292,7 +292,7 @@ const handleSocketEvents = (socket, io) => {
 
 
 
-    //*********************** */
+    //*********************** *        http://localhost:3706/      /
     cupids.forEach(cupid => {
       if (!cupid.isAlive && cupid.lover) {
         // קופידון מת - הורגים את הנאהב שלו
@@ -1050,7 +1050,14 @@ const checkMayorStatus = () => {
     });
   }
 };
+const isElderDead = () => {
+  const rolesStructure = getAssignedRolesStructure();
+  const elder = Object.entries(rolesStructure)
+    .filter(([role]) => role.includes('זקן השבט'))
+    .flatMap(([_, players]) => players)[0]; // מציאת זקן השבט
 
+  return elder && !elder.isAlive; // החזרת TRUE אם זקן השבט מת
+};
 let isGameOver = false; // משתנה למעקב אחר סיום המשחק
 const checkGameEnd = (io) => {
   const rolesStructure = getAssignedRolesStructure();
@@ -1079,7 +1086,7 @@ const checkGameEnd = (io) => {
     .flatMap(([_, players]) => players);
   const lovers = cupids.map(cupid => cupid.lover);
   const onlyCupidAndLover = alivePlayers.length === 2 && alivePlayers.some(p => lovers.includes(p.name));
-
+  hunterChoosing = !isElderDead();
   let resultMessage = '';
   if (noOneAlive) {
     resultMessage = 'אף אחד לא ניצח';
