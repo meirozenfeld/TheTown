@@ -125,15 +125,15 @@
 
 /* כפתורי פלוס ומינוס */
 .counter-button {
-  color: #454ea0; /* צבע טקסט */
+  color: #f0f0f0; /* צבע טקסט */
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 1.5rem; /* גודל טקסט */
   width: 40px;
   height: 40px;
-  border: 1px solid #454ea0; /* גבול בצבע נדרש */
-  background-color: #f0f0f0; /* רקע אפור בהיר */
+  border: 1px solid #f0f0f0; /* גבול בצבע נדרש */
+  background-color: #454ea0; /* רקע אפור בהיר */
   cursor: pointer;
   border-radius: 50%; /* צורה עגולה */
   transition: all 0.3s ease; /* מעבר חלק */
@@ -220,7 +220,7 @@
 }
 
 .switch-title {
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: bold;
   margin: 0;
 }
@@ -260,8 +260,8 @@
 }
 
 /* עיצוב כפתור */
-.save-button,
-.back-button {
+.save-button
+ {
   width: 200px;
   padding: 10px;
   font-size: 1.3rem;
@@ -274,12 +274,5 @@
   text-align: center;
 }
 
-.back-button {
-  background-color: #f44336; /* אדום לכפתור חזור */
-}
 
 
-
-.back-button:hover {
-  background-color: #9b0a0a;
-}
