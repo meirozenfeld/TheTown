@@ -456,7 +456,7 @@ function VotePage() {
           ))}
 
 
-          {!waitingForHunter && (
+        {(!waitingForHunter || elderDead) && (
           <button
             style={{ backgroundColor: isReady ? '#108f14' : '#7e1109'}}
             onClick={handleReady}
@@ -505,3 +505,4 @@ function VotePage() {
 }
 
 export default VotePage;
+
