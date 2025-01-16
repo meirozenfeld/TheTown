@@ -3,7 +3,6 @@ import io from 'socket.io-client';
 import klafImage from '../styles/klaf-removebg2.png';
 
 const socket = io('https://town-game-server.onrender.com');
-
 function RolePage() {
   const [playerName, setPlayerName] = useState('');
   const [role, setRole] = useState('');
