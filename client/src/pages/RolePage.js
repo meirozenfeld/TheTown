@@ -139,23 +139,26 @@ function RolePage() {
     // עדכון מצב מוכנות
     socket.emit('toggleReadyRole', { playerName, isReady: newReadyState });
   };
-      useEffect(() => {
-        setTimeout(() => {
-          const container = document.querySelector('.scroll-container');
-          if (!container) {
-            console.error('Element .scroll-container not found');
-            return;
-          }
-      
-          const img = new Image();
-          img.src = klafImage;
-      
-          img.onload = () => {
-            container.classList.add('loaded'); // הצגת התמונה
-            setTextVisible(true); // הצגת המלל
-          };
-        }, 1000); // עיכוב קצר של 100ms
-      }, []);
+useEffect(() => {
+  const timeout = setTimeout(() => {
+    const container = document.querySelector('.scroll-container');
+    if (!container) {
+      console.error('Element .scroll-container not found');
+      return;
+    }
+
+    const img = new Image();
+    img.src = klafImage;
+
+    img.onload = () => {
+      container.classList.add('loaded'); // הצגת התמונה
+      setTextVisible(true); // הצגת המלל
+    };
+  }, 1000);
+
+  return () => clearTimeout(timeout);
+}, []);
+
       // אפקט לכתיבה אות אחר אות
       useEffect(() => {
         if (description) {
