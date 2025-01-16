@@ -1086,8 +1086,12 @@ const checkGameEnd = (io) => {
     .flatMap(([_, players]) => players);
   const lovers = cupids.map(cupid => cupid.lover);
   const onlyCupidAndLover = alivePlayers.length === 2 && alivePlayers.some(p => lovers.includes(p.name));
-  hunterChoosing = !isElderDead();
-  let resultMessage = '';
+  const elder = Object.entries(rolesStructure)
+  .filter(([role]) => role.includes('זקן השבט'))
+  .flatMap(([_, players]) => players)[0]; // מציאת זקן השבט
+  if (elder){
+    hunterChoosing = !isElderDead();
+  }  let resultMessage = '';
   if (noOneAlive) {
     resultMessage = 'אף אחד לא ניצח';
     // io.emit('gameEnd', resultMessage); // שליחת האירוע לכל המשתמשים
