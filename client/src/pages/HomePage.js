@@ -123,7 +123,7 @@ function HomePage() {
 
   const handleSettingsClick = () => {
     //TODO Cange to 4
-    if (players.length < 3) {
+    if (players.length < 4) {
       alert('על מנת להתחיל את המשחק יש צורך בלפחות 4 שחקנים.');
       return;
     }
