@@ -140,25 +140,27 @@ function RolePage() {
     socket.emit('toggleReadyRole', { playerName, isReady: newReadyState });
   };
 useEffect(() => {
-  const timeout = setTimeout(() => {
+  const checkContainer = setInterval(() => {
     const container = document.querySelector('.scroll-container');
-    if (!container) {
-      console.error('Element .scroll-container not found');
-      return;
+    if (container) {
+      clearInterval(checkContainer); // עצור את הבדיקה לאחר שמצאת את האלמנט
+
+      const img = new Image();
+      img.src = klafImage;
+
+      img.onload = () => {
+        container.classList.add('loaded'); // הוספת מחלקה לאחר טעינת התמונה
+        setTextVisible(true); // הצגת המלל רק אחרי טעינת התמונה
+      };
+
+      img.onerror = () => {
+        console.error('Failed to load klaf image');
+      };
     }
+  }, 100); // בדיקה כל 100ms
 
-    const img = new Image();
-    img.src = klafImage;
-
-    img.onload = () => {
-      container.classList.add('loaded'); // הצגת התמונה
-      setTextVisible(true); // הצגת המלל
-    };
-  }, 1000);
-
-  return () => clearTimeout(timeout);
+  return () => clearInterval(checkContainer); // ניקוי הבדיקה בעת פירוק הקומפוננטה
 }, []);
-
       // אפקט לכתיבה אות אחר אות
       useEffect(() => {
         if (description) {
