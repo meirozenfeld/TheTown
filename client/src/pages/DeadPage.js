@@ -267,6 +267,12 @@ function DeadPage() {
             {hunterPersonalMessage &&  role === 'צייד'  &&(
                     <p>{hunterPersonalMessage}</p>
             )}
+    {elderDead && role === 'צייד' &&(
+            <div>
+                <p>זקן השבט לא במשחק ולכן אין לך כוחות בתור צייד</p>
+            </div>
+        )}
+
     {!elderDead && isHunter && targets.length > 0 &&  role === 'צייד' &&(
             <div>
                 {personalVotes.length > 0 && (
