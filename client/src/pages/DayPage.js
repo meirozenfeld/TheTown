@@ -301,7 +301,7 @@ return (
     <br></br>
 
     {/* הצגת כפתור מוכן רק אם לא מחכים לצייד */}
-    {!waitingForHunter && (
+    {(!waitingForHunter || elderDead) && (
       <button
         style={{backgroundColor: isReady ?  '#108f14' : '#7e1109',}}
         onClick={toggleReady}
