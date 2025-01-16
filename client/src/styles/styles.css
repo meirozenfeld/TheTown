@@ -11,11 +11,12 @@ body {
   height: 100%; /* תופס 100% מהגובה */
   background-attachment: fixed; /* מבטיח שהתמונה תישאר קבועה בזמן גלילה */
   overflow: hidden; /* מניעת גלילה על רקע בעייתי */
-
 }
 html, body {
-  overflow-x: hidden; /* מונע גלילה אופקית */
-}
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden; /* מונע גלילה אופקית */}
 body::before {
   content: "";
   position: fixed; /* קבוע למסך גם בזמן גלילה */
@@ -28,7 +29,7 @@ body::before {
 }
 p, span, div {
   font-family: 'Assistant', sans-serif; /* אותו פונט */
-  font-size: 20px; /* גודל גדול יותר */
+  font-size: 20px ; /* גודל גדול יותר */
   font-weight: 600; /* מודגש */
   line-height: 1.4; /* ריווח בין שורות */
   color: #ffffff; /* צבע טקסט */
@@ -51,6 +52,7 @@ h1, h2, h3, h4, h5, h6 {
   background-attachment: fixed; 
   min-height: 96.761vh;
   height: 100%;
+  
   direction: rtl; 
   overflow-x: hidden; 
   overflow-y: hidden; 
@@ -126,7 +128,7 @@ button {
   margin-top: 10px; /* מרווח קטן בין התיבה לכפתור */
 }
 ul li {
-  font-size: 25px; /* גודל טקסט גדול יותר */
+  font-size: 18px; /* גודל טקסט גדול יותר */
   font-weight: 700; /* מודגש */
   margin: 5px 0; /* ריווח בין שמות השחקנים */
   color: #ffffff; /* צבע לבן */
@@ -451,6 +453,7 @@ button:hover {
 }
 
 
+/* עיצוב ברירת מחדל */
 .modal-overlay2 {
   position: fixed;
   top: 0;
@@ -458,67 +461,64 @@ button:hover {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.6); /* רקע כהה */
-  z-index: 1000; /* מבטיח שה-Modal יהיה מעל התוכן */
+  z-index: 1000;
 }
+
 .modal-content {
   position: relative;
-  width: 900px; /* הגדלת הרוחב */
-  height: 800px; /* הגדלת הגובה */
+  width: 900px;
+  height: 800px;
   margin: 0 auto;
-  background: pink; /* צבע ורוד */
+  background: pink;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* תחילת התוכן יותר למעלה */
-  clip-path: path("M450 200 C300 -100 -200 300 450 800 C1100 300 600 -100 450 200 Z"); /* לב רחב יותר */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* צל עדין */
-  padding: 60px 50px; /* רווח פנימי רחב */
+  justify-content: flex-start;
+  clip-path: path("M450 200 C300 -100 -200 300 450 800 C1100 300 600 -100 450 200 Z"); /* צורת לב */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  padding: 60px 50px;
   text-align: center;
-  color: black; /* צבע טקסט */
-  font-family: 'Bona Nova', serif; /* פונט אלגנטי */
-  z-index: 1001; /* מבטיח שהתוכן יהיה מעל הרקע */
-
+  color: black;
+  font-family: 'Bona Nova', serif;
+  z-index: 1001;
 }
 
 .modal-content h2 {
-  font-size: 38px; /* כותרת גדולה */
+  font-size: 38px;
   margin-bottom: 25px;
-  margin-top: 160px; /* הורדת הכותרת */
-  margin-right: 100px; /* הורדת הכותרת */
+  margin-top: 160px;
   text-shadow: 
     -1px -1px 0 white,  
      1px -1px 0 white, 
     -1px  1px 0 white, 
-     1px  1px 0 white; /* מסגרת לבנה סביב האותיות */
+     1px  1px 0 white;
   color: rgb(122, 18, 18);
 }
 
 .modal-content p {
-  font-size: 25px; /* טקסט גדול */
+  font-size: 25px;
   color: rgb(122, 18, 18);
   margin-bottom: 30px;
-  margin-top: 20px; /* הורדת הטקסט טיפה למטה */
-  margin-right: 100px; /* הורדת הכותרת */
+  margin-top: 20px;
+  margin-right: 100px;
   text-shadow: 
     -1px -1px 0 white,  
      1px -1px 0 white, 
     -1px  1px 0 white, 
-     1px  1px 0 white; /* מסגרת לבנה סביב האותיות */
-  line-height: 1.8; /* ריווח בין השורות */
+     1px  1px 0 white;
+  line-height: 1.8;
 }
 
 .modal-content button {
-  padding: 15px 30px; /* כפתור גדול יותר */
+  padding: 15px 30px;
   background: rgb(122, 18, 18);
   color: white;
   border: 1px solid rgb(0, 0, 0);
-  border-radius: 15px; /* עיגול פינות */
+  border-radius: 15px;
   cursor: pointer;
   font-size: 20px;
   transition: all 0.3s ease;
   margin-top: 20px;
-  margin-right: 100px; /* הורדת הכותרת */
-
 }
 
 .modal-content button:hover {
@@ -529,12 +529,11 @@ button:hover {
 
 
 
-
 .night-page {
   text-align: right; /* יישור כל התוכן לימין */
   background-position: center; /* מרכז התמונה */
   background-repeat: no-repeat; /* מניעת חזרה */
-  background-attachment: fixed; /* רקע קבוע בעת גלילה */
+  background-size: cover;
   min-height: 100vh; /* מינימום גובה של המסך המלא */
   width: 100%; /* רוחב מלא */
   position: relative; /* שכבות נוספות */
@@ -545,6 +544,7 @@ button:hover {
   direction: rtl;
   overflow-y: auto; /* גלילה אנכית במידת הצורך */
   overflow-x: hidden; /* מניעת גלילה אופקית */
+
 }
 
 /* שכבת שקיפות מעל הרקע */
@@ -563,6 +563,7 @@ button:hover {
 /* רקעים לכל התפקידים */
 .night-page.wolf {
   background-image: url('./wolf.png');
+
 }
 
 .night-page.shield {
@@ -571,30 +572,37 @@ button:hover {
 
 .night-page.witch {
   background-image: url('./witch.png');
+
 }
 
 .night-page.villager {
   background-image: url('./villager.png');
+
 }
 
 .night-page.hunter {
   background-image: url('./hunter.png');
+
 }
 
 .night-page.seer {
   background-image: url('./seer.png');
+
 }
 
 .night-page.elder {
   background-image: url('./elder.png');
+
 }
 
 .night-page.cupid {
   background-image: url('./cupid.png');
+
 }
 
 .night-page.leech {
   background-image: url('./leech.png');
+
 }
 
 /* כל ההגדרות המשותפות נשארות זהות */
@@ -610,12 +618,13 @@ button:hover {
   background-size: 100% 100%; /* התאמת התמונה לכל המסך */
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed;
   text-align: right;
   padding-right: 40px;
   padding-left: 40px; /* רווח מהקצה הימני */
   padding-bottom: 10px;
   overflow-y: auto; /* מאפשר גלילה במקרה של תוכן רב */
+  padding-top: 110px;
+
 }
 
 /* התוכן עליון מעל הכל */
@@ -665,14 +674,41 @@ button:hover {
   background-color: #6d4c41; /* ירוק כהה יותר */
 }
 .night-page h2{
-  font-size: 27px; /* כותרת גדולה */
+  font-size: 16px; /* כותרת גדולה */
   margin-bottom: 25px;
   text-shadow: 
     -1px -1px 0 #8d6e63,  
      1px -1px 0 #8d6e63, 
     -1px  1px 0 #8d6e63, 
      1px  1px 0 #8d6e63; /* מסגרת לבנה סביב האותיות */
-  color: #000000;
+  color: #f0d2d2;
+  
+}
+.wolf-chat {
+  display: flex ;
+  flex-direction: column ;
+  align-items: center ;
+  width: 60% ; /* פריסת הצ'אט על כל הרוחב */
+  padding: 0;
+  margin: 0 ;
+}
+
+.wolf-chat > div {
+  width: 100% ; /* תיבת הצ'אט פרוסה לרוחב */
+  margin-bottom: 10px ;
+
+}
+
+
+
+.wolf-chat textarea {
+  width: 100% ; /* תיבת טקסט פרוסה על כל הרוחב */
+  margin-bottom: 10px ;
+  padding: 10px ;
+  font-size: 16px ;
+  resize: none ;
+  border: 1px solid #ccc ;
+  border-radius: 5px;
   
 }
 
@@ -916,10 +952,10 @@ button:hover {
   font-weight: bold; /* טקסט מודגש */
   color: #ffffff; /* צבע טקסט */
   text-shadow: 
-    -2px -2px 0 black,  
-     2px -2px 0 black, 
-    -2px  2px 0 black, 
-     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+    -1px -1px 0 black,  
+     1px -1px 0 black, 
+    -1px  1px 0 black, 
+     1px  1px 0 black; /* מסגרת לבנה סביב האותיות */
   padding: 5px; /* ריפוד קטן */
   display: inline-block; /* יישור כל אות בנפרד */
   letter-spacing: 1px; /* ריווח בין אותיות */
@@ -930,10 +966,10 @@ button:hover {
   font-weight: bold; /* טקסט מודגש */
   color: #ffffff; /* צבע טקסט */
   text-shadow: 
-    -2px -2px 0 black,  
-     2px -2px 0 black, 
-    -2px  2px 0 black, 
-     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+    -1px -1px 0 black,  
+     1px -1px 0 black, 
+    -1px  1px 0 black, 
+     1px  1px 0 black; /* מסגרת לבנה סביב האותיות */
   letter-spacing: 1px; /* ריווח בין אותיות */
 }
 
@@ -942,10 +978,10 @@ button:hover {
   font-weight: bold; /* טקסט מודגש */
   color: #ffffff; /* צבע טקסט */
   text-shadow: 
-    -2px -2px 0 black,  
-     2px -2px 0 black, 
-    -2px  2px 0 black, 
-     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+    -1px -1px 0 black,  
+     1px -1px 0 black, 
+    -1px  1px 0 black, 
+     1px  1px 0 black; /* מסגרת לבנה סביב האותיות */
   letter-spacing: 1px; /* ריווח בין אותיות */
 }
 .votes-list {
@@ -974,10 +1010,10 @@ button:hover {
   font-weight: bold; /* טקסט מודגש */
   color: #ffffff; /* צבע טקסט */
   text-shadow: 
-    -2px -2px 0 black,  
-     2px -2px 0 black, 
-    -2px  2px 0 black, 
-     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+    -1px -1px 0 black,  
+     1px -1px 0 black, 
+    -1px  1px 0 black, 
+     1px  1px 0 black; /* מסגרת לבנה סביב האותיות */
   letter-spacing: 1px; /* ריווח בין אותיות */
 }
 
@@ -997,10 +1033,10 @@ button:hover {
     font-weight: bold; /* טקסט מודגש */
     color: #ffffff; /* צבע טקסט */
     text-shadow: 
-      -2px -2px 0 black,  
-       2px -2px 0 black, 
-      -2px  2px 0 black, 
-       2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+    -1px -1px 0 black,  
+     1px -1px 0 black, 
+    -1px  1px 0 black, 
+     1px  1px 0 black; /* מסגרת לבנה סביב האותיות */
     padding: 5px; /* ריפוד קטן */
     display: inline-block; /* יישור כל אות בנפרד */
     letter-spacing: 1px; /* ריווח בין אותיות */
@@ -1060,10 +1096,10 @@ button:hover {
   font-weight: bold; /* טקסט מודגש */
   color: #ffffff; /* צבע טקסט */
   text-shadow: 
-    -2px -2px 0 black,  
-     2px -2px 0 black, 
-    -2px  2px 0 black, 
-     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+  -1px -1px 0 black,  
+  1px -1px 0 black, 
+ -1px  1px 0 black, 
+  1px  1px 0 black; /* מסגרת לבנה סביב האותיות */
   padding: 5px; /* ריפוד קטן */
   display: inline-block; /* יישור כל אות בנפרד */
   letter-spacing: 1px; /* ריווח בין אותיות */
@@ -1074,10 +1110,10 @@ button:hover {
   font-weight: bold; /* טקסט מודגש */
   color: #ffffff; /* צבע טקסט */
   text-shadow: 
-    -2px -2px 0 black,  
-     2px -2px 0 black, 
-    -2px  2px 0 black, 
-     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+  -1px -1px 0 black,  
+  1px -1px 0 black, 
+ -1px  1px 0 black, 
+  1px  1px 0 black; /* מסגרת לבנה סביב האותיות */
   padding: 5px; /* ריפוד קטן */
   display: inline-block; /* יישור כל אות בנפרד */
   letter-spacing: 1px; /* ריווח בין אותיות */
@@ -1087,10 +1123,10 @@ button:hover {
   font-weight: bold; /* טקסט מודגש */
   color: #ffffff; /* צבע טקסט */
   text-shadow: 
-    -2px -2px 0 black,  
-     2px -2px 0 black, 
-    -2px  2px 0 black, 
-     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+  -1px -1px 0 black,  
+  1px -1px 0 black, 
+ -1px  1px 0 black, 
+  1px  1px 0 black; /* מסגרת לבנה סביב האותיות */
   padding: 5px; /* ריפוד קטן */
   display: inline-block; /* יישור כל אות בנפרד */
   letter-spacing: 1px; /* ריווח בין אותיות */
@@ -1124,10 +1160,10 @@ button:hover {
   font-weight: bold; /* טקסט מודגש */
   color: #ffffff; /* צבע טקסט */
   text-shadow: 
-    -2px -2px 0 black,  
-     2px -2px 0 black, 
-    -2px  2px 0 black, 
-     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+  -1px -1px 0 black,  
+  1px -1px 0 black, 
+ -1px  1px 0 black, 
+  1px  1px 0 black; /* מסגרת לבנה סביב האותיות */
   padding: 5px; /* ריפוד קטן */
   display: inline-block; /* יישור כל אות בנפרד */
   letter-spacing: 1px; /* ריווח בין אותיות */
@@ -1138,10 +1174,10 @@ button:hover {
   font-weight: bold; /* טקסט מודגש */
   color: #ffffff; /* צבע טקסט */
   text-shadow: 
-    -2px -2px 0 black,  
-     2px -2px 0 black, 
-    -2px  2px 0 black, 
-     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+  -1px -1px 0 black,  
+  1px -1px 0 black, 
+ -1px  1px 0 black, 
+  1px  1px 0 black; /* מסגרת לבנה סביב האותיות */
   padding: 5px; /* ריפוד קטן */
   display: inline-block; /* יישור כל אות בנפרד */
   letter-spacing: 1px; /* ריווח בין אותיות */
@@ -1152,10 +1188,10 @@ button:hover {
   font-weight: bold; /* טקסט מודגש */
   color: #ffffff; /* צבע טקסט */
   text-shadow: 
-    -2px -2px 0 black,  
-     2px -2px 0 black, 
-    -2px  2px 0 black, 
-     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+  -1px -1px 0 black,  
+  1px -1px 0 black, 
+ -1px  1px 0 black, 
+  1px  1px 0 black; /* מסגרת לבנה סביב האותיות */
   padding: 5px; /* ריפוד קטן */
   display: inline-block; /* יישור כל אות בנפרד */
   letter-spacing: 1px; /* ריווח בין אותיות */
@@ -1166,10 +1202,10 @@ button:hover {
   font-weight: bold; /* טקסט מודגש */
   color: #ffffff; /* צבע טקסט */
   text-shadow: 
-    -2px -2px 0 black,  
-     2px -2px 0 black, 
-    -2px  2px 0 black, 
-     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+  -1px -1px 0 black,  
+  1px -1px 0 black, 
+ -1px  1px 0 black, 
+  1px  1px 0 black; /* מסגרת לבנה סביב האותיות */
   padding: 5px; /* ריפוד קטן */
   display: inline-block; /* יישור כל אות בנפרד */
   letter-spacing: 1px; /* ריווח בין אותיות */
@@ -1179,81 +1215,13 @@ button:hover {
   font-weight: bold; /* טקסט מודגש */
   color: #ffffff; /* צבע טקסט */
   text-shadow: 
-    -2px -2px 0 black,  
-     2px -2px 0 black, 
-    -2px  2px 0 black, 
-     2px  2px 0 black; /* מסגרת לבנה סביב האותיות */
+  -1px -1px 0 black,  
+  1px -1px 0 black, 
+ -1px  1px 0 black, 
+  1px  1px 0 black; /* מסגרת לבנה סביב האותיות */
   padding: 5px; /* ריפוד קטן */
   letter-spacing: 1px; /* ריווח בין אותיות */
   width: auto;
-}
-
-/* התאמה למסכים קטנים (מובייל) */
-@media (max-width: 768px) {
-  body {
-    background-size: cover;
-    padding: 0 10px; /* מרווח צדדי קטן יותר */
-    padding-top: 80px; /* יצירת רווח בין הכפתורים לתוכן */
-    background-attachment: scroll; /* תיקון למובייל */
-    height: auto; /* פתיחת גובה דינמי */
-    overflow-y: auto; /* אפשרות לגלילה רגילה רק לתוכן */
-  }
-
-
-  .title {
-    font-size: 40px; /* הקטנת גודל הכותרת */
-    margin: 30px 0;
-  }
-
-  .input-container input {
-    width: 100%; /* התאמת הרוחב לכל המסך */
-  }
-
-  button {
-    width: 100%; /* התאמת הכפתורים למכשירי מובייל */
-    height: 40px;
-    font-size: 16px;
-  }
-
-  /* כפתורים ברשת */
-  .player-buttons {
-    justify-content: center; /* ממרכז את הכפתורים */
-  }
-
-  .player-buttons button {
-    padding: 10px;
-    font-size: 14px;
-    flex: 0 1 calc(50% - 10px); /* 2 כפתורים בשורה */
-  }
-
-  /* מגילה ב-Modal */
-  .modal-content-role {
-    width: 90%; /* התאמה לרוחב המסך */
-    height: auto; /* גובה משתנה */
-    padding: 30px 15px; /* רווחים קטנים יותר */
-    font-size: 16px; /* טקסט קטן יותר */
-  }
-
-  .modal-content-role h2 {
-    font-size: 20px; /* כותרת קטנה יותר */
-  }
-
-  .modal-content-role p {
-    font-size: 14px;
-  }
-
-  /* תוכן הבועה */
-  .bubble-container {
-    max-width: 90%; /* התאמה למסך קטן */
-  }
-
-  .bubble-text {
-    font-size: 18px;
-  }
-
-  .bubble-button {
-    font-size: 16px;
-  }
 }
 
 
@@ -1261,34 +1229,36 @@ button:hover {
 /* התאמה לכלל העמודים במובייל */
 @media (max-width: 768px) {
   body {
-    padding: 0 10px;
-    height: auto;
-    overflow-y: auto; /* גלילה אנכית לפי הצורך */
+    background-size: cover;
+    padding: 0;
+    background-attachment: fixed;
+    overflow-y: auto; /* מאפשר גלילה אנכית */
+    overflow-x: hidden; /* מונע גלילה אופקית */
   }
 
   /* טקסט כללי */
   p, span, div {
-    font-size: 16px; /* גודל קטן יותר */
+    font-size: 14px !important; /* גודל קטן יותר */
     line-height: 1.5; /* ריווח נוסף */
   }
 
   /* כותרות */
   h1, h2, h3 {
-    font-size: 18px; /* כותרות קטנות יותר */
+    font-size: 16px; /* כותרות קטנות יותר */
     text-align: center; /* ממרכז טקסט */
   }
 
   /* כפתורים */
   button {
     padding: 10px 20px;
-    font-size: 16px;
-    width: 100%; /* התאמת כפתורים לרוחב המסך */
+    font-size: 14px;
+    width: 60%; /* התאמת כפתורים לרוחב המסך */
     margin: 10px 0; /* ריווח בין כפתורים */
   }
 
   /* טפסים */
   input, textarea {
-    font-size: 16px;
+    font-size: 14px;
     padding: 10px;
     width: 100%; /* התאמה מלאה למסך */
   }
@@ -1296,7 +1266,7 @@ button:hover {
   /* עיצוב תיבות טקסט */
   .input-container input {
     width: 100%;
-    height: 40px;
+    height: 30px;
   }
 
   /* התאמת הבועה */
@@ -1306,12 +1276,12 @@ button:hover {
   }
 
   .bubble-text {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   /* כפתורי בועה */
   .bubble-button {
-    font-size: 14px;
+    font-size: 13px;
     padding: 10px 15px;
   }
 
@@ -1324,45 +1294,512 @@ button:hover {
   }
 
   .player-buttons button {
-    font-size: 14px;
+    font-size: 13px;
     padding: 10px;
     flex: 1 1 calc(50% - 10px); /* שני כפתורים בשורה */
   }
 
   /* תוכן מגילה */
   .scroll-container {
-    width: 100%;
-    height: auto;
-    padding: 10px;
+    width: 300px; /* רוחב המגילה */
+    height: 500px!important; /* גובה המגילה */
+    background: url('klaf-removebg2.png') no-repeat center center;
+    background-size: 95% 100%; /* התאמה מלאה למיכל */
+    margin-top: 130px;
+    padding: 40px; /* רווח פנימי */
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center; /* ממרכז את התוכן */
+    align-items: center; /* ממרכז אנכית */
+    overflow: hidden; /* מונע גלישה מהמסגרת */
+    visibility: hidden; /* הסתרה עד הטעינה */
+    opacity: 0; /* שקיפות עד הטעינה */
+    transition: opacity 0.5s ease; /* אנימציית הופעה */
+    flex-shrink: 0;
   }
+  
 
   .scroll-text {
-    font-size: 14px;
-    height: auto; /* גובה דינמי */
-    line-height: 1.4;
+    font-family: 'Assistant', sans-serif;
+    font-size: 12px !important; /* גודל טקסט */
+    line-height: 1.8!important; /* ריווח בין שורות */
+    text-align: right!important; /* יישור לימין */
+    white-space: pre-wrap!important; /* תמיכה בשבירת שורות */
+    overflow: hidden!important; /* מונע גלישה */
+    height: 290px!important; /* גובה קבוע */
+    width: 90%!important; /* רוחב קבוע */
+    padding: 5px!important; /* רווח פנימי קטן */
+    margin-top: 15px!important;
+  }
+  .scroll-text p{
+    font-size: 12.5px !important; /* גודל טקסט */
+    line-height: 2!important; /* ריווח בין שורות */
+    padding: 5px!important; /* רווח פנימי קטן */
+  }
+  /* דפי משחק */
+
+  .home-page {
+    background: linear-gradient(rgba(185, 174, 161, 0.5), rgba(100, 90, 90, 0.5)), 
+    url('./back_town.jpg'); /* שילוב שכבת שקיפות עם התמונה */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh; /* גובה מינימלי */
+    margin: 0;
+    padding: 10px; /* רווחים סביב התוכן */
+    box-sizing: border-box;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .input-container {
+    width: 80%;
+    max-width: 240px; /* מגבלת רוחב */
+    margin-bottom: 20px; /* ריווח מתחת לשדה הקלט */
   }
 
-  /* דפי משחק */
-  .home-page, .settings-page, .role-page, .day-page, .night-page, .mayor-page, .vote-page, .dead-page, .end-game-page {
-    background-size: cover; /* התאמת רקע לכל המסך */
-    padding: 10px; /* ריווח פנימי */
-    overflow-y: auto; /* גלילה אנכית */
-    height: auto;
+  .input-container input {
+    padding: 10px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
+  .settings-page {
+    background: linear-gradient(rgba(185, 174, 161, 0.5), rgba(100, 90, 90, 0.5)),
+      url('./back_town.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px; /* רווחים סביב התוכן */
+    box-sizing: border-box;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .settings-page p{
+    font-size: 16px !important; /* כותרת גדולה יותר */
+
+  }
+
+  .settings-title {
+    font-size: 25px !important; /* כותרת גדולה יותר */
+  }
+
+  .settings-title2 {
+    font-size: 20px !important; /* כותרות קטנות יותר */
+
+
+  }
+
+  .feature-title {
+    font-size: 13px !important; /* כותרות קטנות יותר */
+    padding-top: 10px;
+
+  }
+
+  .feature-title h3 {
+    font-size: 14px !important; /* כותרות קטנות יותר */
+
+  }
+  .switch-title {
+    font-size: 13px !important; /* כותרות קטנות יותר */
+    padding: 0!important;
+    margin-bottom: 20px!important;
+
+  }
+
+  .toggle-switch {
+    font-size: 12px !important; /* כותרות קטנות יותר */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px; /* רווח בין מתגים */
+    width:50px; /* קטן יותר */
+    height: 20px;
+    border-radius: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    position: relative;
+    transition: background-color 0.3s ease;
+  }
+
+  .toggle-switch h3 {
+    font-size: 12px !important; /* כותרות קטנות יותר */
+
+  }
+  
+  .counter-controls {
+    display: flex;
+    align-items: center; /* יישור אנכי */
+    gap: 10px; /* רווח בין הכפתורים והמספר */
+  }
+  
+  /* כפתורי פלוס ומינוס */
+  .counter-button {
+    color: #f0f0f0; /* צבע טקסט */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem; /* גודל טקסט */
+    width: 30px !important;
+    height: 30px !important;
+    border: 1px solid #f0f0f0; /* גבול בצבע נדרש */
+    background-color: #454ea0; /* רקע אפור בהיר */
+    cursor: pointer;
+    border-radius: 50%; /* צורה עגולה */
+    transition: all 0.3s ease; /* מעבר חלק */
+  }
+  
+  .counter-button:hover {
+    background-color: #454ea0; /* שינוי רקע */
+    color: white; /* שינוי צבע טקסט */
+  }
+  
+  .counter-button:hover {
+    color: white; /* צבע הטקסט משתנה ללבן */
+  }
+  .save-button
+ {
+  width: fit-content;
+  padding: 10px;
+  font-size: 1.1rem;
+  color: #fff;
+  background-color: #454ea0; /* ירוק לכפתור שמור */
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center;
+}
+  .wolves-number {
+    color: #454ea0; /* צבע טקסט */
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 
+    -1px -1px 0 white,  
+     1px -1px 0 white, 
+    -1px  1px 0 white, 
+     1px  1px 0 white; /* מסגרת לבנה סביב כל אות */
+  }
+  
+  .role-title {
+    text-align: right; /* יישור כל התוכן לימין */
+    font-size: 1.2rem !important; /* גודל טקסט */
+    font-weight: bold; /* טקסט מודגש */
+    color: #454ea0 !important; /* צבע טקסט */
+    margin-bottom: -20px;
+    text-shadow: 
+      -1px -1px 0 white,  
+       1px -1px 0 white, 
+      -1px  1px 0 white, 
+       1px  1px 0 white; /* מסגרת לבנה סביב האותיות */
+    padding: 5px; /* ריפוד קטן */
+    display: inline-block; /* יישור כל אות בנפרד */
+    letter-spacing: 1px; /* ריווח בין אותיות */
+  
+  }
+  .role-page {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px; /* רווחים סביב התוכן */
+    box-sizing: border-box;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .role-page h2{
+    font-size: 20px !important;
+    text-align: right; /* יישור כל התוכן לימין */
+    padding-right: 40px; /* רווח מהקצה הימני */
+    color: rgb(206, 57, 181); /* צבע טקסט */
+    text-shadow: 
+      -1px -1px 0 white,  
+       1px -1px 0 white, 
+      -1px  1px 0 white, 
+       1px  1px 0 white; /* מסגרת לבנה סביב האותיות */
+  }
+  .day-page {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px; /* רווחים סביב התוכן */
+    box-sizing: border-box;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 60px;
+
+  }
+  .night-page {
+    
+    background-size: cover;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px; /* רווחים סביב התוכן */
+    box-sizing: border-box;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    
+    align-items: center;
+    
+  }
+  .wolf-chat {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important; /* פריסת הצ'אט על כל הרוחב */
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  .wolf-chat > div {
+    width: 110% !important; /* תיבת הצ'אט פרוסה לרוחב */
+    margin-bottom: 10px !important;
+  }
+  
+
+  
+  .wolf-chat textarea {
+    width: 85% !important; /* תיבת טקסט פרוסה על כל הרוחב */
+    margin-bottom: 10px !important;
+    padding: 10px !important;
+    font-size: 14px !important;
+    resize: none !important;
+    border: 1px solid #ccc !important;
+    border-radius: 5px !important;
+    
+  }
+  .wolf-chat button {
+    width: 50% !important; /* תיבת טקסט פרוסה על כל הרוחב */
+    padding: 0px !important;
+    align-items: center !important;
+    
+  }
+
+  
+  .mayor-page {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px; /* רווחים סביב התוכן */
+    box-sizing: border-box;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 60px !important;
+
+  }
+  @keyframes flash-mayor {
+    0% { 
+      font-size: 16px; /* גודל טקסט */
+      color: rgb(158, 17, 17); 
+      font-weight: bold; /* טקסט מודגש */
+      padding: 5px; /* ריפוד קטן */
+      display: inline-block; /* יישור כל אות בנפרד */
+      letter-spacing: 1px; /* ריווח בין אותיות */
+      margin-bottom: 10px; /* רווח קטן בין השורות */
+  
+    }
+    50% { 
+      font-size: 16px; /* גודל טקסט */
+      font-weight: bold; /* טקסט מודגש */
+      color: #3206d3; /* צבע טקסט */
+      text-shadow: 
+        -1px -1px 0 rgb(255, 255, 255),  
+         1px -1px 0 rgb(255, 255, 255), 
+        -1px  1px 0 rgb(255, 255, 255), 
+         1px  1px 0 rgb(255, 255, 255); /* מסגרת לבנה סביב האותיות */
+      padding: 5px; /* ריפוד קטן */
+      display: inline-block; /* יישור כל אות בנפרד */
+      letter-spacing: 1px; /* ריווח בין אותיות */
+  
+    }
+    100% { 
+      font-size: 16px; /* גודל טקסט */
+      color: rgb(158, 17, 17); 
+      font-weight: bold; /* טקסט מודגש */
+      padding: 5px; /* ריפוד קטן */
+      display: inline-block; /* יישור כל אות בנפרד */
+      letter-spacing: 1px; /* ריווח בין אותיות */
+      margin-bottom: 10px; /* רווח קטן בין השורות */
+  
+    }
+  }
+  
+  .flashing-timer-mayor {
+    animation: flash-mayor 1s infinite;
+  }
+  
+  
+  .flashing-timer-mayor {
+    animation: flash-mayor 1s infinite;
+  }
+  .vote-page {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px; /* רווחים סביב התוכן */
+    box-sizing: border-box;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 60px !important;
+
+  }
+
+  @keyframes flash {
+    0% { 
+      font-size: 16px; /* גודל טקסט */
+      color: rgb(158, 17, 17); 
+      font-weight: bold; /* טקסט מודגש */
+      padding: 5px; /* ריפוד קטן */
+      display: inline-block; /* יישור כל אות בנפרד */
+      letter-spacing: 1px; /* ריווח בין אותיות */
+      margin-bottom: 10px; /* רווח קטן בין השורות */
+  
+    }
+    50% { 
+      font-size: 16px; /* גודל טקסט */
+      font-weight: bold; /* טקסט מודגש */
+      color: #ffffff; /* צבע טקסט */
+      text-shadow: 
+      -1px -1px 0 black,  
+      1px -1px 0 black, 
+     -1px  1px 0 black, 
+      1px  1px 0 black; /* מסגרת לבנה סביב האותיות */
+      padding: 5px; /* ריפוד קטן */
+      display: inline-block; /* יישור כל אות בנפרד */
+      letter-spacing: 1px; /* ריווח בין אותיות */
+      margin-bottom: 10px; /* רווח קטן בין השורות */
+  
+    }
+    100% { 
+      font-size: 16px; /* גודל טקסט */
+      color: rgb(158, 17, 17); 
+      font-weight: bold; /* טקסט מודגש */
+      padding: 5px; /* ריפוד קטן */
+      display: inline-block; /* יישור כל אות בנפרד */
+      letter-spacing: 1px; /* ריווח בין אותיות */
+      margin-bottom: 10px; /* רווח קטן בין השורות */
+  
+    }
+  }
+  
+  .flashing-timer {
+    animation: flash 1s infinite;
+  }
+  
+  
+  .flashing-timer {
+    animation: flash 1s infinite;
+  }
+  
+  .dead-page {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px; /* רווחים סביב התוכן */
+    box-sizing: border-box;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .end-game-page {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px; /* רווחים סביב התוכן */
+    box-sizing: border-box;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+    /* תוכן עמודים */
+    .home-page h1{
+      font-size: 55px;
+      text-align: center;
+    }
 
   /* תוכן עמודים */
-  .home-page h1, .settings-page h1, .role-page h1, .day-page h1, .night-page h1, .mayor-page h1, .vote-page h1, .dead-page h1, .end-game-page h1 {
-    font-size: 22px;
+  .settings-page h1, .role-page h1, .day-page h1, .mayor-page h1, .vote-page h1, .dead-page h1, .end-game-page h1 {
+    font-size: 16px;
     text-align: center;
   }
 
+  .end-game-page h1 {
+    font-size: 18px !important;
+    text-align: center;
+  }
+  .end-game-page h2 {
+    font-size: 18px !important;
+    text-align: center;
+  }
+  .end-game-page h3 {
+    font-size: 16px !important;
+    text-align: center;
+  }
+  .end-game-page ul{
+    font-size: 0rem !important; /* גודל טקסט */
+    font-weight: bold; /* טקסט מודגש */
+    color: #ffffff; /* צבע טקסט */
+    text-shadow: 
+    -1px -1px 0 black,  
+    1px -1px 0 black, 
+   -1px  1px 0 black, 
+    1px  1px 0 black; /* מסגרת לבנה סביב האותיות */
+    padding: 5px; /* ריפוד קטן */
+    display: inline-block; /* יישור כל אות בנפרד */
+    letter-spacing: 1px; /* ריווח בין אותיות */
+  }
+  .end-game-page li{
+    font-size: 14px !important; /* גודל טקסט */
+
+  }
+  .night-page h1 {
+    font-size: 16px;
+    text-align: center;
+  }
+  .day-page c{
+    font-size: 16px !important;
+    text-align: center;
+  }
   /* עמוד ראש העיר */
   .mayor-page {
     padding: 10px; /* רווחים קטנים יותר */
   }
 
   .mayor-page h2 {
-    font-size: 18px;
+    font-size: 12px;
   }
 
   .mayor-page.mayor-selected {
@@ -1371,7 +1808,7 @@ button:hover {
 
   /* טקסט בעמוד בחירות */
   .vote-page h3, .vote-page h4 {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   /* עמוד ההצבעות */
@@ -1384,10 +1821,39 @@ button:hover {
     font-size: 14px;
     padding: 8px 12px;
   }
+  /* כפתורים בעמוד ההצבעות */
+  .night-page button {
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: 700; /* מודגש יותר */
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    text-transform: uppercase; /* אותיות גדולות */
+    width: 200px; /* הבטחת רוחב זהה לכפתור */
+    height: 40px; /* גובה הכפתור */
+    margin-top: 10px; /* מרווח קטן בין התיבה לכפתור */
+    padding: 0px !important;
+  }
 
+  .life-potion-container {
+    font-size: 14px;
+    width: 100%; /* התאמה למובייל */
+  }
+  .wolf-messages {
+    padding-top: 15px !important;
+  }
+  .wolf-messages h2 {
+    font-size: 16px !important;
+  }
+  .wolf-messages p {
+    font-size: 13px !important;
+
+  }
   /* עמוד הסיום */
   .end-game-page h1, .end-game-page h2, .end-game-page h3 {
-    font-size: 18px;
+    font-size: 14px;
     text-align: center;
   }
 
@@ -1402,26 +1868,76 @@ button:hover {
 
   /* עמוד המתים */
   .dead-page h1, .dead-page h2, .dead-page p {
-    font-size: 18px;
+    font-size: 16px;
   }
 
-  /* מודאלים */
+
+}
+
+
+/* מדיה קווריז למסכים בינוניים */
+@media (max-width: 768px) {
   .modal-content {
-    width: 95%;
-    height: auto;
-    padding: 20px;
-    font-size: 14px;
+    width: 70vw; /* גודל יחסי לרוחב המסך */
+    height: 65vh; /* גובה יחסי לגובה המסך */
+    clip-path: path("M35vw 10vh C25vw -5vh -10vw 20vh 35vw 65vh C70vw 20vh 50vw -5vh 35vw 10vh Z"); /* לב יחסי */
+    margin: auto;
   }
 
   .modal-content h2 {
-    font-size: 20px;
+    font-size: 20px; /* כותרת קטנה יותר */
+    margin-top: 15px;
   }
 
   .modal-content p {
-    font-size: 14px;
+    font-size: 16px; /* טקסט קטן יותר */
+    margin: 10px 0;
   }
 
   .modal-content button {
-    font-size: 14px;
+    font-size: 14px; /* כפתור קטן יותר */
+    padding: 8px 15px;
   }
+}
+
+/* מדיה קווריז למסכים קטנים במיוחד */
+@media (max-width: 480px) {
+  .modal-content {
+      position: absolute;
+      top: 50%; /* מיקום באמצע המסך */
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.4); /* הקטנת המודל ל-60% */
+      width: 900px; /* שמירה על רוחב מקורי */
+      height: 800px; /* שמירה על גובה מקורי */
+      clip-path: path("M450 200 C300 -100 -200 300 450 800 C1100 300 600 -100 450 200 Z"); /* שמירה על לב מלא */
+      background: pink;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      padding: 60px 0px;
+      text-align: center;
+      color: black;
+      font-family: 'Bona Nova', serif;
+      z-index: 1001;
+    }
+
+    .modal-content h2 {
+      font-size: 40px; /* כותרת קטנה יותר */
+      margin-top: 155px;
+
+    }
+  
+    .modal-content p {
+      font-size: 33px; /* טקסט קטן יותר */
+      
+    }
+  
+    .modal-content button {
+      width: 250px;
+      height: 80px;
+      font-size: 20px; /* כפתור קטן יותר */
+      padding: 6px 12px;
+    }
 }
