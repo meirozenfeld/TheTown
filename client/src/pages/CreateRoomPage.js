@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:5001'); // עדכן לפי השרת שלך
+const socket = io('https://town-game-server.onrender.com');
 
 function CreateRoomPage() {
   const [roomName, setRoomName] = useState('');
