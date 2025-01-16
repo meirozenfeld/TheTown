@@ -32,6 +32,7 @@ const SettingsPage = () => {
   const playersNumber = sessionStorage.getItem('playersNumber');
 
 
+
   useEffect(() => {
     const newSocket = io('https://town-game-server.onrender.com');
     setSocket(newSocket);
@@ -46,7 +47,7 @@ const SettingsPage = () => {
       setIsLoading(false);
     });
 
- newSocket.on('updatePlayers', (playersList) => {
+  newSocket.on('updatePlayers', (playersList) => {
       setPlayerCount(playersList.length);
     });
 
@@ -122,14 +123,14 @@ const handleSave = async () => {
   };
   
   
- if (isLoading) {
+if (isLoading) {
     return <h1>טוען נתונים...</h1>;
   }
   // If not the manager, show waiting message
   if ((isWaitingForSettings || !isManager) && !isLoading) {
     return (
     <div className="settings-page">
-      <h1 className="settings-title2">המתן</h1>
+      <h1 className="settings-title2">המתן...</h1>
       <p className="settings-paragraph">
         {!isManager 
           ? `רק המנהל (${firstPlayerName}) יכול לערוך את הגדרות המשחק` 
