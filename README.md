@@ -74,6 +74,7 @@ A real-time, multi-player social deduction game inspired by **Mafia/Werewolf**, 
 <img width="1172" height="846" alt="זקן לילה" src="https://github.com/user-attachments/assets/5f086877-217e-4b0a-8ae4-9e9a3be95e82" />
 <img width="876" height="812" alt="זאב לילה" src="https://github.com/user-attachments/assets/7b878d08-cc43-4b16-bea0-19e7cc98b63b" />
 <img width="1172" height="863" alt="מגן לילה" src="https://github.com/user-attachments/assets/1b6d7b0c-ad48-4ece-9e88-be327e9cf7e2" />
+<img width="1171" height="872" alt="בוקר" src="https://github.com/user-attachments/assets/a48870fe-c7c9-4828-bd18-60cba175deb6" />
 
 ### Mayor Election
 <p align="center">
@@ -86,21 +87,25 @@ A real-time, multi-player social deduction game inspired by **Mafia/Werewolf**, 
 <p align="center">
   <br><sub>Public discussion and vote to eliminate one player.</sub>
 </p>
+<img width="1171" height="875" alt="בחירה בבוקר" src="https://github.com/user-attachments/assets/a509ee3f-014f-41f8-b836-ea218e010842" />
 
 ### Player Elimination
 <p align="center">
   <br><sub>Eliminated player screen and status update to the town.</sub>
 </p>
+<img width="1172" height="872" alt="שחקן יצא" src="https://github.com/user-attachments/assets/20b27399-3b83-4b17-9a7d-7cce397d6f3f" />
 
 ### Lovers Chosen by Cupid
 <p align="center">
   <br><sub>Two players linked as Lovers—shared fate and special win path.</sub>
 </p>
+<img width="1170" height="873" alt="נאהב" src="https://github.com/user-attachments/assets/a6bd88ff-4e30-4277-b04a-29917fa0fcee" />
 
 ### Game Over (Endgame Summary)
 <p align="center">
   <br><sub>Final results showing the winning team and key events.</sub>
 </p>
+<img width="1173" height="875" alt="סוף משחק" src="https://github.com/user-attachments/assets/6c9dd898-c3d1-4f51-a2ac-c8a5cd7dd92d" />
 
 
 
