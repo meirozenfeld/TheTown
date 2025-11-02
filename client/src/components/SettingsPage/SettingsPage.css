@@ -1,117 +1,127 @@
-/* כללי */
+/* =========================
+   Global layout & typography
+   ========================= */
 .settings-page {
   padding: 20px;
   font-family: Arial, sans-serif;
   display: flex;
   flex-direction: column;
-  align-items: center; /* יישור למרכז */
-  justify-content: flex-start; /* למעלה */
-  min-height: 95vh; /* גובה דף מלא */
-  text-align: center; /* טקסט במרכז */
-  height: 100%; /* תופס 100% מהגובה */
-
+  align-items: center;           /* Center content horizontally */
+  justify-content: flex-start;   /* Align content to the top */
+  min-height: 95vh;              /* Nearly full viewport height */
+  text-align: center;            /* Center text */
+  height: 100%;                  /* Take full available height */
 }
 
+/* =========================
+   Headings
+   ========================= */
 .settings-title {
-  text-align: center; /* ממרכז את הכותרת */
-  font-size: 2.5rem; /* גודל כותרת */
-  font-weight: bold; /* מודגש */
-  color: #454ea0; /* צבע טקסט */
-  margin-bottom: 20px; /* מרווח תחתון */
-  text-shadow: 
-    -1px -1px 0 white,  
-     1px -1px 0 white, 
-    -1px  1px 0 white, 
-     1px  1px 0 white; /* מסגרת לבנה */
-  padding: 10px; /* ריפוד */
-  display: inline-block; /* יישור כל אות בנפרד */
-  letter-spacing: 1px; /* ריווח בין אותיות */
+  text-align: center;            /* Center the title */
+  font-size: 2.5rem;             /* Title size */
+  font-weight: bold;             /* Bold */
+  color: #454ea0;                /* Text color */
+  margin-bottom: 20px;           /* Bottom spacing */
+  text-shadow:
+    -1px -1px 0 white,
+     1px -1px 0 white,
+    -1px  1px 0 white,
+     1px  1px 0 white;           /* White outline */
+  padding: 10px;                 /* Padding */
+  display: inline-block;         /* Size to content */
+  letter-spacing: 1px;           /* Letter spacing */
 }
+
 .settings-title2 {
-  position: absolute; /* מיקום מוחלט */
-  top: 0; /* מיקום מלמעלה */
-  right: 20px; /* מרחק מהקצה הימני */
-  font-size: 2.5rem; /* גודל כותרת */
-  font-weight: bold; /* מודגש */
-  color: #454ea0; /* צבע טקסט */
-  margin-bottom: 10px; /* רווח קטן לכותרת עצמה */
-  text-shadow: 
-    -1px -1px 0 white,  
-     1px -1px 0 white, 
-    -1px  1px 0 white, 
-     1px  1px 0 white; /* מסגרת לבנה סביב האותיות */
-  padding: 10px; /* ריפוד */
-  display: inline-block; /* כל אות בנפרד */
-  letter-spacing: 1px; /* ריווח בין אותיות */
+  position: absolute;            /* Absolute positioning */
+  top: 0;                        /* From top */
+  right: 20px;                   /* From right edge */
+  font-size: 2.5rem;             /* Title size */
+  font-weight: bold;             /* Bold */
+  color: #454ea0;                /* Text color */
+  margin-bottom: 10px;           /* Minor bottom margin for the title itself */
+  text-shadow:
+    -1px -1px 0 white,
+     1px -1px 0 white,
+    -1px  1px 0 white,
+     1px  1px 0 white;           /* White outline around letters */
+  padding: 10px;                 /* Padding */
+  display: inline-block;         /* Size to content */
+  letter-spacing: 1px;           /* Letter spacing */
 }
 
 .settings-paragraph {
-  position: absolute; /* מיקום מוחלט */
-  top: 100px; /* בדיוק מתחת לכותרת עם רווח של 70px */
-  right: 20px; /* מיקום זהה לכותרת */
-  font-size: 1.6rem; /* גודל טקסט קטן יותר */
-  color: #ffffff; /* צבע טקסט */
-  padding: 10px; /* ריפוד קטן */
-  text-align: right; /* יישור לימין */
-  line-height: 1.6; /* ריווח בין השורות */
-  max-width: 500px; /* מגבלת רוחב לטקסט */
-  text-shadow: 
-  -1px -1px 0 #454ea0,  
-   1px -1px 0 #454ea0, 
-  -1px  1px 0 #454ea0, 
-   1px  1px 0 #454ea0; /* מסגרת לבנה סביב כל אות */
+  position: absolute;            /* Absolute positioning */
+  top: 100px;                    /* Below the title (approx. 70px gap) */
+  right: 20px;                   /* Align with the title */
+  font-size: 1.6rem;             /* Smaller text */
+  color: #ffffff;                /* Text color */
+  padding: 10px;                 /* Padding */
+  text-align: right;             /* Right aligned (for RTL contexts) */
+  line-height: 1.6;              /* Line spacing */
+  max-width: 500px;              /* Max text width */
+  text-shadow:
+    -1px -1px 0 #454ea0,
+     1px -1px 0 #454ea0,
+    -1px  1px 0 #454ea0,
+     1px  1px 0 #454ea0;         /* Contrasting outline */
 }
 
+/* =========================
+   Section labels
+   ========================= */
 .role-title {
-  color: #ffffff; /* צבע הטקסט */
+  color: #ffffff;                /* Text color */
   font-weight: bold;
   padding: 5px 10px;
   border-radius: 5px;
-  margin-bottom: 10px; /* ריווח למטה */
+  margin-bottom: 10px;           /* Bottom spacing */
   text-align: center;
-  font-size: 1.5rem; /* גודל טקסט */
-
+  font-size: 1.5rem;             /* Size */
 }
 
 .feature-title {
-  color: #ffffff; /* צבע טקסט */
+  color: #ffffff;                /* Text color */
   font-size: 1.5rem;
-  font-weight: bold; /* טקסט מודגש */
-  text-shadow: 
-    -1px -1px 0 #454ea0,  
-     1px -1px 0 #454ea0, 
-    -1px  1px 0 #454ea0, 
-     1px  1px 0 #454ea0; /* מסגרת לבנה סביב כל אות */
-  padding: 5px 10px; /* ריפוד */
-  display: inline-block; /* כל אות בנפרד */
-  letter-spacing: 2px; /* ריווח בין אותיות */
-  text-align: center; /* טקסט במרכז */
+  font-weight: bold;             /* Bold */
+  text-shadow:
+    -1px -1px 0 #454ea0,
+     1px -1px 0 #454ea0,
+    -1px  1px 0 #454ea0,
+     1px  1px 0 #454ea0;         /* Outline */
+  padding: 5px 10px;             /* Padding */
+  display: inline-block;         /* Size to content */
+  letter-spacing: 2px;           /* Letter spacing */
+  text-align: center;            /* Center text */
 }
 
-/* רכיב הזאבים */
+/* =========================
+   Wolves counter
+   ========================= */
 .wolves-counter {
   display: flex;
-  align-items: center; /* יישור אנכי */
-  justify-content: center; /* יישור אופקי */
-  gap: 10px; /* רווח בין הכותרת לכפתורים */
-  margin-bottom: 0px; /* רווח למטה */
-  width: 100%; /* שימוש ברוחב מלא */
+  align-items: center;           /* Vertical alignment */
+  justify-content: center;       /* Horizontal alignment */
+  gap: 10px;                     /* Space between title and buttons */
+  margin-bottom: 0px;            /* Bottom spacing */
+  width: 100%;                   /* Full width */
 }
-/* הכותרת עם הכפתורים לצד שמאל */
+
+/* Header row for counter: title + controls */
 .counter-header {
   display: flex;
-  align-items: center; /* יישור אנכי */
-  gap: 20px; /* רווח בין הכותרת לכפתורים */
+  align-items: center;           /* Vertical alignment */
+  gap: 20px;                     /* Space between title and controls */
 }
 
 .settings-section-wolves {
   display: flex;
-  justify-content: center; /* מרכז אופקית */
-  align-items: center; /* מרכז אנכית */
-  width: 100%; /* רוחב מלא */
-  margin-bottom: 5px; /* רווח למטה */
-  
+  justify-content: center;       /* Center horizontally */
+  align-items: center;           /* Center vertically */
+  width: 100%;                   /* Full width */
+  margin-bottom: 5px;            /* Bottom spacing */
 }
+
 .wolves-title {
   font-size: 1.5rem;
   font-weight: bold;
@@ -119,48 +129,51 @@
 
 .counter-controls {
   display: flex;
-  align-items: center; /* יישור אנכי */
-  gap: 10px; /* רווח בין הכפתורים והמספר */
+  align-items: center;           /* Vertical alignment */
+  gap: 10px;                     /* Space between buttons and value */
 }
 
-/* כפתורי פלוס ומינוס */
+/* +/- buttons */
 .counter-button {
-  color: #f0f0f0; /* צבע טקסט */
+  color: #f0f0f0;                /* Text color */
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.5rem; /* גודל טקסט */
+  font-size: 1.5rem;             /* Icon size */
   width: 40px;
   height: 40px;
-  border: 1px solid #f0f0f0; /* גבול בצבע נדרש */
-  background-color: #454ea0; /* רקע אפור בהיר */
+  border: 1px solid #f0f0f0;     /* Border color */
+  background-color: #454ea0;     /* Button background */
   cursor: pointer;
-  border-radius: 50%; /* צורה עגולה */
-  transition: all 0.3s ease; /* מעבר חלק */
+  border-radius: 50%;            /* Circle button */
+  transition: all 0.3s ease;     /* Smooth hover transition */
 }
 
 .counter-button:hover {
-  background-color: #454ea0; /* שינוי רקע */
-  color: white; /* שינוי צבע טקסט */
+  background-color: #454ea0;     /* Background on hover */
+  color: white;                  /* Text color on hover */
 }
 
+/* (Duplicate hover rule retained intentionally) */
 .counter-button:hover {
-  color: white; /* צבע הטקסט משתנה ללבן */
+  color: white;                  /* Ensure white text on hover */
 }
 
 .wolves-number {
-  color: #454ea0; /* צבע טקסט */
+  color: #454ea0;                /* Text color */
   font-size: 1.5rem;
   font-weight: bold;
   text-align: center;
-  text-shadow: 
-  -1px -1px 0 white,  
-   1px -1px 0 white, 
-  -1px  1px 0 white, 
-   1px  1px 0 white; /* מסגרת לבנה סביב כל אות */
+  text-shadow:
+    -1px -1px 0 white,
+     1px -1px 0 white,
+    -1px  1px 0 white,
+     1px  1px 0 white;           /* White outline */
 }
 
-/* מתג - סידור אופקי */
+/* =========================
+   Toggle switches (version 1)
+   ========================= */
 .toggle-switch-container {
   display: flex;
   align-items: center;
@@ -169,7 +182,6 @@
   margin-top: 15px;
 }
 
-/* מתג */
 .toggle-switch {
   width: 60px;
   height: 30px;
@@ -182,11 +194,11 @@
 }
 
 .switch-on {
-  background-color: #108f14; /* ירוק */
+  background-color: #108f14;     /* Green (ON) */
 }
 
 .switch-off {
-  background-color: #7e1109; /* אדום */
+  background-color: #7e1109;     /* Red (OFF) */
 }
 
 .switch-circle {
@@ -200,23 +212,28 @@
 }
 
 .switch-on .switch-circle {
-  left: calc(100% - 28px); /* ימינה במצב ON */
+  left: calc(100% - 28px);       /* Move knob to the right on ON */
 }
-/* רכיב המתגים */
+
+/* =========================
+   Toggle section layout
+   ========================= */
 .settings-section {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* יישור לשמאל */
-  gap: 10px; /* רווח קטן בין הפריטים */
+  align-items: flex-start;        /* Left-align the group */
+  gap: 10px;                      /* Small gap between items */
 }
 
+/* NOTE: Duplicate container selector retained.
+   This later rule adds width constraints and centering. */
 .toggle-switch-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%; /* תופס את כל הרוחב */
-  max-width: 300px; /* מגבלת רוחב */
-  margin: 0 auto; /* ממרכז את כל הרכיב */
+  width: 100%;                    /* Take full width */
+  max-width: 300px;               /* Constrain max width */
+  margin: 0 auto;                 /* Center the entire component */
 }
 
 .switch-title {
@@ -225,9 +242,11 @@
   margin: 0;
 }
 
+/* NOTE: Duplicate .toggle-switch and .switch-circle retained.
+   These later rules override sizes for a smaller switch variant. */
 .toggle-switch {
-  width: 50px; /* קטן יותר */
-  height: 25px;
+  width: 50px;                    /* Smaller width (overrides earlier) */
+  height: 25px;                   /* Smaller height */
   border-radius: 15px;
   cursor: pointer;
   display: flex;
@@ -237,7 +256,7 @@
 }
 
 .switch-circle {
-  width: 20px;
+  width: 20px;                    /* Smaller knob (overrides earlier) */
   height: 20px;
   background-color: #fff;
   border-radius: 50%;
@@ -247,32 +266,29 @@
 }
 
 .switch-on .switch-circle {
-  left: calc(100% - 22px); /* מעביר ימינה */
+  left: calc(100% - 22px);        /* Move knob right for small switch */
 }
 
-/* אזור הכפתורים */
+/* =========================
+   Action buttons
+   ========================= */
 .settings-buttons {
   display: flex;
   flex-direction: column;
-  gap: 10px; /* רווח בין הכפתורים */
-  align-items: center; /* ממרכז את הכפתורים */
-  margin-top: 30px; /* רווח מלמעלה */
+  gap: 10px;                      /* Space between buttons */
+  align-items: center;            /* Center buttons */
+  margin-top: 30px;               /* Top spacing */
 }
 
-/* עיצוב כפתור */
-.save-button
- {
+.save-button {
   width: 200px;
   padding: 10px;
   font-size: 1.3rem;
   color: #fff;
-  background-color: #454ea0; /* ירוק לכפתור שמור */
+  background-color: #454ea0;      /* Primary action color */
   border: none;
   border-radius: 15px;
   cursor: pointer;
   transition: background-color 0.3s ease;
   text-align: center;
 }
-
-
-
