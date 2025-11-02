@@ -2,8 +2,8 @@ import React from 'react';
 import './SettingsPage.css';
 
 const TimeMayorCounter = ({ mayorTime, onChange }) => {
-  const increment = () => onChange(Math.min(mayorTime + 1, 10));  // עדכון הערך לפי הלחיצה
-  const decrement = () => onChange(Math.max(mayorTime - 1, 1));  // עדכון הערך לפי הלחיצה
+  const increment = () => onChange(Math.min(mayorTime + 1, 10));  
+  const decrement = () => onChange(Math.max(mayorTime - 1, 1)); 
 
   return (
 <div className="wolves-counter">
@@ -20,3 +20,4 @@ const TimeMayorCounter = ({ mayorTime, onChange }) => {
 };
 
 export default TimeMayorCounter;
+
