@@ -1,4 +1,4 @@
-// 5. app.js (Updated to use settings routes)
+// app.js (Updated to use settings routes)
 const express = require('express');
 const cors = require('cors');
 const settingsRoutes = require('./routes/settings');
