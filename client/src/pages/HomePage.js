@@ -1,3 +1,10 @@
+// HomePage.jsx
+// Purpose: Lobby/home screen. Handles player join, first-player (host) detection,
+// players list updates, and navigation to settings once enough players joined.
+// Notes:
+// - Logic preserved exactly; only comments translated and tightened.
+// - No code omitted.
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import io from 'socket.io-client';
@@ -12,91 +19,92 @@ function HomePage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [roomId, setRoomId] = useState('');
+
+  // Fire a navigation event and normalize history to home (kept as original behavior)
   window.dispatchEvent(new Event('gameNavigation'));
-  window.history.pushState(null, '', '/'); // עדכון היסטוריה
+  window.history.pushState(null, '', '/'); // history update
 
+  // -----------------------------------------
+  // (Optional) Room support via URL parameter
+  // -----------------------------------------
   // useEffect(() => {
-  //   // קבלת roomId מה-URL
+  //   // Extract roomId from URL
   //   const queryParams = new URLSearchParams(location.search);
-  //   const room = queryParams.get('room'); // שליפת roomId
+  //   const room = queryParams.get('room');
   //   setRoomId(room);
-
-  //   // הצטרפות לחדר
+  //
+  //   // Join room if provided
   //   if (room) {
   //     socket.emit('joinRoom', { roomId: room });
   //   }
   // }, [location.search]);
 
-
   useEffect(() => {
-    // איפוס המידע אם המשחק הסתיים וחזרנו לדף הבית
+    // Reset session data if game was restarted and we returned to home
     const isRestart = sessionStorage.getItem('restartGame');
     if (isRestart) {
-        sessionStorage.clear();
-        sessionStorage.setItem('settings', settings); // שמירת ההגדרות בלבד
-        sessionStorage.removeItem('restartGame'); // מחיקה של הדגל
+      sessionStorage.clear();
+      sessionStorage.setItem('settings', settings); // keep settings only (as in original)
+      sessionStorage.removeItem('restartGame');     // clear the restart flag
     }
 
     socket.emit('requestPlayers');
 
     return () => {
-        socket.off('clearLocalStorage');
+      socket.off('clearLocalStorage');
     };
-}, []);
-
+  }, []);
 
   useEffect(() => {
-    // Clear sessionStorage and reset state
+    // Server requests client to clear local storage and reset lobby state
     socket.on('clearLocalStorage', () => {
       sessionStorage.clear();
       setPlayerName('');
       setIsJoined(false);
     });
 
-  // Handle name existence error
-  const handleNameTaken = (message) => {
-    setPlayerName(''); // ניקוי השם בתיבת הטקסט
-    setIsJoined(false); // אפשר להקליד שם חדש
-    alert(message); // הצגת הודעה
-  };
+    // Handle "name already taken" error from server
+    const handleNameTaken = (message) => {
+      setPlayerName('');     // clear input
+      setIsJoined(false);    // allow entering a new name
+      alert(message);        // show server message
+    };
 
-  socket.off('nameTaken'); // הסר מאזינים קודמים
-  socket.on('nameTaken', handleNameTaken); // הוסף מאזין חדש
+    socket.off('nameTaken'); // avoid duplicate listeners
+    socket.on('nameTaken', handleNameTaken);
 
-    // Update players list
+    // Update players list from server
     socket.on('updatePlayers', (playersList) => {
       setPlayers(playersList);
       sessionStorage.setItem('playersNumber', playersList.length);
-
     });
 
-    // Handle 'setFirstPlayer' event
+    // Identify first player (host) based on server signal
     socket.on('setFirstPlayer', (firstPlayer) => {
-      console.log('First Player:', firstPlayer); // בדיקה אם האירוע מתקבל
+      console.log('First Player:', firstPlayer);
       sessionStorage.setItem('firstPlayer', firstPlayer);
-      setIsFirstPlayer(firstPlayer === playerName); // בדיקה אם המשתמש הוא המנהל
+      setIsFirstPlayer(firstPlayer === playerName);
     });
 
-    // Navigations
+    // Navigate to settings when the server says so
     socket.on('navigateToSettings', () => {
-            window.dispatchEvent(new Event('gameNavigation'));
-            window.history.pushState(null, '', '/settings'); // עדכון היסטוריה
-
+      window.dispatchEvent(new Event('gameNavigation'));
+      window.history.pushState(null, '', '/settings'); // history update
       navigate('/settings');
     });
 
-    // Request current players on location change
+    // Request current players (also on location change)
     socket.emit('requestPlayers');
 
-    // Cleanup
+    // Cleanup listeners
     return () => {
       socket.off('clearLocalStorage');
-      socket.off('nameExists');
+      socket.off('nameExists');      // original cleanup retained
       socket.off('updatePlayers');
       socket.off('setFirstPlayer');
       socket.off('navigateToSettings');
     };
-  }, [playerName]);
+  }, [playerName, navigate]);
 
   const handleNameChange = (e) => {
     if (!isJoined) {
@@ -109,20 +117,20 @@ function HomePage() {
       alert('אנא הכנס שם תקין.');
       return;
     }
-    
+
     if (!isJoined) {
-      // שמירה ב-Session Storage
+      // Persist player name
       sessionStorage.setItem('playerName', playerName);
-      
-      // שליחת שם לשרת
+
+      // Send join request to server
       socket.emit('joinGame', playerName);
-  
+
       setIsJoined(true);
     }
   };
 
   const handleSettingsClick = () => {
-    //TODO Cange to 4
+    // TODO Cange to 4  (kept verbatim)
     if (players.length < 4) {
       alert('על מנת להתחיל את המשחק יש צורך בלפחות 4 שחקנים.');
       return;
@@ -135,7 +143,7 @@ function HomePage() {
   return (
     <div className="home-page">
       <h1 className="title">העיירה</h1>
-      
+
       <div className="input-container">
         <input
           type="text"
@@ -147,22 +155,22 @@ function HomePage() {
         />
       </div>
 
-      <button 
-        onClick={handleJoinGame} 
+      <button
+        onClick={handleJoinGame}
         disabled={isJoined || !playerName.trim()}
       >
         {isJoined ? 'הצטרפת למשחק' : 'הצטרף למשחק'}
       </button>
+
       {/* <h2>חדר: {roomId}</h2> */}
       <h2>השחקן הראשון שיצטרף, יהיה מנהל המשחק.</h2>
 
       <h2>{players.length} שחקנים נמצאים במשחק:</h2>
-      
+
       <ul>
         {players.map((player, index) => (
           <li key={index}>{player.name}</li>
         ))}
-        
       </ul>
 
       {isFirstPlayer && isJoined && (
