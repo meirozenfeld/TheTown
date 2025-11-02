@@ -1,3 +1,13 @@
+// SettingsPage.jsx
+// Purpose: Game setup screen (manager-only editing).
+// Responsibilities:
+// - Connect to server, detect first player (manager), and track player count
+// - Load/save settings (localStorage + POST to server), broadcast to players
+// - Navigate to Role page when server signals start
+// Notes:
+// - Logic preserved exactly. Comments are concise and in English.
+// - No code omitted.
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../components/SettingsPage/SettingsPage.css';
@@ -6,7 +16,6 @@ import TimeTownCounter from '../components/SettingsPage/TimeTownCounter';
 import TimeMayorCounter from '../components/SettingsPage/TimeMayorCounter';
 import ToggleSwitch from '../components/SettingsPage/ToggleSwitch';
 import { io } from 'socket.io-client';
-
 
 const SettingsPage = () => {
   const navigate = useNavigate();
@@ -31,8 +40,7 @@ const SettingsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const playersNumber = sessionStorage.getItem('playersNumber');
 
-
-
+  // Socket connection + primary listeners
   useEffect(() => {
     const newSocket = io('https://town-game-server.onrender.com');
     setSocket(newSocket);
@@ -47,7 +55,7 @@ const SettingsPage = () => {
       setIsLoading(false);
     });
 
-  newSocket.on('updatePlayers', (playersList) => {
+    newSocket.on('updatePlayers', (playersList) => {
       setPlayerCount(playersList.length);
     });
 
@@ -60,8 +68,7 @@ const SettingsPage = () => {
 
     newSocket.on('navigateToRolePage', () => {
       window.dispatchEvent(new Event('gameNavigation'));
-      window.history.pushState(null, '', '/role'); // עדכון היסטוריה
-
+      window.history.pushState(null, '', '/role'); // history update
       navigate('/role');
     });
   
@@ -70,8 +77,7 @@ const SettingsPage = () => {
     };
   }, [navigate]);
   
-
-  // Load saved settings from localStorage on component mount
+  // Load saved settings from localStorage on mount
   useEffect(() => {
     const savedSettings = localStorage.getItem('settings');
     if (savedSettings) {
@@ -85,18 +91,21 @@ const SettingsPage = () => {
     }
   }, []);
 
-const handleSave = async () => {
-      if (settings.townTime < 1 || settings.townTime > 10) {
-        alert('זמן הצבעת העיירה חייב להיות בין 1 ל-10 דקות.');
-        return;
-      }
-      if (settings.mayorTime < 1 || settings.mayorTime > 10) {
-        alert('זמן הצבעת ראש העיר חייב להיות בין 1 ל-10 דקות.');
-        return;
-      }
+  // Save settings locally + send to server (+ emit role assignment)
+  const handleSave = async () => {
+    // Validate time ranges
+    if (settings.townTime < 1 || settings.townTime > 10) {
+      alert('זמן הצבעת העיירה חייב להיות בין 1 ל-10 דקות.');
+      return;
+    }
+    if (settings.mayorTime < 1 || settings.mayorTime > 10) {
+      alert('זמן הצבעת ראש העיר חייב להיות בין 1 ל-10 דקות.');
+      return;
+    }
+
+    // Validate roles vs players
     const selectedRoles = Object.values(settings).filter(value => value === true).length;
     const remainingPlayers = playerCount - settings.wolvesCount - selectedRoles;
-
     if (remainingPlayers < 0) {
       alert('לא ניתן לבחור יותר תפקידים מאשר כמות השחקנים במשחק.');
       return;
@@ -104,6 +113,7 @@ const handleSave = async () => {
 
     try {
       localStorage.setItem('settings', JSON.stringify(settings));
+
       const response = await fetch('https://town-game-server.onrender.com/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -122,51 +132,53 @@ const handleSave = async () => {
     }
   };
   
-  
-if (isLoading) {
+  // Loading gate
+  if (isLoading) {
     return <h1>טוען נתונים...</h1>;
   }
-  // If not the manager, show waiting message
+
+  // Non-manager view (waiting)
   if ((isWaitingForSettings || !isManager) && !isLoading) {
     return (
-    <div className="settings-page">
-      <h1 className="settings-title2">המתן...</h1>
-      <p className="settings-paragraph">
-        {!isManager 
-          ? `רק המנהל (${firstPlayerName}) יכול לערוך את הגדרות המשחק` 
-          : 'אנא המתן בזמן שהמנהל עורך את הגדרות המשחק...'}
-      </p>
-    </div>
+      <div className="settings-page">
+        <h1 className="settings-title2">המתן...</h1>
+        <p className="settings-paragraph">
+          {!isManager 
+            ? `רק המנהל (${firstPlayerName}) יכול לערוך את הגדרות המשחק` 
+            : 'אנא המתן בזמן שהמנהל עורך את הגדרות המשחק...'}
+        </p>
+      </div>
     );
   }
 
-
-
+  // Manager view
   return (
     <div className="settings-page">
       <h1 className="settings-title">הגדרות</h1>
 
-          <div className="feature-title">
-          <h3>שחקנים במשחק: {playersNumber}</h3>
-            <TimeTownCounter
-              townTime={settings.townTime}
-              onChange={(value) => {
-                const newValue = Math.max(1, Math.min(10, value));
-                setSettings({ ...settings, townTime: newValue });
-              }}
-            />
-          </div>
-           <div className="feature-title">
-            <TimeMayorCounter
-              mayorTime={settings.mayorTime}
-              onChange={(value) => {
-                const newValue = Math.max(1, Math.min(10, value));
-                setSettings({ ...settings, mayorTime: newValue });
-              }}
-            />
-          </div>
-          <div className="feature-title">
-          <WolvesCounter
+      <div className="feature-title">
+        <h3>שחקנים במשחק: {playersNumber}</h3>
+        <TimeTownCounter
+          townTime={settings.townTime}
+          onChange={(value) => {
+            const newValue = Math.max(1, Math.min(10, value));
+            setSettings({ ...settings, townTime: newValue });
+          }}
+        />
+      </div>
+
+      <div className="feature-title">
+        <TimeMayorCounter
+          mayorTime={settings.mayorTime}
+          onChange={(value) => {
+            const newValue = Math.max(1, Math.min(10, value));
+            setSettings({ ...settings, mayorTime: newValue });
+          }}
+        />
+      </div>
+
+      <div className="feature-title">
+        <WolvesCounter
           wolvesCount={settings.wolvesCount}
           onChange={(value) => {
             const maxWolves = playerCount - 2;
@@ -174,51 +186,52 @@ if (isLoading) {
             setSettings({ ...settings, wolvesCount: newValue });
           }}
         />
-          </div>
-          <div className="feature-title">
-            <ToggleSwitch
-              title="זקן השבט"
-              onChange={(value) => setSettings({ ...settings, elder: value })}
-              isOn={settings.elder}
-            />
-            <ToggleSwitch
-              title="מגן"
-              onChange={(value) => setSettings({ ...settings, shield: value })}
-              isOn={settings.shield}
-            />
-            <ToggleSwitch
-              title="מגדת עתידות"
-              onChange={(value) => setSettings({ ...settings, seer: value })}
-              isOn={settings.seer}
-            />
-            <ToggleSwitch
-              title="מכשפה"
-              onChange={(value) => setSettings({ ...settings, witch: value })}
-              isOn={settings.witch}
-            />
-            <ToggleSwitch
-              title="צייד"
-              onChange={(value) => setSettings({ ...settings, hunter: value })}
-              isOn={settings.hunter}
-            />
-            <ToggleSwitch
-              title="קופידון"
-              onChange={(value) => setSettings({ ...settings, cupid: value })}
-              isOn={settings.cupid}
-            />
-            <ToggleSwitch
-              title="עלוקה"
-              onChange={(value) => setSettings({ ...settings, leech: value })}
-              isOn={settings.leech}
-            />
-            <h3>שאר השחקנים יקבלו את תפקיד האזרח</h3>
+      </div>
 
-          </div>
-          <div className="settings-buttons">
-            <button className="save-button" onClick={handleSave}>
-              שמור הגדרות
-            </button>
-          </div>
+      <div className="feature-title">
+        <ToggleSwitch
+          title="זקן השבט"
+          onChange={(value) => setSettings({ ...settings, elder: value })}
+          isOn={settings.elder}
+        />
+        <ToggleSwitch
+          title="מגן"
+          onChange={(value) => setSettings({ ...settings, shield: value })}
+          isOn={settings.shield}
+        />
+        <ToggleSwitch
+          title="מגדת עתידות"
+          onChange={(value) => setSettings({ ...settings, seer: value })}
+          isOn={settings.seer}
+        />
+        <ToggleSwitch
+          title="מכשפה"
+          onChange={(value) => setSettings({ ...settings, witch: value })}
+          isOn={settings.witch}
+        />
+        <ToggleSwitch
+          title="צייד"
+          onChange={(value) => setSettings({ ...settings, hunter: value })}
+          isOn={settings.hunter}
+        />
+        <ToggleSwitch
+          title="קופידון"
+          onChange={(value) => setSettings({ ...settings, cupid: value })}
+          isOn={settings.cupid}
+        />
+        <ToggleSwitch
+          title="עלוקה"
+          onChange={(value) => setSettings({ ...settings, leech: value })}
+          isOn={settings.leech}
+        />
+        <h3>שאר השחקנים יקבלו את תפקיד האזרח</h3>
+      </div>
+
+      <div className="settings-buttons">
+        <button className="save-button" onClick={handleSave}>
+          שמור הגדרות
+        </button>
+      </div>
     </div>
   );
 };
