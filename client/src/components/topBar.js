@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import './TopBar.css'; // עיצוב מותאם אישית
+import './TopBar.css';
 import io from 'socket.io-client';
 
 const socket = io('https://town-game-server.onrender.com');
 
 const TopBar = ({ role }) => {
-  const [isOpen, setIsOpen] = useState(false); // מציין אם החלון פתוח
+  const [isOpen, setIsOpen] = useState(false);
   const [mayorName, setMayorName] = useState('');
-  const [hasMayor, setHasMayor] = useState(false); // האם יש ראש עיר
-  const [isMayorModalOpen, setIsMayorModalOpen] = useState(false); // מצב חלון מודאלי לראש העיר
+  const [hasMayor, setHasMayor] = useState(false); 
+  const [isMayorModalOpen, setIsMayorModalOpen] = useState(false);
 
-  // הגדרת ההסברים לכל תפקיד
+  // Role Descriptions
   const roleDescriptions = {
     זאב: `הזאבים יודעים האחד על השני וקמים כל לילה בכדי לטרוף את אחד האזרחים. באם יש שוויון בהצבעה על זהות המטרה (יתכן בשל מחלוקת או ניגוד אינטרסים-נאהבים), מנהיג הלהקה הוא שובר השוויון. אם מנהיג הלהקה יצא מהמשחק  שובר השוויון יהיה הזאב הבא בתור למשל "זאב 2".
 שיוך: זאבים.`,
@@ -33,7 +33,7 @@ const TopBar = ({ role }) => {
   };
 
   useEffect(() => {
-    // בקשה לשם ראש העיר
+    // Reques for mayor name
     socket.emit('requestMayor');
     socket.on('mayorName', (name) => {
       if (name) {
@@ -53,21 +53,19 @@ const TopBar = ({ role }) => {
     setIsMayorModalOpen(!isMayorModalOpen);
   };
 
-  // פונקציה שמחזירה את תיאור התפקיד לפי השם
+  
   const getRoleDescription = (role) => {
     if (!role) return 'אין מידע על תפקיד'; // במקרה שאין תפקיד
 
-    // אם התפקיד מכיל את המילה "זאב"
     const description = role.includes('זאב') ? roleDescriptions['זאב'] : roleDescriptions[role];
 
-    // פיצול ההסבר לפי שורות ועטיפה בפסקאות
     return description.split('\n').map((line, index) => (
       <p key={index}>{line.trim()}</p>
     ));
   };
 
   const toggleModal = () => {
-    setIsOpen(!isOpen); // פתיחה או סגירה של החלון
+    setIsOpen(!isOpen); 
   };
 
   return (
