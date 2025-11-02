@@ -1,230 +1,244 @@
+/* =========================
+   Top bar (fixed header)
+   ========================= */
 .top-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    padding: 10px;
-    text-align: left;
-    z-index: 1000;
-    
-  }
-  @media (max-width: 768px) {
-    .top-bar {
-      display: flex; /* שימוש ב-flexbox */
-      justify-content: center; /* ממרכז את התוכן אופקית */
-      align-items: center; /* ממרכז את התוכן אנכית */
-      padding-top: 1px; /* שמירה על רווח למעלה */
-      flex-wrap: wrap; /* מאפשר לכפתורים לעבור לשורה הבאה אם אין מקום */
-      text-align: center; /* ממרכז טקסט בתוך האלמנטים */
-      padding: 0px;
-    }
-  }
-  .role-button {
-    padding: 8px 15px;
-    font-size: 12px;
-    border-radius: 15px; /* פינות מעוגלות */
-    color: white;
-    background-color: #0a8f0e;
-    border: none;
-    border-radius: 40px; /* פינות מעוגלות */
-    cursor: pointer;
-    margin-left: 15px;
-    width: fit-content;
-    
-  }
-  
-  .role-button:hover {
-    background-color: #45a049;
-    
-  }
-  .mayor-button {
-    padding: 8px 15px;
-    font-size: 12px;
-    border-radius: 15px; /* פינות מעוגלות */
-    color: white;
-    background-color: #08509c;
-    border: none;
-    border-radius: 40px; /* פינות מעוגלות */
-    cursor: pointer;
-    margin-left: 15px;
-    width: fit-content;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  text-align: left;
+  z-index: 1000;
+}
 
+/* =========================
+   Responsive: phones & small tablets
+   ========================= */
+@media (max-width: 768px) {
+  .top-bar {
+    display: flex;              /* Use flexbox layout */
+    justify-content: center;    /* Center content horizontally */
+    align-items: center;        /* Center content vertically */
+    padding-top: 1px;           /* Keep small top spacing */
+    flex-wrap: wrap;            /* Allow buttons to wrap to next line */
+    text-align: center;         /* Center text inside children */
+    padding: 0px;               /* Override to zero padding (last wins) */
   }
-  
-  .mayor-button:hover {
-    background-color: #0056b3;
-  }
+}
 
-  
+/* =========================
+   Role buttons (player)
+   ========================= */
+.role-button {
+  padding: 8px 15px;
+  font-size: 12px;
+  border-radius: 15px;          /* Rounded corners (kept; overridden below) */
+  color: white;
+  background-color: #0a8f0e;
+  border: none;
+  border-radius: 40px;          /* Final radius applied (duplicate retained) */
+  cursor: pointer;
+  margin-left: 15px;
+  width: fit-content;
+}
+
+.role-button:hover {
+  background-color: #45a049;    /* Hover feedback */
+}
+
+/* =========================
+   Role buttons (mayor)
+   ========================= */
+.mayor-button {
+  padding: 8px 15px;
+  font-size: 12px;
+  border-radius: 15px;          /* Rounded corners (kept; overridden below) */
+  color: white;
+  background-color: #08509c;
+  border: none;
+  border-radius: 40px;          /* Final radius applied (duplicate retained) */
+  cursor: pointer;
+  margin-left: 15px;
+  width: fit-content;
+}
+
+.mayor-button:hover {
+  background-color: #0056b3;    /* Hover feedback */
+}
+
+/* =========================
+   Modal (overlay & content)
+   ========================= */
+.modal-overlay-role {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;                 /* Full viewport width */
+  height: 100vh;                /* Full viewport height */
+  background-color: rgba(0, 0, 0, 0.6); /* Dimmed backdrop */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-content-role {
+  position: relative;
+  width: 650px;                 /* Scroll width */
+  height: 700px;                /* Scroll height */
+  padding: 50px 30px;           /* Inner spacing */
+  background: url('./klaf-removebg.png') no-repeat center center; /* Scroll image */
+  background-size: cover;       /* Cover container */
+  text-align: center;
+  font-family: 'Bona Nova', serif; /* Decorative font */
+  display: flex;                /* Flex to control inner alignment */
+  flex-direction: column;       /* Stack content vertically */
+  align-items: center;          /* Center horizontally */
+  justify-content: flex-start;  /* Start content from top */
+  padding-top: 140px;           /* Push content down inside the scroll */
+}
+
+/* =========================
+   Responsive: modal & top bar content
+   ========================= */
+@media (max-width: 768px) {
+  .modal-content-role {
+    position: center;           /* NOTE: Non-standard; kept as-is intentionally */
+    width: 370px !important;    /* Scroll width on mobile */
+    height: 600px !important;   /* Scroll height on mobile */
+    padding: 0px !important;    /* Reduce inner spacing */
+    padding-top: 100px !important; /* Smaller top spacing */
+    background: url('./klaf-removebg.png') no-repeat center center;
+    background-size: 450px !important; /* Scale background image */
+    text-align: center !important;
+    font-family: 'Bona Nova', serif !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    box-sizing: content-box;    /* Exclude padding/border from width/height */
+    margin: 0 auto !important;  /* Center in viewport */
+    overflow-x: hidden !important; /* Prevent horizontal scroll */
+    padding: 0px !important;    /* Duplicate kept */
+    padding-top: 0px !important;/* Push content further up (override above) */
+    right: 15px !important;
+    background-size: 120% 90% !important; /* Stretch to container */
+  }
 
   .modal-overlay-role {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.6); /* רקע כהה לטשטוש */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999;
-  }
-  
-  .modal-content-role {
-    position: relative;
-    width: 650px; /* גודל המגילה */
-    height: 700px; /* גובה המגילה */
-    padding: 50px 30px; /* רווחים פנימיים */
-    background: url('./klaf-removebg.png') no-repeat center center; /* תמונת המגילה */
-    background-size: cover; /* התאמת התמונה לכל השטח */
-    text-align: center;
-    font-family: 'Bona Nova', serif; /* פונט אלגנטי */
-    display: flex; /* שימוש בפלקס כדי לשלוט על מיקום התוכן */
-    flex-direction: column; /* יישור התוכן אנכית */
-    align-items: center; /* יישור תוכן למרכז אופקית */
-    justify-content: flex-start; /* תחילת התוכן מלמעלה */
-    padding-top: 140px; /* הזזת התוכן יותר למטה */
+    padding: 0px !important;
+    position: fixed !important;
+    top: 0px !important;
+    left: 0px !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background-color: rgba(0, 0, 0, 0.6) !important; /* Dimmed backdrop */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 999 !important;
   }
 
-  @media (max-width: 768px) {
-    .modal-content-role {
-      position: center;
-      width: 370px !important; /* גודל המגילה */
-      height: 600px !important; /* גובה המגילה */
-      padding: 0px !important; /* צמצום הרווחים הפנימיים */
-      padding-top: 100px !important; /* צמצום הרווחים הפנימיים */
-      background: url('./klaf-removebg.png') no-repeat center center; /* תמונת המגילה */
-      background-size: 450px !important; /* התאמת התמונה לכל השטח */
-      text-align: center !important;
-      font-family: 'Bona Nova', serif !important; /* פונט אלגנטי */
-      display: flex !important; /* שימוש בפלקס כדי לשלוט על מיקום התוכן */
-      flex-direction: column !important; /* יישור התוכן אנכית */
-      align-items: center !important; /* יישור תוכן למרכז אופקית */
-      justify-content: flex-start !important; /* תחילת התוכן מלמעלה */
-      box-sizing: content-box; /* הכללת הריווחים בגודל הכולל */
-      margin: 0 auto !important; /* הסרת רווחים חיצוניים מיותרים */
-      overflow-x: hidden !important; /* מניעת גלילה אופקית */
-      padding: 0px !important;
-      padding-top: 0px !important; /* הזזת התוכן יותר למטה */
-      right: 15px !important;
-      background-size: 120% 90% !important; /* התאמה מלאה למיכל */
-
-    }
-
-    .modal-overlay-role {
-      padding: 0px !important;
-
-      position: fixed !important;
-      top: 0px !important;
-      left: 0px !important;
-      width: 100vw !important;
-      height: 100vh !important;
-      background-color: rgba(0, 0, 0, 0.6) !important; /* רקע כהה לטשטוש */
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      z-index: 999 !important;
-    }
-    
-    .modal-content-role button {
-      
-      padding: 10px 0px !important; /* כפתור עם רווח פנימי */
-      font-size: 16px !important;
-      border: none !important;
-      border-radius: 8px !important;
-      cursor: pointer !important;
-      background-color: #8d6e63 !important; /* צבע חום לכפתור */
-      color: white !important;
-      margin-top: 70px !important; /* מרווח מהתוכן */
-      transition: 0.3s ease !important;
-      width: 40% !important; /* רוחב קבוע */
-      height: 40px;
-    }
-  
-    .top-bar h2 {
-      padding: 0px !important;
-      padding-top: 185px !important; /* מרווח מהתוכן */
-      padding-left: 25px !important; /* מרווח מהתוכן */
-
-      font-family: 'Bona Nova', serif; /* שימוש בפונט Bona Nova */
-      font-weight: 600 !important; /* משקל רגיל */
-      font-size: 16px !important; /* גודל כותרת */
-      color: black !important; /* חום כהה */
-      max-width: 400px !important; /* רוחב מקסימלי לטקסט */
-      margin: 0 auto !important; /* יישור למרכז */
-    }
-    .role-description p {
-      margin: 5px 0; /* מרווח קטן בין השורות */
-      line-height: 0; /* ריווח אחיד בין השורות */
-    }
-    .top-bar p {
-      padding: 0px !important;
-      margin-top: 0px !important; /* מרווח מהתוכן */
-      font-weight: 500!important; /* משקל רגיל */
-      margin: 5px 0; /* מרווח קטן בין השורות */
-
-      font-family: 'Bona Nova', serif;
-      font-size: 14px !important; /* גודל טקסט */
-      line-height: 1.4 !important; /* ריווח בין שורות */
-      text-align: right !important; /* יישור לימין */
-      height: 190px !important; /* גובה קבוע */
-      width: 90% !important; /* רוחב קבוע */
-      padding: 5px !important; /* רווח פנימי קטן */
-      box-sizing: border-box; /* הכללת ריווחים בגודל הכולל */
-      margin: 0 auto !important; /* הסרת רווחים חיצוניים */
-      padding-left: 18px !important; /* מרווח מהתוכן */
-
-      white-space: normal; /* שבירת שורות טבעית */
-      word-wrap: break-word; /* שבירת מילים */
-      font-size: 14px; /* גודל טקסט קטן יותר */
-      font-weight: 200; /* משקל רגיל */
-      color: black; /* צבע כהה */
-      line-height: 1.9; /* ריווח שורות */
-      margin-bottom: -20px !important; /* רווח בין הפסקאות */
-      margin-top: 0px; /* הורדת התוכן טיפה למטה */
-      word-wrap: break-word; /* מעביר מילים לשורה חדשה במידת הצורך */
-    }
-  }
-  .top-bar  h2 {
-    font-family: 'Bona Nova', serif; /* שימוש בפונט Bona Nova */
-    font-weight: 600; /* משקל רגיל */
-    font-size: 28px; /* גודל כותרת */
-    color: black; /* חום כהה */
-    margin-bottom: 20px; /* רווח מתחת לכותרת */
-    margin-top: 85px; /* הורדת הכותרת טיפה למטה */
-    max-width: 400px; /* רוחב מקסימלי לטקסט */
-  }
-  
-  .top-bar p {
-    font-family: 'Bona Nova', serif; /* שימוש בפונט Bona Nova */
-    font-weight: 200; /* משקל רגיל */
-    font-size: 21px; /* גודל טקסט */
-    color: black; /* צבע כהה */
-    line-height: 1.9; /* ריווח שורות */
-    margin-bottom: 15px; /* רווח בין הפסקאות */
-    margin-top: 0px; /* הורדת התוכן טיפה למטה */
-    max-width: 400px; /* הגבלת רוחב הטקסט */
-    word-wrap: break-word; /* מעביר מילים לשורה חדשה במידת הצורך */
-    text-align: justify; /* יישור טקסט לשני הצדדים */
-    
-  }
-  
-
-  
   .modal-content-role button {
-    padding: 10px 20px; /* כפתור עם רווח פנימי */
-    font-size: 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    background-color: #8d6e63; /* צבע חום לכפתור */
-    color: white;
-    margin-top: 20px; /* מרווח מהתוכן */
-    transition: 0.3s ease;
+    padding: 10px 0px !important; /* Compact button */
+    font-size: 16px !important;
+    border: none !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    background-color: #8d6e63 !important; /* Brown button */
+    color: white !important;
+    margin-top: 70px !important; /* Space above button */
+    transition: 0.3s ease !important;
+    width: 40% !important;      /* Fixed width */
+    height: 40px;
   }
-  
-  
-  .modal-content-role button:hover {
-    background-color: #6d4c41; /* צבע כהה יותר במעבר עכבר */
+
+  .top-bar h2 {
+    padding: 0px !important;
+    padding-top: 185px !important; /* Space from content */
+    padding-left: 25px !important; /* Left spacing */
+    font-family: 'Bona Nova', serif;
+    font-weight: 600 !important;
+    font-size: 16px !important;
+    color: black !important;
+    max-width: 400px !important; /* Max text width */
+    margin: 0 auto !important;   /* Center block */
   }
-  
+
+  .role-description p {
+    margin: 5px 0;               /* Small vertical spacing */
+    line-height: 0;              /* Tight line height (kept as provided) */
+  }
+
+  .top-bar p {
+    padding: 0px !important;
+    margin-top: 0px !important;
+    font-weight: 500 !important;
+    margin: 5px 0;               /* Small vertical spacing */
+    font-family: 'Bona Nova', serif;
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+    text-align: right !important;/* Right-align for RTL contexts */
+    height: 190px !important;    /* Fixed height */
+    width: 90% !important;       /* Fixed width */
+    padding: 5px !important;     /* Inner spacing */
+    box-sizing: border-box;      /* Include padding/border in size */
+    margin: 0 auto !important;   /* Center block */
+    padding-left: 18px !important; /* Left spacing */
+
+    white-space: normal;         /* Natural wrapping */
+    word-wrap: break-word;       /* Break long words if needed */
+    font-size: 14px;             /* Duplicate kept intentionally */
+    font-weight: 200;            /* Duplicate kept intentionally */
+    color: black;                /* Dark text */
+    line-height: 1.9;            /* Duplicate kept intentionally */
+    margin-bottom: -20px !important; /* Negative spacing as provided */
+    margin-top: 0px;             /* Align slightly lower */
+    word-wrap: break-word;       /* Duplicate kept intentionally */
+  }
+}
+
+/* =========================
+   Top bar: headings & paragraphs (desktop defaults)
+   ========================= */
+.top-bar  h2 {
+  font-family: 'Bona Nova', serif;
+  font-weight: 600;
+  font-size: 28px;
+  color: black;
+  margin-bottom: 20px;           /* Space below heading */
+  margin-top: 85px;              /* Pull heading down from fixed bar */
+  max-width: 400px;              /* Constrain text width for readability */
+}
+
+.top-bar p {
+  font-family: 'Bona Nova', serif;
+  font-weight: 200;
+  font-size: 21px;
+  color: black;
+  line-height: 1.9;
+  margin-bottom: 15px;           /* Space between paragraphs */
+  margin-top: 0px;               /* Align slightly lower */
+  max-width: 400px;              /* Constrain width */
+  word-wrap: break-word;         /* Break long words if needed */
+  text-align: justify;           /* Justified text */
+}
+
+/* =========================
+   Modal primary action button
+   ========================= */
+.modal-content-role button {
+  padding: 10px 20px;            /* Comfortable target size */
+  font-size: 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #8d6e63;     /* Brown tone */
+  color: white;
+  margin-top: 20px;              /* Space above button */
+  transition: 0.3s ease;
+}
+
+.modal-content-role button:hover {
+  background-color: #6d4c41;     /* Darker on hover */
+}
