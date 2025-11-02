@@ -14,10 +14,10 @@ function CreateRoomPage() {
       return;
     }
 
-    // יצירת החדר ושמירתו בשרת
+    // Room creation and save in server
     socket.emit('createRoom', { roomName });
 
-    // מעבר לעמוד הבית עם פרמטר החדר ב-URL
+    // Moving to home page with room in URL
     navigate(`/home?room=${roomName}`);
   };
 
@@ -39,3 +39,4 @@ function CreateRoomPage() {
 }
 
 export default CreateRoomPage;
+
