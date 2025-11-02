@@ -1,3 +1,10 @@
+// App.jsx
+// Purpose: Define client-side routes and guard against accidental navigation.
+// Behavior:
+// - Registers listeners to warn on back/refresh unless navigation is programmatic
+// - Emits/handles a custom "gameNavigation" event to mark intentional route changes
+// - Declares all app routes
+
 import React, { useEffect, useRef } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 
@@ -16,21 +23,20 @@ import './styles/styles.css';
 
 function App() {
   const navigate = useNavigate();
-  const isProgrammaticNavigation = useRef(false); // משתנה לזיהוי מעבר יזום
+  const isProgrammaticNavigation = useRef(false); // flag to detect intentional navigation
 
   useEffect(() => {
-    // מאזין לאירועי חזור בדפדפן
+    // Handle browser back/forward button
     const handlePopState = (event) => {
       if (!isProgrammaticNavigation.current) {
         const shouldLeave = window.confirm('אתה עומד לאבד את הנתונים שלך. האם אתה בטוח?');
         if (!shouldLeave) {
-          window.history.forward(); // מחזיר את הדפדפן לעמוד הנוכחי
+          window.history.forward(); // return user to current page
         }
       }
     };
-    
 
-    // מאזין לאירועי רענון
+    // Handle page refresh/close
     const handleBeforeUnload = (event) => {
       if (!isProgrammaticNavigation.current) {
         event.preventDefault();
@@ -38,21 +44,21 @@ function App() {
       }
     };
 
-    // סימון מעבר יזום דרך המשחק
+    // Mark intentional in-app navigation (fired by pages before redirect)
     const handleGameNavigation = () => {
-      isProgrammaticNavigation.current = true; // מעבר מתוכנן
-      window.history.pushState(null, '', window.location.href); // דוחף היסטוריה למניעת חזור
+      isProgrammaticNavigation.current = true; // planned navigation
+      window.history.pushState(null, '', window.location.href); // push to history to mitigate back
       setTimeout(() => {
-        isProgrammaticNavigation.current = false; // איפוס
+        isProgrammaticNavigation.current = false; // reset after short delay
       }, 500);
     };
 
-    // הוספת מאזינים
-    window.addEventListener('popstate', handlePopState); // כפתור חזור
-    window.addEventListener('beforeunload', handleBeforeUnload); // רענון דף
-    window.addEventListener('gameNavigation', handleGameNavigation); // ניווט יזום
+    // Register listeners
+    window.addEventListener('popstate', handlePopState);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('gameNavigation', handleGameNavigation);
 
-    // ניקוי מאזינים כשמתנתק
+    // Cleanup on unmount
     return () => {
       window.removeEventListener('popstate', handlePopState);
       window.removeEventListener('beforeunload', handleBeforeUnload);
@@ -61,18 +67,18 @@ function App() {
   }, []);
 
   return (
-<Routes>
-  {/* <Route path="/" element={<CreateRoomPage />} /> */}
-  <Route path="/" element={<HomePage />} />
-  <Route path="/settings" element={<SettingsPage />} />
-  <Route path="/role" element={<RolePage />} />
-  <Route path="/night" element={<NightPage />} />
-  <Route path="/day" element={<DayPage />} />
-  <Route path="/dead" element={<DeadPage />} />
-  <Route path="/endgame" element={<EndGamePage />} />
-  <Route path="/vote" element={<VotePage />} />
-  <Route path="/mayor" element={<MayorPage />} />
-</Routes>
+    <Routes>
+      {/* <Route path="/" element={<CreateRoomPage />} /> */}
+      <Route path="/" element={<HomePage />} />
+      <Route path="/settings" element={<SettingsPage />} />
+      <Route path="/role" element={<RolePage />} />
+      <Route path="/night" element={<NightPage />} />
+      <Route path="/day" element={<DayPage />} />
+      <Route path="/dead" element={<DeadPage />} />
+      <Route path="/endgame" element={<EndGamePage />} />
+      <Route path="/vote" element={<VotePage />} />
+      <Route path="/mayor" element={<MayorPage />} />
+    </Routes>
   );
 }
 
