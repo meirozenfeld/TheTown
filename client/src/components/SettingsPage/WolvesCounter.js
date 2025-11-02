@@ -2,8 +2,8 @@ import React from 'react';
 import './SettingsPage.css';
 
 const WolvesCounter = ({ wolvesCount, onChange }) => {
-  const increment = () => onChange(Math.min(wolvesCount + 1, 10));  // עדכון הערך לפי הלחיצה
-  const decrement = () => onChange(Math.max(wolvesCount - 1, 1));  // עדכון הערך לפי הלחיצה
+  const increment = () => onChange(Math.min(wolvesCount + 1, 10)); 
+  const decrement = () => onChange(Math.max(wolvesCount - 1, 1)); 
 
   return (
 <div className="wolves-counter">
