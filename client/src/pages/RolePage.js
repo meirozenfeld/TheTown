@@ -1,8 +1,20 @@
+// RolePage.jsx
+// Purpose: Role reveal & pre-night setup.
+// Responsibilities:
+// - Request and display assigned role with a typewriter effect
+// - Show role-specific description (Hebrew content retained) and styling
+// - If role is Cupid, allow selecting a lover before marking ready
+// - Emit readiness and Cupid selection to the server
+// Notes:
+// - Logic preserved exactly. Comments are concise and in English.
+// - No code omitted.
+
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import klafImage from '../styles/klaf-removebg2.png';
 
 const socket = io('https://town-game-server.onrender.com');
+
 function RolePage() {
   const [playerName, setPlayerName] = useState('');
   const [role, setRole] = useState('');
@@ -11,11 +23,11 @@ function RolePage() {
   const [isReady, setIsReady] = useState(false);
   const [description, setDescription] = useState('');
   const [currentText, setCurrentText] = useState('');
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(0); // kept (unused externally), matches original
   const [isLoading, setIsLoading] = useState(true);
   const [textVisible, setTextVisible] = useState(false);
 
-  // הגדרת הסברים לתפקידים
+  // Static role descriptions (Hebrew content untouched)
   const roleDescriptions = {
     זאב: `הזאבים יודעים האחד על השני וקמים כל לילה בכדי לטרוף את אחד האזרחים. באם יש שוויון בהצבעה על זהות המטרה (יתכן בשל מחלוקת או ניגוד אינטרסים-נאהבים), מנהיג הלהקה הוא שובר השוויון. אם מנהיג הלהקה יצא מהמשחק  שובר השוויון יהיה הזאב הבא בתור למשל "זאב 2".
 שיוך: זאבים.`,
@@ -37,70 +49,56 @@ function RolePage() {
 שיוך: אזרחים.`,
   };
 
-
-
-  // פונקציה שמחזירה את תיאור התפקיד
+  // Resolve role description (wolves share one entry)
   const getRoleDescription = (role) => {
-    if (!role) return 'אין מידע על תפקיד'; // במקרה שאין תפקיד
+    if (!role) return 'אין מידע על תפקיד';
     return role.includes('זאב') ? roleDescriptions['זאב'] : roleDescriptions[role] || 'אין מידע על תפקיד';
   };
 
+  // Map role to page theme class
   const getRoleClass = (role) => {
     if (role.includes('זאב')) return 'wolf';
-
     switch (role) {
-      case 'מגן':
-        return 'shield';
-      case 'מכשפה':
-        return 'witch';
-      case 'מגדת עתידות':
-        return 'seer';
-      case 'צייד':
-        return 'hunter';
-      case 'זקן השבט':
-        return 'elder';
-      case 'קופידון':
-        return 'cupid';
-      case 'עלוקה':
-        return 'leech';
-      case 'אזרח':
-        return 'villager';
-      default:
-        return '';
+      case 'מגן': return 'shield';
+      case 'מכשפה': return 'witch';
+      case 'מגדת עתידות': return 'seer';
+      case 'צייד': return 'hunter';
+      case 'זקן השבט': return 'elder';
+      case 'קופידון': return 'cupid';
+      case 'עלוקה': return 'leech';
+      case 'אזרח': return 'villager';
+      default: return '';
     }
   };
 
+  // Initial role request and listeners
   useEffect(() => {
     sessionStorage.setItem('isFirstNight', 'true');
     const storedName = sessionStorage.getItem('playerName');
     if (storedName) {
       setPlayerName(storedName);
-      socket.emit('requestRole', storedName); // בקשת תפקיד
+      socket.emit('requestRole', storedName);
     }
 
-
-    // האזנה לתפקיד שהוקצה
+    // Assigned role for this player
     socket.on('roleAssigned', (data) => {
       if (data.playerName === storedName) {
         setRole(data.role);
-        setDescription("התפקיד שלך הוא -  " + `${data.role}` +"\n"+ getRoleDescription(data.role));
+        setDescription("התפקיד שלך הוא -  " + `${data.role}` + "\n" + getRoleDescription(data.role));
         setIsLoading(false);
-
       }
     });
 
-
-
-    // עדכון רשימת השחקנים
+    // Players list (exclude self for Cupid selection list)
     socket.on('updatePlayers', (playersList) => {
-      setPlayers(playersList.filter(player => player.name !== storedName)); // הסתרת השחקן הנוכחי
+      setPlayers(playersList.filter(player => player.name !== storedName));
     });
 
-    // מעבר ל-NightPage כאשר כולם במצב מוכן
+    // When all players are ready in Role phase → navigate to Night
     socket.on('updatePlayersReady', (allReady) => {
       if (allReady) {
         window.dispatchEvent(new Event('gameNavigation'));
-        window.history.pushState(null, '', '/night'); // עדכון היסטוריה
+        window.history.pushState(null, '', '/night'); // history update
         window.location.href = '/night';
       }
     });
@@ -112,14 +110,13 @@ function RolePage() {
     };
   }, []);
 
-
-
+  // Cupid: choose lover (local UI)
   const handlePlayerSelect = (player) => {
     setSelectedPlayer(player);
   };
 
+  // Toggle ready; for Cupid, enforce lover selection and emit lover to server
   const toggleReady = () => {
-    // בדיקת בחירת נאהב עבור קופידון
     if (role === 'קופידון' && !selectedPlayer) {
       alert('בחר נאהב לפני לחיצה על מוכן!');
       return;
@@ -128,7 +125,6 @@ function RolePage() {
     const newReadyState = !isReady;
     setIsReady(newReadyState);
 
-    // שליחת בחירת הנאהב
     if (role === 'קופידון' && selectedPlayer) {
       socket.emit('updateLover', {
         cupidName: playerName,
@@ -136,99 +132,97 @@ function RolePage() {
       });
     }
 
-    // עדכון מצב מוכנות
     socket.emit('toggleReadyRole', { playerName, isReady: newReadyState });
   };
-useEffect(() => {
-  const checkContainer = setInterval(() => {
-    const container = document.querySelector('.scroll-container');
-    if (container) {
-      clearInterval(checkContainer); // עצור את הבדיקה לאחר שמצאת את האלמנט
 
-      const img = new Image();
-      img.src = klafImage;
+  // Wait for scroll container, lazy-load parchment image, then reveal text
+  useEffect(() => {
+    const checkContainer = setInterval(() => {
+      const container = document.querySelector('.scroll-container');
+      if (container) {
+        clearInterval(checkContainer);
 
-      img.onload = () => {
-        container.classList.add('loaded'); // הוספת מחלקה לאחר טעינת התמונה
-        setTextVisible(true); // הצגת המלל רק אחרי טעינת התמונה
-      };
+        const img = new Image();
+        img.src = klafImage;
 
-      img.onerror = () => {
-        console.error('Failed to load klaf image');
-      };
-    }
-  }, 100); // בדיקה כל 100ms
+        img.onload = () => {
+          container.classList.add('loaded');
+          setTextVisible(true);
+        };
 
-  return () => clearInterval(checkContainer); // ניקוי הבדיקה בעת פירוק הקומפוננטה
-}, []);
-      // אפקט לכתיבה אות אחר אות
-      useEffect(() => {
-        if (description) {
-          // עיכוב של שנייה אחת
-          const timeout = setTimeout(() => {
-            const interval = setInterval(() => {
-              setCurrentText((prev) => {
-                if (prev.length < description.length) {
-                  return prev + description[prev.length];
-                } else {
-                  clearInterval(interval);
-                  return prev;
-                }
-              });
-            }, 40); // מהירות הכתיבה
-      
-            // ניקוי ה-interval בסיום
-            return () => clearInterval(interval);
-          }, 1000); // עיכוב של 1000 מילי-שניות = 1 שנייה
-      
-          // ניקוי ה-timeout אם ה-description משתנה או שהקומפוננטה מתפרקת
-          return () => clearTimeout(timeout);
-        }
-      }, [description]);
-
-      if (isLoading) {
-        return <h1>טוען נתונים...</h1>;
+        img.onerror = () => {
+          console.error('Failed to load klaf image');
+        };
       }
-      
+    }, 100);
+
+    return () => clearInterval(checkContainer);
+  }, []);
+
+  // Typewriter effect for the role description (1s delay + ~25 chars/sec)
+  useEffect(() => {
+    if (description) {
+      const timeout = setTimeout(() => {
+        const interval = setInterval(() => {
+          setCurrentText((prev) => {
+            if (prev.length < description.length) {
+              return prev + description[prev.length];
+            } else {
+              clearInterval(interval);
+              return prev;
+            }
+          });
+        }, 40);
+        return () => clearInterval(interval);
+      }, 1000);
+      return () => clearTimeout(timeout);
+    }
+  }, [description]);
+
+  if (isLoading) {
+    return <h1>טוען נתונים...</h1>;
+  }
+
   return (
     <div className={`role-page ${getRoleClass(role)}`}>
-    <h1 className="role-title">שלום {playerName}!</h1>
+      <h1 className="role-title">שלום {playerName}!</h1>
 
-    <div className="scroll-container">
-    { textVisible && (
+      <div className="scroll-container">
+        {textVisible && (
+          <div className="scroll-text">
+            {/* Title kept commented as in original */}
+            {/* <h2>התפקיד שלך הוא:</h2>
+            <h3>{role}</h3> */}
+            <p>{currentText}</p>
+          </div>
+        )}
+      </div>
 
-    <div className="scroll-text">
-    {/* <h2>התפקיד שלך הוא:</h2>
-    <h3>{role}</h3> */}
-        <p>{currentText}</p>
-    </div>
-    )}
-     </div>
       {role === 'קופידון' && (
         <div>
           <h2>בחר נאהב:</h2>
           <div className="player-buttons">
-          {players.map((player) => (
-            <button
-              key={player.name}
-              className="player-button"
-              style={{
-                backgroundColor: selectedPlayer?.name === player.name ? '#d41e98' : '#424442',
-                color: 'white',
-                padding: '10px',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer',
-              }}
-              onClick={() => handlePlayerSelect(player)}
-            >
-              {player.name}
-            </button>
-          ))}
-        </div>
-
+            {players.map((player) => (
+              <button
+                key={player.name}
+                className="player-button"
+                style={{
+                  backgroundColor: selectedPlayer?.name === player.name ? '#d41e98' : '#424442',
+                  color: 'white',
+                  padding: '10px',
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                }}
+                onClick={() => handlePlayerSelect(player)}
+              >
+                {player.name}
+              </button>
+            ))}
+          </div>
         </div>
       )}
+
       <button
         style={{
           backgroundColor: isReady ? '#108f14' : '#7e1109',
@@ -236,7 +230,6 @@ useEffect(() => {
           padding: '10px',
           borderRadius: '15px',
           cursor: 'pointer',
-          
         }}
         onClick={toggleReady}
       >
