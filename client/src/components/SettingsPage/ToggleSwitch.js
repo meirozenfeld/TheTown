@@ -5,13 +5,13 @@ const ToggleSwitch = ({ title, onChange, isOn: initialIsOn }) => {
   const [isOn, setIsOn] = useState(initialIsOn || false);
 
   useEffect(() => {
-    setIsOn(initialIsOn); // עדכון הערך כאשר ההגדרות נטענות
+    setIsOn(initialIsOn);
   }, [initialIsOn]);
 
   const toggleSwitch = () => {
     const newIsOn = !isOn;
     setIsOn(newIsOn);
-    onChange(newIsOn); // עדכון ההגדרה בסטייט הראשי של SettingsPage
+    onChange(newIsOn); 
   };
 
   return (
