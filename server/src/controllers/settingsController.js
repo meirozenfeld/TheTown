@@ -7,7 +7,7 @@ const saveSettings = (req, res) => {
     return res.status(400).json({ error: 'Missing settings' });
   }
 
-  gameSettings = settings; // שמירת ההגדרות בזיכרון
+  gameSettings = settings; // Saving settings in memory
   console.log('Settings saved:', gameSettings);
 
   res.status(200).json({ message: 'Settings saved successfully' });
